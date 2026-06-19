@@ -3,8 +3,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useDark } from '@vueuse/core';
-
+useColorMode()
 useI18n()
-useDark()
 </script>

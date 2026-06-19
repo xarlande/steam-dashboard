@@ -764,8 +764,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
-import { useDark } from '@vueuse/core'
 import type { SteamGame, SteamApiResponse } from '../types'
 
 const { locale, t, loadLocaleMessages } = useI18n()
