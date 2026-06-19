@@ -1,5 +1,5 @@
 <template>
-  <div class="relative min-h-screen bg-[#08090c] text-neutral-100 overflow-x-hidden font-sans pb-16 selection:bg-cyan-500/30 selection:text-cyan-200">
+  <div class="relative min-h-screen bg-[#08090c] bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.08),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.06),transparent_50%)] text-neutral-100 overflow-x-hidden font-sans pb-16 selection:bg-cyan-500/30 selection:text-cyan-200">
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
       
@@ -48,7 +48,7 @@
       </section>
 
       <!-- Loaded State: Hero Game Info -->
-      <section v-else-if="!error" class="rounded-2xl bg-neutral-900 border border-neutral-800 p-6 sm:p-8 mb-8">
+      <section v-else-if="!error" class="rounded-2xl bg-neutral-900 border border-neutral-800 p-6 sm:p-8 mb-8 animate-fade-in">
         <div class="flex flex-col md:flex-row gap-6 md:items-center justify-between">
           
           <!-- Banner & Name -->
@@ -99,7 +99,7 @@
       </section>
 
       <!-- Main Content Block -->
-      <section v-if="!isLoading && !error" class="space-y-6">
+      <section v-if="!isLoading && !error" class="space-y-6 animate-fade-in">
         
         <!-- Filter Controls -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-neutral-900 border border-neutral-800">
@@ -178,10 +178,10 @@
           <div 
             v-for="ach in filteredAchievements" 
             :key="ach.apiname"
-            class="group flex gap-4 p-4 rounded-2xl border"
+            class="group flex gap-4 p-4 rounded-2xl border ach-card hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/2"
             :class="ach.achieved 
-              ? 'bg-neutral-900 border-neutral-800' 
-              : 'bg-neutral-950/20 border-neutral-900/60 opacity-60 hover:opacity-90'"
+              ? 'bg-neutral-900 border-neutral-800 hover:border-cyan-500/35' 
+              : 'bg-neutral-950/20 border-neutral-900/60 opacity-60 hover:opacity-90 hover:border-neutral-700'"
           >
             <!-- Icon -->
             <div class="relative w-14 h-14 rounded-xl overflow-hidden bg-neutral-900 border border-neutral-800 shrink-0">
@@ -189,7 +189,7 @@
                 :src="ach.achieved ? ach.icon : ach.icongray" 
                 :alt="ach.name"
                 loading="lazy"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-cover ach-card-img group-hover:scale-[1.04]"
                 @error="handleIconError"
               />
               <!-- Unlocked Border Glow -->
@@ -397,10 +397,18 @@ const filteredAchievements = computed(() => {
   scrollbar-width: none;
 }
 
+.ach-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+.ach-card-img {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -409,6 +417,6 @@ const filteredAchievements = computed(() => {
 }
 
 .animate-fade-in {
-  animation: fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 </style>

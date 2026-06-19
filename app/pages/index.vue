@@ -1,5 +1,5 @@
 <template>
-  <div class="relative min-h-screen bg-[#08090c] text-neutral-100 overflow-x-hidden font-sans pb-16 selection:bg-cyan-500/30 selection:text-cyan-200">
+  <div class="relative min-h-screen bg-[#08090c] bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.08),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.06),transparent_50%)] text-neutral-100 overflow-x-hidden font-sans pb-16 selection:bg-cyan-500/30 selection:text-cyan-200">
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
       
@@ -74,7 +74,7 @@
       </header>
 
       <!-- Global Stats Summary (Show only when games loaded) -->
-      <section v-if="games.length > 0 && !showSettings" class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+      <section v-if="games.length > 0 && !showSettings" class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8 animate-fade-in">
         <!-- Stat Card 1: Total Games -->
         <div class="relative overflow-hidden rounded-2xl bg-neutral-900 border border-neutral-800 p-5">
           <div class="absolute -right-4 -bottom-4 opacity-10 text-cyan-400">
@@ -114,7 +114,7 @@
       </section>
 
       <!-- Settings Configuration Panel -->
-      <section v-if="showSettings" class="max-w-2xl mx-auto mb-8">
+      <section v-if="showSettings" class="max-w-2xl mx-auto mb-8 animate-fade-in">
         <div class="rounded-2xl bg-neutral-900 border border-neutral-800 shadow-xl p-6 sm:p-8">
           <div class="flex items-center gap-3 pb-4 mb-6 border-b border-neutral-800/80">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -213,7 +213,7 @@
       </section>
 
       <!-- Main Controls and Grid -->
-      <section v-if="!showSettings" class="space-y-6">
+      <section v-if="!showSettings" class="space-y-6 animate-fade-in">
         
         <!-- Controls: Search & Sort Tabs -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-neutral-900 border border-neutral-800">
@@ -326,7 +326,7 @@
           <div 
             v-for="game in filteredAndSortedGames" 
             :key="game.appid"
-            class="group relative rounded-2xl bg-neutral-900/40 border border-neutral-800/80 hover:border-cyan-500/40 overflow-hidden flex flex-col h-full"
+            class="group relative rounded-2xl bg-neutral-900 border border-neutral-800/80 hover:border-cyan-500/30 overflow-hidden flex flex-col h-full game-card hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-500/5"
           >
             <!-- Game Capsule Banner -->
             <div class="relative aspect-[460/215] overflow-hidden bg-neutral-950 shrink-0">
@@ -334,7 +334,7 @@
                 :src="game.header_img" 
                 :alt="game.name" 
                 loading="lazy"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-cover game-card-img group-hover:scale-[1.03]"
                 @error="handleImageError"
               />
               
@@ -599,10 +599,18 @@ const filteredAndSortedGames = computed(() => {
   scrollbar-width: none;
 }
 
+.game-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.game-card-img {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -611,6 +619,6 @@ const filteredAndSortedGames = computed(() => {
 }
 
 .animate-fade-in {
-  animation: fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 </style>
