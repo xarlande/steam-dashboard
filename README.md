@@ -1,75 +1,88 @@
-# Nuxt Minimal Starter
+# Steam Library Space (Steam Dashboard)
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+**Steam Library Space** — це сучасна персоналізована аналітична панель для вашої бібліотеки ігор Steam, розроблена на базі **Nuxt 4** та **shadcn-vue**. Додаток дозволяє переглядати статистику ігор, детальний прогрес досягнень та гнучко налаштовувати інтерфейс під власні потреби.
 
-## Setup
+---
 
-Make sure to install dependencies:
+## 🚀 Основні можливості
+
+- 🎮 **Бібліотека ігор**: Відображення списку придбаних ігор, відсортованих за останнім запуском (або за часом гри / алфавітом) із функцією миттєвого пошуку.
+- 🏆 **Сторінка досягнень**: Окрема сторінка для кожної гри, що відображає прогрес проходження, шкалу розблокування, статус досягнень та фільтрацію (всі, відкриті, закриті).
+- 🌍 **Повна локалізація (UA / EN / RU)**: Підтримка української (за замовчуванням), англійської та російської мов як для інтерфейсу, так і для даних, що запитуються безпосередньо зі Steam API.
+- 🌓 **Перемикання тем (Темна / Світла)**: Інтерфейс повністю адаптований до системних змінних, що дозволяє миттєво перемикати чорну та білу теми за допомогою зручної кнопки в шапці.
+- ⚙️ **Гнучка конфігурація**: Можливість налаштування облікових даних (`STEAM_API_KEY` та `STEAM_ID`) на стороні сервера через файл `.env`, або безпосередньо в інтерфейсі користувача із збереженням у `localStorage`.
+- ⚡ **Висока продуктивність**: Застосування GPU-акселерованих анімацій (`translateY` та `scale`) без використання ресурсномістких CSS-фільтрів розмиття для плавності інтерфейсу (60 FPS).
+
+---
+
+## 🛠️ Технологічний стек
+
+- **Фреймворк**: [Nuxt 4](https://nuxt.com/) (Vue 3, Composition API, `<script setup>`).
+- **Стилізація**: [TailwindCSS v4](https://tailwindcss.com/) з `@tailwindcss/vite` для надшвидкої компіляції.
+- **Компоненти**: [shadcn-vue](https://www.shadcn-vue.com/) (Reka-Vega) для побудови елементів інтерфейсу:
+  - `Card` (картки ігор, статистики, налаштувань та досягнень)
+  - `Button` (кнопки взаємодії, рефрешу, налаштувань та посилань)
+  - `Input` (пошук, текстові поля налаштувань)
+  - `Select` (вибір мови інтерфейсу)
+  - `Progress` (прогрес-бар досягнень)
+  - `Badge` (ідентифікатори ігор та статус розблокування)
+  - `Tabs` (сортування та фільтрація)
+  - `Skeleton` (ефект завантаження сітки карток)
+- **Утиліти**: [@vueuse/core](https://vueuse.org/) для реактивного керування темною темою (`useDark`) та збереження налаштувань.
+
+---
+
+## ⚙️ Налаштування та запуск
+
+### 1. Встановлення залежностей
+
+Переконайтеся, що у вас встановлено менеджер пакетів `pnpm`:
 
 ```bash
-# npm
-npm install
-
-# pnpm
 pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+### 2. Конфігурація середовища
 
-Start the development server on `http://localhost:3000`:
+Створіть файл `.env` у кореневому каталозі проекту на основі шаблону `.env.example`:
 
 ```bash
-# npm
-npm run dev
+cp .env.example .env
+```
 
-# pnpm
+Заповніть ваші ключі:
+
+```env
+# Ключ Steam Web API (отримайте безкоштовно на https://steamcommunity.com/dev/apikey)
+STEAM_API_KEY=your_steam_api_key_here
+
+# 17-значний числовий ідентифікатор профілю Steam (Steam64 ID)
+STEAM_ID=your_steam_64_bit_id_here
+
+# Пріоритетна мова за замовчуванням (ukrainian, english, russian)
+STEAM_LANGUAGE=ukrainian
+```
+
+> **Примітка**: Якщо ви не вкажете ці змінні у файлі `.env`, додаток запропонує вам ввести їх безпосередньо в конфігураційній панелі інтерфейсу (значок шестерні "Config"). Вони збережуться локально у вашому браузері.
+
+### 3. Запуск сервера розробки
+
+Запустіть локальний сервер розробки на `http://localhost:3000`:
+
+```bash
 pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+### 4. Збірка для продакшену
 
-Build the application for production:
+Побудуйте оптимізований бандл додатку:
 
 ```bash
-# npm
-npm run build
-
-# pnpm
 pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
-Locally preview production build:
+Для локального перегляду фінальної збірки виконайте:
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
 pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
