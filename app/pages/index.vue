@@ -129,6 +129,147 @@
         </UiCard>
       </section>
 
+      <!-- The Backlog Fighter Widget -->
+      <section v-if="games.length > 0 && !showSettings" class="mb-8 animate-fade-in">
+        <UiCard>
+          <UiCardContent class="p-6 space-y-5">
+            <div class="flex items-center justify-between pb-3 border-b border-border">
+              <div class="flex items-center gap-3">
+                <div class="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                  <!-- Crossed Swords / Roulette SVG icon -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"></polyline>
+                    <line x1="13" y1="19" x2="22" y2="19"></line>
+                    <line x1="19" y1="13" x2="19" y2="22"></line>
+                    <polyline points="16 5 21 10 21 3 16 3"></polyline>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-base font-bold text-foreground leading-none">{{ rTrans.title }}</h3>
+                  <p class="text-xs text-muted-foreground mt-1">{{ rTrans.desc }}</p>
+                </div>
+              </div>
+              
+              <!-- Toggle Button to hide/show -->
+              <UiButton 
+                variant="ghost" 
+                size="sm"
+                @click="showRoulette = !showRoulette"
+                class="text-xs h-8"
+              >
+                {{ showRoulette ? (selectedLang === 'ukrainian' ? 'Сховати' : selectedLang === 'russian' ? 'Скрыть' : 'Hide') : (selectedLang === 'ukrainian' ? 'Показати' : selectedLang === 'russian' ? 'Показать' : 'Show') }}
+              </UiButton>
+            </div>
+
+            <div v-if="showRoulette" class="space-y-5 animate-fade-in">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Available Time -->
+                <div class="space-y-2">
+                  <span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{{ rTrans.timeLabel }}</span>
+                  <UiTabs v-model="selectedTime" class="w-full">
+                    <UiTabsList class="flex w-full max-w-md">
+                      <UiTabsTrigger 
+                        v-for="tOpt in timeOptions" 
+                        :key="tOpt.value" 
+                        :value="tOpt.value"
+                        class="flex-1 text-xs sm:text-sm"
+                      >
+                        {{ tOpt.label[selectedLang] }}
+                      </UiTabsTrigger>
+                    </UiTabsList>
+                  </UiTabs>
+                </div>
+
+                <!-- Mood -->
+                <div class="space-y-2">
+                  <span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{{ rTrans.moodLabel }}</span>
+                  <UiTabs v-model="selectedMood" class="w-full">
+                    <UiTabsList class="flex w-full max-w-xl">
+                      <UiTabsTrigger 
+                        v-for="mOpt in moodOptions" 
+                        :key="mOpt.value" 
+                        :value="mOpt.value"
+                        class="flex-1 text-xs sm:text-sm"
+                      >
+                        {{ mOpt.label[selectedLang] }}
+                      </UiTabsTrigger>
+                    </UiTabsList>
+                  </UiTabs>
+                </div>
+              </div>
+
+              <!-- Submit action -->
+              <div class="flex justify-center pt-2">
+                <UiButton 
+                  @click="generateRecommendation" 
+                  :disabled="isRecommending"
+                  class="w-full md:w-auto px-8 h-10 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold transition-all shadow-md shadow-cyan-500/10"
+                >
+                  <svg v-if="isRecommending" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                  </svg>
+                  <span>{{ rTrans.fightBtn }}</span>
+                </UiButton>
+              </div>
+
+              <!-- Error in recommendation -->
+              <div v-if="recommendationError" class="p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive-foreground text-xs">
+                {{ recommendationError }}
+              </div>
+
+              <!-- Recommendations results grid -->
+              <div v-if="recommendations.length > 0" class="pt-4 border-t border-border animate-fade-in">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                  <UiCard v-for="rec in recommendations" :key="rec.appid" class="relative overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow group">
+                    <!-- Game Capsule Banner -->
+                    <div class="relative aspect-[460/215] overflow-hidden shrink-0 bg-neutral-950">
+                      <img 
+                        :src="rec.header_img" 
+                        :alt="rec.name"
+                        class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                        @error="handleImageError"
+                      />
+                      <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent opacity-60"></div>
+                    </div>
+
+                    <!-- Recommendation details -->
+                    <UiCardContent class="p-4 flex-1 flex flex-col justify-between gap-3">
+                      <div>
+                        <h4 class="font-bold text-sm text-foreground truncate">{{ rec.name }}</h4>
+                        <p class="text-[10px] text-cyan-500 dark:text-cyan-400 font-semibold uppercase tracking-wider mt-1">{{ rec.reason }}</p>
+                        
+                        <div class="flex items-center gap-1.5 mt-2 text-[11px] text-muted-foreground font-medium">
+                          <span>{{ rTrans.played }}: <span class="text-foreground font-semibold">{{ rec.playtime_forever > 0 ? formatHours(rec.playtime_hours) + ' ' + rTrans.hrs : rTrans.never }}</span></span>
+                        </div>
+                        
+                        <!-- Genres tags -->
+                        <div class="flex flex-wrap gap-1 mt-2.5">
+                          <span v-for="g in rec.genres?.slice(0, 2)" :key="g" class="text-[9px] bg-muted px-2 py-0.5 rounded-md font-medium text-muted-foreground">{{ g }}</span>
+                        </div>
+                      </div>
+
+                      <!-- Direct actions -->
+                      <div class="flex items-center gap-2 pt-2 border-t border-border">
+                        <UiButton as-child variant="outline" size="sm" class="flex-1 text-[11px] h-8 rounded-lg">
+                          <NuxtLink :to="'/game/' + rec.appid">
+                            Achievements
+                          </NuxtLink>
+                        </UiButton>
+                        <UiButton as-child size="sm" class="flex-1 text-[11px] h-8 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-neutral-950 font-bold border-cyan-500">
+                          <a :href="'steam://run/' + rec.appid">
+                            Play
+                          </a>
+                        </UiButton>
+                      </div>
+                    </UiCardContent>
+                  </UiCard>
+                </div>
+              </div>
+            </div>
+          </UiCardContent>
+        </UiCard>
+      </section>
+
       <!-- Settings Configuration Panel -->
       <section v-if="showSettings" class="max-w-2xl mx-auto mb-8 animate-fade-in">
         <UiCard>
@@ -440,6 +581,97 @@ const loadedFromEnv = ref(false)
 // Theme variables
 const isDark = ref(true)
 let toggleTheme = () => {}
+
+// Roulette / Backlog Fighter variables
+const showRoulette = ref(true)
+const selectedTime = ref('2-5')
+const selectedMood = ref('story')
+const isRecommending = ref(false)
+const recommendations = ref<any[]>([])
+const recommendationError = ref('')
+
+const timeOptions = [
+  { value: '1-2', label: { ukrainian: '🕐 До 2 годин', english: '🕐 Up to 2 hours', russian: '🕐 До 2 часов' } },
+  { value: '2-5', label: { ukrainian: '🕒 2-5 годин', english: '🕒 2-5 hours', russian: '🕒 2-5 часов' } },
+  { value: '5+', label: { ukrainian: '🌌 5+ годин', english: '🌌 5+ hours', russian: '🌌 5+ часов' } }
+]
+
+const moodOptions = [
+  { value: 'story', label: { ukrainian: '📖 Сюжетна гра', english: '📖 Story-driven', russian: '📖 Сюжетная игра' } },
+  { value: 'challenge', label: { ukrainian: '⚔️ Виклик / Хардкор', english: '⚔️ Challenge', russian: '⚔️ Вызов / Хардкор' } },
+  { value: 'casual', label: { ukrainian: '🍹 Сесійна / Казуальна', english: '🍹 Session / Casual', russian: '🍹 Сессионная / Казуальная' } }
+]
+
+const rouletteTranslations = {
+  ukrainian: {
+    title: '⚔️ Борець з беклогом (Анти-Беклог Рулетка)',
+    desc: 'Оберіть вільний час та настрій, і ми підберемо 3 гри з вашого беклогу, які ідеально підходять на цей вечір!',
+    timeLabel: 'Вільний час:',
+    moodLabel: 'Бажаний настрій:',
+    fightBtn: 'Знищити беклог! 🎲',
+    played: 'Ви награли',
+    hrs: 'год',
+    never: 'Ще не запускали'
+  },
+  english: {
+    title: '⚔️ Backlog Fighter (Anti-Backlog Roulette)',
+    desc: 'Choose your free time and mood, and we will pick 3 games from your backlog that are perfect for this evening!',
+    timeLabel: 'Available time:',
+    moodLabel: 'Desired mood:',
+    fightBtn: 'Fight Backlog! 🎲',
+    played: 'Played',
+    hrs: 'hrs',
+    never: 'Never played'
+  },
+  russian: {
+    title: '⚔️ Борец с бэклогом (Анти-Бэклог Рулетка)',
+    desc: 'Выберите свободное время и настроение, и мы подберем 3 игры из вашего бэклога, которые идеально подойдут на этот вечер!',
+    timeLabel: 'Свободное время:',
+    moodLabel: 'Желаемое настроение:',
+    fightBtn: 'Уничтожить бэклог! 🎲',
+    played: 'Вы наиграли',
+    hrs: 'ч',
+    never: 'Еще не запускали'
+  }
+}
+
+const rTrans = computed(() => {
+  return rouletteTranslations[selectedLang.value as 'ukrainian' | 'english' | 'russian'] || rouletteTranslations.ukrainian
+})
+
+async function generateRecommendation() {
+  isRecommending.value = true
+  recommendationError.value = ''
+  recommendations.value = []
+  
+  try {
+    const params = new URLSearchParams()
+    if (apiKey.value.trim()) params.append('apiKey', apiKey.value.trim())
+    if (steamId.value.trim()) params.append('steamId', steamId.value.trim())
+    params.append('lang', selectedLang.value)
+    params.append('time', selectedTime.value)
+    params.append('mood', selectedMood.value)
+    
+    const response = await $fetch<any>(`/api/steam/recommend?${params.toString()}`)
+    if (response.success && response.recommendations) {
+      recommendations.value = response.recommendations
+      if (recommendations.value.length === 0) {
+        recommendationError.value = selectedLang.value === 'ukrainian' 
+          ? 'Не знайдено ігор у беклозі під цей настрій. Спробуйте змінити фільтри!' 
+          : selectedLang.value === 'russian'
+            ? 'Не найдено игр в бэклоге под это настроение. Попробуйте изменить фильтры!'
+            : 'No games found in your backlog for this mood. Try changing filters!'
+      }
+    } else {
+      recommendationError.value = response.error || 'Failed to generate recommendations.'
+    }
+  } catch (err: any) {
+    console.error('Error in Backlog Fighter:', err)
+    recommendationError.value = err.data?.error || err.message || 'An unexpected error occurred.'
+  } finally {
+    isRecommending.value = false
+  }
+}
 
 // Check if user has saved credentials in localStorage
 const hasSavedCredentials = computed(() => {
