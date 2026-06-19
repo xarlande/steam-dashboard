@@ -16,20 +16,20 @@
               <line x1="19" y1="12" x2="5" y2="12"></line>
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
-            <span>Back to Library</span>
+            <span>{{ $t('game.backToLibrary') }}</span>
           </NuxtLink>
         </UiButton>
 
         <div class="flex items-center gap-3">
           <!-- Language Selector dropdown (shadcn select) -->
-          <UiSelect v-model="selectedLang" @update:modelValue="handleLangChange">
+          <UiSelect v-model="locale" @update:modelValue="handleLangChange">
             <UiSelectTrigger >
-              <UiSelectValue placeholder="Language" />
+              <UiSelectValue :placeholder="$t('index.credentials.displayLanguage')" />
             </UiSelectTrigger>
             <UiSelectContent >
-              <UiSelectItem value="ukrainian">UA</UiSelectItem>
-              <UiSelectItem value="english">EN</UiSelectItem>
-              <UiSelectItem value="russian">RU</UiSelectItem>
+              <UiSelectItem value="uk">UA</UiSelectItem>
+              <UiSelectItem value="en">EN</UiSelectItem>
+              <UiSelectItem value="ru">RU</UiSelectItem>
             </UiSelectContent>
           </UiSelect>
 
@@ -93,7 +93,7 @@
                       <circle cx="12" cy="12" r="10"></circle>
                       <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
-                    <span>Completion progress: <span class="text-foreground font-semibold">{{ unlockedCount }} / {{ totalCount }}</span></span>
+                    <span>{{ $t('game.completionProgress') }}: <span class="text-foreground font-semibold">{{ unlockedCount }}</span> / <span class="text-foreground font-semibold">{{ totalCount }}</span></span>
                   </div>
                 </div>
               </div>
@@ -101,11 +101,83 @@
 
             <!-- Achievements Progress (shadcn Progress) -->
             <div class="flex flex-col items-center justify-center shrink-0 p-4 rounded-xl bg-muted/40 border border-border min-w-[150px]">
-              <span class="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Unlocked</span>
+              <span class="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">{{ $t('game.unlockedLabel') }}</span>
               <span class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-indigo-400 mt-1 tracking-tight">
                 {{ unlockedPercent }}%
               </span>
               <UiProgress :model-value="unlockedPercent" class="w-full mt-3" />
+            </div>
+          </UiCardContent>
+        </UiCard>
+      </section>
+
+      <!-- Easy Targets / The Next Achievements -->
+      <section v-if="!isLoading && !error && nextAchievements.length > 0" class="mb-8 animate-fade-in">
+        <UiCard class="border-cyan-500/20 bg-gradient-to-r from-cyan-950/10 to-transparent shadow-xs">
+          <UiCardContent class="p-6">
+            <div class="flex items-center gap-2.5 mb-4">
+              <span class="text-xl">🎯</span>
+              <div>
+                <h3 class="text-base font-bold text-foreground leading-snug">{{ $t('game.nextTitle') }}</h3>
+                <p class="text-xs text-muted-foreground mt-0.5">{{ $t('game.nextDesc') }}</p>
+              </div>
+            </div>
+
+            <!-- List of 3 next targets -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div 
+                v-for="ach in nextAchievements" 
+                :key="'next-' + ach.apiname"
+                class="flex items-center gap-3.5 p-3.5 rounded-2xl border border-border bg-card/30 hover:bg-card/60 transition-all group"
+              >
+                <!-- Gray Icon, becomes colored on hover -->
+                <div class="relative w-12 h-12 rounded-xl overflow-hidden bg-muted border border-border/60 shrink-0">
+                  <!-- Gray icon by default, hidden on hover -->
+                  <img 
+                    :src="ach.icongray" 
+                    :alt="ach.name"
+                    class="w-full h-full object-cover group-hover:hidden transition-transform"
+                    @error="handleIconError"
+                  />
+                  <!-- Colored icon shown on hover -->
+                  <img 
+                    :src="ach.icon" 
+                    :alt="ach.name"
+                    class="w-full h-full object-cover hidden group-hover:block transition-transform"
+                    @error="handleIconError"
+                  />
+                </div>
+
+                <div class="min-w-0 flex-1">
+                  <h4 class="text-xs font-bold text-foreground truncate group-hover:text-cyan-400 transition-colors" :title="ach.name">
+                    {{ ach.name }}
+                  </h4>
+                  <p class="text-[10px] text-muted-foreground line-clamp-1 mt-0.5" :title="ach.description">
+                    {{ ach.description || 'No description' }}
+                  </p>
+                  
+                  <!-- Unlock Rate Badge -->
+                  <div class="mt-2 flex items-center gap-1">
+                    <UiBadge class="text-[9px] font-black bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/10 border-cyan-500/20 py-0.5 px-1.5 rounded-md">
+                      {{ ach.global_percent }}% {{ $t('game.globalUnlocked') }}
+                    </UiBadge>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </UiCardContent>
+        </UiCard>
+      </section>
+
+      <!-- If 100% Completed, show congratulations -->
+      <section v-else-if="!isLoading && !error && achievements.length > 0 && nextAchievements.length === 0" class="mb-8 animate-fade-in">
+        <UiCard class="border-emerald-500/20 bg-gradient-to-r from-emerald-950/10 to-transparent shadow-xs">
+          <UiCardContent class="p-6 flex items-center gap-4">
+            <span class="text-3xl select-none">🏆</span>
+            <div>
+              <h3 class="text-base font-extrabold text-emerald-400 leading-snug">{{ $t('game.congratsTitle') }}</h3>
+              <p class="text-xs text-muted-foreground mt-0.5 font-medium">{{ $t('game.congratsDesc') }}</p>
             </div>
           </UiCardContent>
         </UiCard>
@@ -128,7 +200,7 @@
             <UiInput 
               type="text" 
               v-model="searchQuery"
-              placeholder="Search achievements..." 
+              :placeholder="$t('game.searchPlaceholder')" 
               class="w-full pl-9 pr-8"
             />
             <UiButton 
@@ -147,12 +219,12 @@
 
           <!-- Tabs: All, Unlocked, Locked (shadcn tabs) -->
           <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider mr-2 shrink-0">Filter:</span>
+            <span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-2 shrink-0">{{ $t('game.filterLabel') }}</span>
             <UiTabs v-model="filterBy" class="w-auto">
               <UiTabsList>
-                <UiTabsTrigger value="all">All ({{ totalCount }})</UiTabsTrigger>
-                <UiTabsTrigger value="unlocked">Unlocked ({{ unlockedCount }})</UiTabsTrigger>
-                <UiTabsTrigger value="locked">Locked ({{ totalCount - unlockedCount }})</UiTabsTrigger>
+                <UiTabsTrigger value="all">{{ $t('game.filterAll') }} ({{ totalCount }})</UiTabsTrigger>
+                <UiTabsTrigger value="unlocked">{{ $t('game.filterUnlocked') }} ({{ unlockedCount }})</UiTabsTrigger>
+                <UiTabsTrigger value="locked">{{ $t('game.filterLocked') }} ({{ totalCount - unlockedCount }})</UiTabsTrigger>
               </UiTabsList>
             </UiTabs>
           </div>
@@ -201,7 +273,7 @@
                 <UiBadge 
                   v-if="ach.achieved" 
                 >
-                  Unlocked
+                  {{ $t('game.unlockedLabel') }}
                 </UiBadge>
               </div>
               
@@ -215,7 +287,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-muted-foreground/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
-                <span>Unlocked {{ ach.unlocktime_relative }}</span>
+                <span>{{ $t('game.unlockedAt', { time: ach.unlocktime_relative }) }}</span>
               </p>
             </div>
           </UiCard>
@@ -231,9 +303,9 @@
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
             </div>
-            <h3 class="font-bold text-base">No achievements found</h3>
+            <h3 class="font-bold text-base">{{ $t('game.noAchievements') }}</h3>
             <p class="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
-              {{ searchQuery ? 'Try clearing your search term.' : 'This game doesn\'t seem to have achievements matching the selected filter.' }}
+              {{ $t('game.noAchievementsDesc') }}
             </p>
           </UiCardContent>
         </UiCard>
@@ -249,16 +321,16 @@
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
           </svg>
           <div class="flex-1">
-            <h3 class="font-extrabold text-base text-destructive mb-1">Failed to load achievements</h3>
+            <h3 class="font-extrabold text-base text-destructive mb-1">{{ $t('game.failedLoad') }}</h3>
             <p class="leading-relaxed">{{ error }}</p>
             <div class="mt-4 flex items-center gap-3">
               <UiButton variant="outline" as-child>
                 <NuxtLink to="/">
-                  &larr; Return to Library
+                  &larr; {{ $t('game.returnBtn') }}
                 </NuxtLink>
               </UiButton>
               <UiButton variant="outline" @click="loadAchievements">
-                Retry
+                {{ $t('game.retryBtn') }}
               </UiButton>
             </div>
           </div>
@@ -277,6 +349,7 @@ import type { SteamAchievement, GameAchievementsResponse } from '../../types'
 
 const route = useRoute()
 const appid = route.params.id as string
+const { locale } = useI18n()
 
 // Game stats
 const gameName = ref('Loading Game...')
@@ -290,7 +363,14 @@ const isLoading = ref(true)
 const error = ref('')
 const searchQuery = ref('')
 const filterBy = ref<'all' | 'unlocked' | 'locked'>('all')
-const selectedLang = ref('ukrainian')
+
+// Next locked achievements sorted by global unlock percentage
+const nextAchievements = computed(() => {
+  const locked = achievements.value.filter(a => !a.achieved)
+  // Sort by global_percent descending
+  locked.sort((a, b) => (b.global_percent || 0) - (a.global_percent || 0))
+  return locked.slice(0, 3)
+})
 
 // Theme variables
 const isDark = ref(true)
@@ -310,12 +390,13 @@ onMounted(() => {
     isDark.value = darkState.value
   }
 
-  selectedLang.value = localStorage.getItem('steam_language') || 'ukrainian'
+  const savedLang = localStorage.getItem('steam_language') || 'uk'
+  locale.value = savedLang === 'ukrainian' ? 'uk' : (savedLang === 'english' ? 'en' : (savedLang === 'russian' ? 'ru' : savedLang))
   loadAchievements()
 })
 
 function handleLangChange() {
-  localStorage.setItem('steam_language', selectedLang.value)
+  localStorage.setItem('steam_language', locale.value)
   loadAchievements()
 }
 
@@ -326,7 +407,7 @@ async function loadAchievements() {
   // Read credentials and language from localStorage
   const apiKey = localStorage.getItem('steam_api_key') || ''
   const steamId = localStorage.getItem('steam_id') || ''
-  const lang = selectedLang.value;
+  const lang = locale.value;
   
   try {
     const params = new URLSearchParams()
