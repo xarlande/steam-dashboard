@@ -184,7 +184,7 @@
                     <div v-if="hygieneStatus === 'critical' || hygieneStatus === 'poor'" class="mt-3.5 animate-bounce">
                       <UiButton 
                         size="sm" 
-                        class="bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs px-4.5 py-2.5 rounded-xl shadow-lg shadow-rose-900/10 transition-all duration-300 active:scale-95 border-0 flex items-center gap-1.5"
+                        class="bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs shadow-lg shadow-rose-900/10 transition-all duration-300 active:scale-95 border-0 flex items-center gap-1.5"
                         @click="startRoulette"
                       >
                         <span>🔮</span>
