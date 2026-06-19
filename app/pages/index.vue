@@ -129,6 +129,180 @@
         </UiCard>
       </section>
 
+      <!-- Gaming Time Quality Card -->
+      <section v-if="games.length > 0 && !showSettings" class="mb-8 animate-fade-in">
+        <UiCard class="overflow-hidden border-border/80 shadow-md bg-gradient-to-br from-card to-card/50">
+          <UiCardContent class="p-6">
+            <!-- Header Row -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border/60">
+              <div class="flex items-center gap-3">
+                <div class="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <circle cx="12" cy="11" r="3"></circle>
+                    <path d="M12 8v6"></path>
+                    <path d="M10 12h4"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="text-lg sm:text-xl font-bold tracking-tight text-foreground">{{ t.title }}</h2>
+                  <p class="text-xs text-muted-foreground font-medium mt-0.5">{{ t.description }}</p>
+                </div>
+              </div>
+              
+              <!-- Status Badge -->
+              <div class="self-start sm:self-auto flex items-center gap-2">
+                <span class="text-xs text-muted-foreground font-semibold uppercase tracking-wider">{{ t.statusLabel }}:</span>
+                <UiBadge :class="hygieneBadgeClass" class="text-xs py-1 px-3 font-bold border rounded-lg transition-all duration-300">
+                  {{ t.states[hygieneStatus].title }}
+                </UiBadge>
+              </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+              
+              <!-- Left Column: Advice Box and Progress Scale -->
+              <div class="md:col-span-2 flex flex-col justify-between gap-6">
+                <!-- Recommendations/Hygienic advice -->
+                <div 
+                  class="p-4 sm:p-5 rounded-2xl border flex items-start gap-4 transition-all duration-300"
+                  :class="adviceBoxClass"
+                >
+                  <span class="text-3xl shrink-0 select-none">
+                    <span v-if="hygieneStatus === 'critical'">🚨</span>
+                    <span v-else-if="hygieneStatus === 'poor'">⚠️</span>
+                    <span v-else-if="hygieneStatus === 'balanced'">⚖️</span>
+                    <span v-else-if="hygieneStatus === 'excellent'">✨</span>
+                    <span v-else>🌱</span>
+                  </span>
+                  <div>
+                    <h4 class="font-extrabold text-sm tracking-tight mb-1 uppercase tracking-wide opacity-90">{{ t.tipsTitle }}</h4>
+                    <p class="text-sm leading-relaxed font-semibold opacity-95">{{ t.states[hygieneStatus].desc }}</p>
+                  </div>
+                </div>
+
+                <!-- Progress Bar / Scale -->
+                <div class="space-y-3.5">
+                  <div class="flex items-center justify-between text-xs font-semibold text-muted-foreground">
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> 🎮 {{ t.sessionLabel }}</span>
+                    <span class="text-foreground text-sm font-black">{{ storyPercentage }}% {{ t.storyLabel }}</span>
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span> 🎭 {{ t.storyLabel }}</span>
+                  </div>
+                  
+                  <UiProgress 
+                    :model-value="storyPercentage" 
+                    class="h-3.5 bg-neutral-200 dark:bg-neutral-800/80 rounded-full overflow-hidden" 
+                    :class="'progress-' + hygieneStatus"
+                  />
+                  
+                  <div class="flex items-center justify-between text-[10px] text-muted-foreground/80 font-bold uppercase tracking-wider">
+                    <span>100% {{ t.sessionLabel }}</span>
+                    <span>50/50 Balance</span>
+                    <span>100% {{ t.storyLabel }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column: Recent Playtime Summary & Toggle -->
+              <div class="p-5 rounded-2xl bg-card/30 border border-border/80 flex flex-col justify-between gap-6">
+                <div class="space-y-4">
+                  <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-widest">{{ t.recentPlaytime }}</h3>
+                  
+                  <div class="space-y-3">
+                    <!-- Total Recent Time -->
+                    <div class="flex justify-between items-baseline pb-2.5 border-b border-border/60">
+                      <span class="text-sm text-muted-foreground font-semibold">Total</span>
+                      <span class="text-2xl font-black text-foreground">{{ formatHours(recentTotalHours) }} <span class="text-xs font-semibold text-muted-foreground">{{ t.hoursSuffix }}</span></span>
+                    </div>
+
+                    <!-- Story Hours -->
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs font-semibold text-muted-foreground">{{ t.storyLabel }}</span>
+                      <span class="text-sm font-bold text-cyan-400">{{ formatHours(recentStoryHours) }} {{ t.hoursSuffix }}</span>
+                    </div>
+
+                    <!-- Session Hours -->
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs font-semibold text-muted-foreground">{{ t.sessionLabel }}</span>
+                      <span class="text-sm font-bold text-rose-500">{{ formatHours(recentSessionHours) }} {{ t.hoursSuffix }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Customizer Toggle Button -->
+                <UiButton 
+                  v-if="recentlyPlayedGames.length > 0"
+                  variant="outline" 
+                  size="sm" 
+                  class="w-full text-xs font-semibold hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                  @click="showCategorizer = !showCategorizer"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                  </svg>
+                  <span>{{ showCategorizer ? 'Hide Categorizer' : 'Customize Categories' }}</span>
+                </UiButton>
+              </div>
+            </div>
+
+            <!-- Game Categorizer (Collapsible Panel) -->
+            <transition name="slide-fade">
+              <div v-if="showCategorizer && recentlyPlayedGames.length > 0" class="mt-6 pt-6 border-t border-border/60">
+                <div class="mb-4">
+                  <h3 class="text-sm font-bold text-foreground">{{ t.customizeHeader }}</h3>
+                  <p class="text-xs text-muted-foreground font-medium mt-0.5">{{ t.customizeDesc }}</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  <div 
+                    v-for="game in recentlyPlayedGames" 
+                    :key="'cat-' + game.appid"
+                    class="flex items-center justify-between p-3 rounded-2xl border border-border bg-card/30 hover:bg-card/50 transition-all"
+                  >
+                    <div class="flex items-center gap-3 min-w-0 flex-1 pr-2">
+                      <!-- Small game banner -->
+                      <img 
+                        :src="game.header_img" 
+                        :alt="game.name"
+                        class="w-12 h-6.5 rounded-md object-cover border border-border/40 shrink-0"
+                        @error="handleImageError"
+                      />
+                      
+                      <div class="min-w-0">
+                        <h4 class="text-xs font-bold text-foreground truncate" :title="game.name">
+                          {{ game.name }}
+                        </h4>
+                        <p class="text-[10px] text-muted-foreground/90 font-semibold mt-0.5">
+                          {{ Math.round((game.playtime_2weeks / 60) * 10) / 10 }} {{ t.hoursSuffix }}
+                        </p>
+                      </div>
+                    </div>
+
+                    <!-- Category toggle switch/button -->
+                    <UiButton 
+                      variant="outline" 
+                      size="icon" 
+                      class="h-8 w-8 rounded-xl shrink-0 transition-transform active:scale-95"
+                      :class="getGameCategory(game) === 'story' ? 'text-cyan-400 bg-cyan-500/5 border-cyan-500/20 hover:text-cyan-300' : 'text-rose-500 bg-rose-500/5 border-rose-500/20 hover:text-rose-400'"
+                      :title="getGameCategory(game) === 'story' ? t.storyBtn : t.sessionBtn"
+                      @click="toggleGameCategory(game.appid)"
+                    >
+                      <span class="text-base select-none">
+                        <span v-if="getGameCategory(game) === 'story'">🎭</span>
+                        <span v-else>🎮</span>
+                      </span>
+                    </UiButton>
+                  </div>
+                </div>
+              </div>
+            </transition>
+
+          </UiCardContent>
+        </UiCard>
+      </section>
+
       <!-- Settings Configuration Panel -->
       <section v-if="showSettings" class="max-w-2xl mx-auto mb-8 animate-fade-in">
         <UiCard>
@@ -437,6 +611,223 @@ const sortBy = ref<'lastPlayed' | 'playtimeDesc' | 'playtimeAsc' | 'name'>('last
 const showSettings = ref(false)
 const loadedFromEnv = ref(false)
 
+// State variables for Gaming Time Quality Feature
+const manualCategories = ref<Record<number, 'story' | 'session'>>({})
+const showCategorizer = ref(false)
+
+const SESSION_GAME_KEYWORDS = [
+  'counter-strike', 'cs:go', 'cs2', 'dota', 'league of legends', 'valorant', 'apex legends',
+  'pubg', 'fortnite', 'overwatch', 'war thunder', 'world of tanks', 'world of warships',
+  'team fortress', 'rust', 'dayz', 'rainbow six', 'destiny', 'warframe', 'helldivers',
+  'gta online', 'dead by daylight', 'rocket league', 'fifa', 'madden', 'nba 2k',
+  'street fighter', 'tekken', 'mortal kombat', 'brawlhalla', 'among us', 'phasmophobia',
+  'lethal company', 'roblox', 'minecraft', 'payday', 'left 4 dead', 'killing floor',
+  'deep rock galactic', 'hearthstone', 'magic: the gathering', 'yu-gi-oh', 'tft',
+  'teamfight tactics', 'diablo', 'path of exile', 'lost ark', 'world of warcraft',
+  'guild wars', 'final fantasy xiv', 'lineage', 'black desert', 'heartstone',
+  'call of duty', 'battlefield', 'apex', 'pubg', 'deadlock', 'brawl stars', 'clash'
+]
+
+const translations: Record<string, any> = {
+  ukrainian: {
+    title: "Якість ігрового часу",
+    description: "Метрика цифрового детоксу: показує баланс між емоційним відпочинком та рутинною ігровою «роботою». Сюжетні ігри дарують емоції, сесійні — споживають час.",
+    storyLabel: "Сюжетні / Емоційні",
+    sessionLabel: "Сесійні / Рутинні",
+    recentPlaytime: "Награно за 2 тижні:",
+    qualityMetric: "Показник балансу",
+    customizeHeader: "Налаштування категорій ігор",
+    customizeDesc: "Тут ви можете вручну змінити категорію ігор, зіграних за останні 2 тижні. Ми автоматично класифікували відомі ігри.",
+    statusLabel: "Статус",
+    storyBtn: "Сюжетна",
+    sessionBtn: "Сесійна",
+    hoursSuffix: "год",
+    tipsTitle: "Рекомендація",
+    states: {
+      inactive: {
+        title: "Чудовий баланс з реалом",
+        desc: "Мало ігрового часу за останні 2 тижні. Ви успішно фокусуєтеся на реальному житті!"
+      },
+      critical: {
+        title: "Друга зміна на роботі",
+        desc: "Чувак, ти не відпочиваєш, ти працюєш на другу зміну! Сходи пограй у щось лінійне й атмосферне або вимкни комп'ютер і прогуляйся."
+      },
+      poor: {
+        title: "Дефіцит емоцій",
+        desc: "У твоєму раціоні занадто багато сесійок. Вони виснажують, а не дають нові емоції. Спробуй розбавити їх хорошою сюжетною грою."
+      },
+      balanced: {
+        title: "Хороший баланс",
+        desc: "Хороший баланс! Ти успішно поєднуєш сесійні катки з атмосферними історіями. Продовжуй у тому ж дусі."
+      },
+      excellent: {
+        title: "Чисте задоволення",
+        desc: "Чудова якість ігрового часу! Ти граєш заради емоцій та сюжетів. Справжній відпочинок для душі."
+      }
+    }
+  },
+  english: {
+    title: "Gaming Time Quality",
+    description: "Digital detox metric: shows the balance between emotional rest and routine gaming 'work'. Story games yield emotions, session games drain time.",
+    storyLabel: "Story / Emotional",
+    sessionLabel: "Session / Routine",
+    recentPlaytime: "Played in 2 weeks:",
+    qualityMetric: "Balance Score",
+    customizeHeader: "Configure Game Categories",
+    customizeDesc: "Here you can manually toggle the category of games played in the last 2 weeks. We auto-classified popular titles.",
+    statusLabel: "Status",
+    storyBtn: "Story-driven",
+    sessionBtn: "Session-based",
+    hoursSuffix: "hrs",
+    tipsTitle: "Hygiene Tip",
+    states: {
+      inactive: {
+        title: "Great real-life balance",
+        desc: "Very little playtime in the past 2 weeks. A great balance with real life!"
+      },
+      critical: {
+        title: "Second shift worker",
+        desc: "Dude, you're not resting, you're working a second shift! Go play something linear and atmospheric, or just turn off the computer and go outside."
+      },
+      poor: {
+        title: "Emotional deficit",
+        desc: "Too many session games in your diet. They drain you rather than give new emotions. Try diluting them with a good story game."
+      },
+      balanced: {
+        title: "Good balance",
+        desc: "Good balance! You successfully combine session matches with atmospheric stories. Keep it up."
+      },
+      excellent: {
+        title: "Pure enjoyment",
+        desc: "Excellent gaming quality! You play for emotions and stories. A true rest for your mind."
+      }
+    }
+  },
+  russian: {
+    title: "Качество игрового времени",
+    description: "Метрика цифрового детокса: показывает баланс между эмоциональным отдыхом и рутинной игровой «работой». Сюжетные игры дарят эмоции, сессионные — сжигают время.",
+    storyLabel: "Сюжетные / Эмоциональные",
+    sessionLabel: "Сессионные / Рутинные",
+    recentPlaytime: "Наиграно за 2 недели:",
+    qualityMetric: "Показатель баланса",
+    customizeHeader: "Настройка категорий игр",
+    customizeDesc: "Здесь вы можете вручную изменить категорию игр, запущенных за последние 2 недели. Известные игры классифицированы автоматически.",
+    statusLabel: "Статус",
+    storyBtn: "Сюжетная",
+    sessionBtn: "Сессионная",
+    hoursSuffix: "ч",
+    tipsTitle: "Рекомендация",
+    states: {
+      inactive: {
+        title: "Отличный баланс с реалом",
+        desc: "Мало игрового времени за последние 2 недели. Вы отлично справляетесь в реальном мире!"
+      },
+      critical: {
+        title: "Вторая смена на работе",
+        desc: "Чувак, ты не отдыхаешь, ты работаешь во вторую смену! Сходи поиграй во что-то линейное и атмосферное или вообще выключи компьютер и прогуляйся."
+      },
+      poor: {
+        title: "Дефицит эмоций",
+        desc: "В твоем рационе слишком много сессионок. Они истощают, а не дают новые эмоции. Попробуй разбавить их хорошей сюжетной игрой."
+      },
+      balanced: {
+        title: "Хороший баланс",
+        desc: "Хороший баланс! Ты успешно совмещаешь сессионные катки с атмосферными историями. Продолжай в том же духе."
+      },
+      excellent: {
+        title: "Чистое удовольствие",
+        desc: "Отличное качество игрового времени! Ты играешь ради эмоций и сюжетов. Настоящий отдых для души."
+      }
+    }
+  }
+}
+
+const t = computed(() => translations[selectedLang.value] || translations.english)
+
+function isDefaultSessionGame(name: string): boolean {
+  const lowercaseName = name.toLowerCase()
+  return SESSION_GAME_KEYWORDS.some(keyword => lowercaseName.includes(keyword))
+}
+
+function getGameCategory(game: SteamGame): 'story' | 'session' {
+  if (manualCategories.value[game.appid]) {
+    return manualCategories.value[game.appid]
+  }
+  return isDefaultSessionGame(game.name) ? 'session' : 'story'
+}
+
+function toggleGameCategory(appid: number) {
+  const current = manualCategories.value[appid] || (isDefaultSessionGame(games.value.find(g => g.appid === appid)?.name || '') ? 'session' : 'story')
+  const next = current === 'story' ? 'session' : 'story'
+  manualCategories.value[appid] = next
+  if (import.meta.client) {
+    localStorage.setItem('steam_game_categories', JSON.stringify(manualCategories.value))
+  }
+}
+
+// Computeds for Gaming Time Quality metrics
+const recentlyPlayedGames = computed(() => {
+  return games.value.filter(g => g.playtime_2weeks && g.playtime_2weeks > 0)
+})
+
+const recentStoryMinutes = computed(() => {
+  return recentlyPlayedGames.value.reduce((sum, g) => getGameCategory(g) === 'story' ? sum + (g.playtime_2weeks || 0) : sum, 0)
+})
+
+const recentSessionMinutes = computed(() => {
+  return recentlyPlayedGames.value.reduce((sum, g) => getGameCategory(g) === 'session' ? sum + (g.playtime_2weeks || 0) : sum, 0)
+})
+
+const recentTotalMinutes = computed(() => {
+  return recentStoryMinutes.value + recentSessionMinutes.value
+})
+
+const recentStoryHours = computed(() => Math.round((recentStoryMinutes.value / 60) * 10) / 10)
+const recentSessionHours = computed(() => Math.round((recentSessionMinutes.value / 60) * 10) / 10)
+const recentTotalHours = computed(() => Math.round((recentTotalMinutes.value / 60) * 10) / 10)
+
+const storyPercentage = computed(() => {
+  if (recentTotalMinutes.value === 0) return 0
+  return Math.round((recentStoryMinutes.value / recentTotalMinutes.value) * 100)
+})
+
+const hygieneStatus = computed(() => {
+  if (recentTotalHours.value < 0.5) return 'inactive'
+  
+  // Weekly threshold is 15h of session games (which is 30h in 2 weeks as user mentioned "якщо за тиждень награв 30 годин" or "за 2 тижні")
+  // Let's check if session games hours in 2 weeks >= 25 OR if story percentage is extremely low under high session hours
+  if (storyPercentage.value < 20 && recentSessionHours.value >= 20) {
+    return 'critical'
+  }
+  if (storyPercentage.value < 35) {
+    return 'poor'
+  }
+  if (storyPercentage.value >= 35 && storyPercentage.value < 70) {
+    return 'balanced'
+  }
+  return 'excellent'
+})
+
+const hygieneBadgeClass = computed(() => {
+  switch (hygieneStatus.value) {
+    case 'excellent': return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+    case 'balanced': return 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20'
+    case 'poor': return 'bg-amber-500/10 text-amber-600 dark:text-amber-500 border-amber-500/20'
+    case 'critical': return 'bg-rose-500/10 text-rose-600 dark:text-rose-500 border-rose-500/20 shadow-xs'
+    default: return 'bg-muted text-muted-foreground border-border'
+  }
+})
+
+const adviceBoxClass = computed(() => {
+  switch (hygieneStatus.value) {
+    case 'excellent': return 'bg-emerald-500/5 border-emerald-500/10 text-emerald-800 dark:text-emerald-300'
+    case 'balanced': return 'bg-cyan-500/5 border-cyan-500/10 text-cyan-800 dark:text-cyan-300'
+    case 'poor': return 'bg-amber-500/5 border-amber-500/10 text-amber-800 dark:text-amber-300'
+    case 'critical': return 'bg-rose-500/5 border-rose-500/10 text-rose-800 dark:text-rose-400 shadow-xs'
+    default: return 'bg-muted/10 border-border text-muted-foreground'
+  }
+})
+
 // Theme variables
 const isDark = ref(true)
 let toggleTheme = () => {}
@@ -462,6 +853,18 @@ onMounted(() => {
   apiKey.value = localStorage.getItem('steam_api_key') || ''
   steamId.value = localStorage.getItem('steam_id') || ''
   selectedLang.value = localStorage.getItem('steam_language') || 'ukrainian'
+
+  // Load manual categories from local storage
+  if (import.meta.client) {
+    const savedCats = localStorage.getItem('steam_game_categories')
+    if (savedCats) {
+      try {
+        manualCategories.value = JSON.parse(savedCats)
+      } catch (e) {
+        console.error('Error loading manual categories:', e)
+      }
+    }
+  }
   
   // Fetch games
   fetchGames()
@@ -619,5 +1022,35 @@ const filteredAndSortedGames = computed(() => {
 
 .animate-fade-in {
   animation: fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom Progress Bar Indicator colors targeting scoped slots */
+.progress-excellent :deep([data-slot="progress-indicator"]) {
+  background-color: var(--emerald-500, #10b981) !important;
+}
+.progress-balanced :deep([data-slot="progress-indicator"]) {
+  background-color: var(--cyan-400, #22d3ee) !important;
+}
+.progress-poor :deep([data-slot="progress-indicator"]) {
+  background-color: var(--amber-500, #f59e0b) !important;
+}
+.progress-critical :deep([data-slot="progress-indicator"]) {
+  background-color: var(--rose-500, #f43f5e) !important;
+}
+.progress-inactive :deep([data-slot="progress-indicator"]) {
+  background-color: var(--muted-foreground, #737373) !important;
+}
+
+/* Slide-fade transition for categorizer */
+.slide-fade-enter-active {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.slide-fade-leave-active {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(-12px);
+  opacity: 0;
 }
 </style>
