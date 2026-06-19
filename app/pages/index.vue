@@ -179,6 +179,18 @@
                   <div>
                     <h4 class="font-extrabold text-sm tracking-tight mb-1 uppercase tracking-wide opacity-90">{{ t.tipsTitle }}</h4>
                     <p class="text-sm leading-relaxed font-semibold opacity-95">{{ t.states[hygieneStatus].desc }}</p>
+                    
+                    <!-- Roulette Trigger Button -->
+                    <div v-if="hygieneStatus === 'critical' || hygieneStatus === 'poor'" class="mt-3.5 animate-bounce">
+                      <UiButton 
+                        size="sm" 
+                        class="bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs px-4.5 py-2.5 rounded-xl shadow-lg shadow-rose-900/10 transition-all duration-300 active:scale-95 border-0 flex items-center gap-1.5"
+                        @click="startRoulette"
+                      >
+                        <span>🔮</span>
+                        <span>{{ t.rouletteBtn }}</span>
+                      </UiButton>
+                    </div>
                   </div>
                 </div>
 
@@ -588,6 +600,113 @@
 
       </section>
 
+      <!-- Roulette Modal -->
+      <div 
+        v-if="showRouletteModal" 
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-all duration-300 animate-fade-in"
+      >
+        <div class="relative w-full max-w-md bg-card border border-border/80 rounded-3xl p-6 shadow-2xl flex flex-col items-center text-center overflow-hidden">
+          
+          <!-- Decorative background glow -->
+          <div class="absolute -top-12 -left-12 w-48 h-48 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-12 -right-12 w-48 h-48 rounded-full bg-violet-500/10 blur-3xl pointer-events-none"></div>
+          
+          <!-- Close button -->
+          <button 
+            @click="showRouletteModal = false"
+            class="absolute top-4 right-4 p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-neutral-800 transition-colors cursor-pointer"
+            title="Close"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+
+          <!-- Modal Title -->
+          <h3 class="text-xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400 mb-6 flex items-center gap-2">
+            <span>🎡</span> {{ t.rouletteTitle }}
+          </h3>
+
+          <!-- The Roulette Reel -->
+          <div class="relative h-32 w-full overflow-hidden border border-cyan-500/30 rounded-2xl bg-neutral-950/70 shadow-[inset_0_0_24px_rgba(6,182,212,0.15)] mb-6 flex items-center justify-center">
+            
+            <div 
+              class="absolute left-0 right-0 top-0"
+              :style="reelStyle"
+            >
+              <div 
+                v-for="(game, index) in reelGames" 
+                :key="index"
+                class="h-32 flex flex-col items-center justify-center px-4"
+              >
+                <img 
+                  :src="game.header_img" 
+                  :alt="game.name"
+                  class="w-32 h-15 rounded-lg object-cover border border-border shadow-md"
+                  @error="handleImageError"
+                />
+                <span class="text-sm font-black text-foreground truncate max-w-[260px] mt-2 tracking-tight">{{ game.name }}</span>
+              </div>
+            </div>
+
+            <!-- Viewport Overlay line markers -->
+            <div class="absolute inset-x-0 inset-y-10 border-y border-cyan-500/20 bg-cyan-500/5 pointer-events-none"></div>
+            
+            <!-- Side shadow overlays to make it look 3D cylindrical -->
+            <div class="absolute inset-0 bg-gradient-to-b from-neutral-950/60 via-transparent to-neutral-950/60 pointer-events-none"></div>
+          </div>
+
+          <!-- Spinner Status / Results -->
+          <div class="w-full space-y-5">
+            <div v-if="isSpinning" class="space-y-3">
+              <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest animate-pulse">{{ t.rouletteSpinning }}</p>
+              <div class="flex justify-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-bounce"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:0.2s]"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:0.4s]"></span>
+              </div>
+            </div>
+
+            <div v-else-if="finalSelectedGame" class="animate-fade-in space-y-5">
+              <div class="p-4.5 rounded-2xl bg-cyan-500/5 border border-cyan-500/20 text-sm">
+                <span class="text-2xl mb-2 block select-none">✨</span>
+                <p class="font-bold text-cyan-400 mb-2 leading-snug">{{ t.rouletteLanding }}</p>
+                <h4 class="text-lg font-black text-foreground tracking-tight">{{ finalSelectedGame.name }}</h4>
+                <p class="text-xs text-muted-foreground font-semibold mt-1">
+                  {{ t.roulettePlaytime.replace('{hours}', formatHours(finalSelectedGame.playtime_hours)) }}
+                </p>
+              </div>
+
+              <!-- Action buttons -->
+              <div class="flex flex-col gap-2.5 w-full">
+                <UiButton as-child class="w-full py-5 font-bold shadow-lg shadow-cyan-900/10">
+                  <a :href="'steam://run/' + finalSelectedGame.appid">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 fill-current mr-2" viewBox="0 0 24 24">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span>{{ t.rouletteLaunch }}</span>
+                  </a>
+                </UiButton>
+                
+                <div class="grid grid-cols-2 gap-2.5 w-full">
+                  <UiButton as-child variant="outline" size="sm" class="font-semibold">
+                    <NuxtLink :to="'/game/' + finalSelectedGame.appid">
+                      🏆 {{ t.rouletteAchievements }}
+                    </NuxtLink>
+                  </UiButton>
+                  
+                  <UiButton variant="outline" size="sm" class="font-semibold" @click="startRoulette">
+                    🔄 {{ t.rouletteAgain }}
+                  </UiButton>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </main>
   </div>
 </template>
@@ -664,7 +783,16 @@ const translations: Record<string, any> = {
         title: "Чисте задоволення",
         desc: "Чудова якість ігрового часу! Ти граєш заради емоцій та сюжетів. Справжній відпочинок для душі."
       }
-    }
+    },
+    // Roulette UA
+    rouletteBtn: "Витягни мене з цього болота!",
+    rouletteTitle: "Рятувальний круг",
+    rouletteSpinning: "Обираємо гру...",
+    rouletteLanding: "Забий на сесійки сьогодні! Повернись у цю гру, там на тебе чекають справжні емоції:",
+    roulettePlaytime: "У тебе там {hours} год. Грай атмосферно!",
+    rouletteAgain: "Крутити ще раз",
+    rouletteLaunch: "Запустити гру",
+    rouletteAchievements: "Досягнення"
   },
   english: {
     title: "Gaming Time Quality",
@@ -701,7 +829,16 @@ const translations: Record<string, any> = {
         title: "Pure enjoyment",
         desc: "Excellent gaming quality! You play for emotions and stories. A true rest for your mind."
       }
-    }
+    },
+    // Roulette EN
+    rouletteBtn: "Get Me Out of This Swamp!",
+    rouletteTitle: "Life Saver Roulette",
+    rouletteSpinning: "Choosing a game...",
+    rouletteLanding: "Forget about competitive matches today! Return to this game for some real emotions:",
+    roulettePlaytime: "You have {hours} hrs there. Play atmospheric!",
+    rouletteAgain: "Spin Again",
+    rouletteLaunch: "Launch Game",
+    rouletteAchievements: "Achievements"
   },
   russian: {
     title: "Качество игрового времени",
@@ -738,7 +875,16 @@ const translations: Record<string, any> = {
         title: "Чистое удовольствие",
         desc: "Отличное качество игрового времени! Ты играешь ради эмоций и сюжетов. Настоящий отдых для души."
       }
-    }
+    },
+    // Roulette RU
+    rouletteBtn: "Вытащи меня из этого болота!",
+    rouletteTitle: "Спасательный круг",
+    rouletteSpinning: "Выбираем игру...",
+    rouletteLanding: "Забей на сессионки сегодня! Вернись в эту игру, там тебя ждут настоящие эмоции:",
+    roulettePlaytime: "У тебя там {hours} ч. Играй атмосферно!",
+    rouletteAgain: "Крутить еще раз",
+    rouletteLaunch: "Запустить игру",
+    rouletteAchievements: "Достижения"
   }
 }
 
@@ -830,6 +976,91 @@ const adviceBoxClass = computed(() => {
 
 // Theme variables
 const isDark = ref(true)
+
+// Roulette state variables
+const showRouletteModal = ref(false)
+const isSpinning = ref(false)
+const candidateGames = ref<SteamGame[]>([])
+const reelGames = ref<SteamGame[]>([])
+const reelTranslateY = ref(0)
+const transitionEnabled = ref(false)
+const finalSelectedGame = ref<SteamGame | null>(null)
+
+const reelStyle = computed(() => {
+  return {
+    transform: `translateY(${reelTranslateY.value}px)`,
+    transition: transitionEnabled.value ? 'transform 3.0s cubic-bezier(0.1, 0.85, 0.25, 1)' : 'none'
+  }
+})
+
+function selectRouletteCandidates() {
+  // Filter story games that have playtime between 1h (60m) and 100h (6000m)
+  let candidates = games.value.filter(g => {
+    const category = getGameCategory(g)
+    return category === 'story' && g.playtime_forever >= 60 && g.playtime_forever <= 6000
+  })
+
+  // Fallback 1: Allow any story game with playtime >= 5 mins (started but not finished)
+  if (candidates.length < 3) {
+    candidates = games.value.filter(g => {
+      const category = getGameCategory(g)
+      return category === 'story' && g.playtime_forever >= 5
+    })
+  }
+
+  // Fallback 2: Allow any story game in the library
+  if (candidates.length < 3) {
+    candidates = games.value.filter(g => getGameCategory(g) === 'story')
+  }
+
+  // Fallback 3: Allow any game at all
+  if (candidates.length < 3) {
+    candidates = [...games.value]
+  }
+
+  // Shuffle and grab up to 12 candidates
+  const shuffled = [...candidates].sort(() => 0.5 - Math.random())
+  candidateGames.value = shuffled.slice(0, Math.min(shuffled.length, 12))
+}
+
+function startRoulette() {
+  if (isSpinning.value) return
+  
+  selectRouletteCandidates()
+  if (candidateGames.value.length === 0) return
+
+  // Build the reel tape
+  const pool = candidateGames.value
+  const repeats = 6
+  const list: SteamGame[] = []
+  for (let i = 0; i < repeats; i++) {
+    list.push(...pool)
+  }
+  reelGames.value = list
+
+  // Reset offset and transition
+  transitionEnabled.value = false
+  reelTranslateY.value = 0
+  finalSelectedGame.value = null
+  isSpinning.value = true
+  showRouletteModal.value = true
+
+  // Let browser layout adjust and run the transition scroll
+  setTimeout(() => {
+    transitionEnabled.value = true
+    const randomIndex = Math.floor(Math.random() * pool.length)
+    // Land on the second-to-last repeat block
+    const targetIndex = (repeats - 2) * pool.length + randomIndex
+    
+    // Height of each reel item is 128px (h-32 = 8rem = 128px)
+    reelTranslateY.value = - (targetIndex * 128)
+
+    setTimeout(() => {
+      isSpinning.value = false
+      finalSelectedGame.value = pool[randomIndex]
+    }, 3100)
+  }, 50)
+}
 let toggleTheme = () => {}
 
 // Check if user has saved credentials in localStorage
