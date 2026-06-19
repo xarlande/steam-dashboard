@@ -12,13 +12,13 @@ export default defineNuxtConfig({
     }
   },
   i18n: {
-    defaultLocale: 'uk',
     strategy: 'no_prefix',
     locales: [
-      { code: 'uk', iso: 'uk-UA', file: 'uk.json' },
-      { code: 'en', iso: 'en-US', file: 'en.json' },
-      { code: 'ru', iso: 'ru-RU', file: 'ru.json' }
-    ]
+      { code: 'uk', file: 'uk.json' },
+      { code: 'en', file: 'en.json' },
+      { code: 'ru', file: 'ru.json' }
+    ],
+    defaultLocale: 'uk',
   },
   css: ['./app/assets/css/main.css'],
   vite: {
