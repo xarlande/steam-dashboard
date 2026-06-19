@@ -41,7 +41,13 @@
       "displayLanguage": "Display Language",
       "activeConfig": "Active Configuration:",
       "activeConfigHelp": "Currently loading your library automatically using key & ID from the server-side env variables (.env). Entering keys above will temporarily override the server defaults.",
-      "validationError": "Please provide both a Steam API Key and a Steam 64 ID."
+      "validationError": "Please provide both a Steam API Key and a Steam 64 ID.",
+      "exportSettings": "Export Settings",
+      "importSettings": "Import Settings",
+      "exportSuccess": "Settings exported successfully!",
+      "importSuccess": "Settings imported! Reloading...",
+      "importError": "Invalid settings file. Please check the JSON format.",
+      "importFileError": "Failed to read the file."
     },
     "errorLoading": "Error loading library:",
     "configureSettings": "Configure Settings",

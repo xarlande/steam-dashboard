@@ -385,6 +385,19 @@
                 </div>
               </div>
 
+              <!-- Import/Export Settings Feedback -->
+              <transition name="slide-fade">
+                <div 
+                  v-if="settingsFeedback"
+                  class="p-3 rounded-xl text-xs flex items-center gap-2.5 font-semibold"
+                  :class="settingsFeedbackType === 'success' ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border border-rose-500/20 text-rose-400'"
+                >
+                  <svg v-if="settingsFeedbackType === 'success'" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  {{ settingsFeedback }}
+                </div>
+              </transition>
+
               <div class="flex items-center gap-3 pt-2">
                 <UiButton 
                   type="submit" 
@@ -405,6 +418,48 @@
                 >
                   {{ $t('common.reset') }}
                 </UiButton>
+              </div>
+
+              <!-- Import / Export row -->
+              <div class="flex items-center gap-3 pt-1">
+                <!-- Export Button -->
+                <UiButton
+                  type="button"
+                  variant="outline"
+                  class="flex-1 text-xs"
+                  @click="exportSettings"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  {{ $t('index.credentials.exportSettings') }}
+                </UiButton>
+
+                <!-- Import Button -->
+                <UiButton
+                  type="button"
+                  variant="outline"
+                  class="flex-1 text-xs"
+                  @click="triggerImport"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  {{ $t('index.credentials.importSettings') }}
+                </UiButton>
+
+                <!-- Hidden file input for import -->
+                <input
+                  ref="importFileInput"
+                  type="file"
+                  accept=".json,application/json"
+                  class="hidden"
+                  @change="handleImportFile"
+                />
               </div>
             </form>
           </UiCardContent>
@@ -713,7 +768,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useDark } from '@vueuse/core'
 import type { SteamGame, SteamApiResponse } from '../types'
 
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 
 // State variables
 const apiKey = ref('')
@@ -727,6 +782,19 @@ const searchQuery = ref('')
 const sortBy = ref<'lastPlayed' | 'playtimeDesc' | 'playtimeAsc' | 'name'>('lastPlayed')
 const showSettings = ref(false)
 const loadedFromEnv = ref(false)
+
+// Import/Export feedback state
+const settingsFeedback = ref('')
+const settingsFeedbackType = ref<'success' | 'error'>('success')
+let feedbackTimer: ReturnType<typeof setTimeout> | null = null
+const importFileInput = ref<HTMLInputElement | null>(null)
+
+function showFeedback(message: string, type: 'success' | 'error' = 'success') {
+  if (feedbackTimer) clearTimeout(feedbackTimer)
+  settingsFeedback.value = message
+  settingsFeedbackType.value = type
+  feedbackTimer = setTimeout(() => { settingsFeedback.value = '' }, 3500)
+}
 
 // State variables for Gaming Time Quality Feature
 const manualCategories = ref<Record<number, 'story' | 'session'>>({})
@@ -1042,6 +1110,76 @@ function clearSettings() {
   loadedFromEnv.value = false
   error.value = ''
   showSettings.value = true
+}
+
+function exportSettings() {
+  const settings = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    steam_api_key: localStorage.getItem('steam_api_key') || '',
+    steam_id: localStorage.getItem('steam_id') || '',
+    steam_language: localStorage.getItem('steam_language') || 'uk',
+    steam_game_categories: (() => {
+      try { return JSON.parse(localStorage.getItem('steam_game_categories') || '{}') } catch { return {} }
+    })()
+  }
+  const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `steam-dashboard-settings-${new Date().toISOString().slice(0,10)}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+  showFeedback(t('index.credentials.exportSuccess'), 'success')
+}
+
+function triggerImport() {
+  importFileInput.value?.click()
+}
+
+function handleImportFile(event: Event) {
+  const { t } = useI18n()
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (!file) return
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    try {
+      const raw = e.target?.result as string
+      const data = JSON.parse(raw)
+
+      // Validate the structure
+      if (typeof data !== 'object' || data === null) throw new Error('Not an object')
+
+      if (data.steam_api_key !== undefined) {
+        localStorage.setItem('steam_api_key', String(data.steam_api_key))
+        apiKey.value = String(data.steam_api_key)
+      }
+      if (data.steam_id !== undefined) {
+        localStorage.setItem('steam_id', String(data.steam_id))
+        steamId.value = String(data.steam_id)
+      }
+      if (data.steam_language !== undefined) {
+        localStorage.setItem('steam_language', String(data.steam_language))
+        locale.value = String(data.steam_language)
+      }
+      if (data.steam_game_categories && typeof data.steam_game_categories === 'object') {
+        localStorage.setItem('steam_game_categories', JSON.stringify(data.steam_game_categories))
+        manualCategories.value = data.steam_game_categories
+      }
+
+      showFeedback(t('index.credentials.importSuccess'), 'success')
+      // Reload the library after a short delay
+      setTimeout(() => fetchGames(), 1000)
+    } catch {
+      showFeedback(t('index.credentials.importError'), 'error')
+    }
+  }
+  reader.onerror = () => showFeedback(t('index.credentials.importFileError'), 'error')
+  reader.readAsText(file)
+
+  // Reset input so same file can be re-imported
+  ;(event.target as HTMLInputElement).value = ''
 }
 
 // Format numbers nicely (e.g. 1,234.5)
