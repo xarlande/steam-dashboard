@@ -1,190 +1,186 @@
 <template>
-  <div class="relative min-h-screen bg-[#08090c] bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.08),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.06),transparent_50%)] text-neutral-100 overflow-x-hidden font-sans pb-16 selection:bg-cyan-500/30 selection:text-cyan-200">
+  <div class="relative min-h-screen bg-background text-foreground transition-colors duration-300 overflow-x-hidden font-sans pb-16 selection:bg-cyan-500/30 selection:text-cyan-200 dark:bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.08),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.06),transparent_50%)] bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.04),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.03),transparent_50%)]">
+    
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
       
       <!-- Back Navigation Header -->
-      <header class="flex items-center justify-between pb-6 mb-8 border-b border-neutral-800/60">
-        <NuxtLink 
-          to="/" 
-          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900/60 border border-neutral-800/80 hover:border-neutral-700/85 text-neutral-300 hover:text-white transition-all duration-300 shadow-md hover:shadow-cyan-500/5 text-sm font-semibold group"
+      <header class="flex items-center justify-between pb-6 mb-8 border-b border-border/60">
+        <UiButton 
+          variant="outline"
+          as-child
+          class="group"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-          <span>Back to Library</span>
-        </NuxtLink>
-
-        <!-- Language Selector -->
-        <div class="relative shrink-0">
-          <select 
-            v-model="selectedLang" 
-            @change="handleLangChange"
-            class="appearance-none px-4 py-2.5 pr-9 rounded-xl bg-neutral-900/60 border border-neutral-800/80 text-neutral-300 text-sm font-semibold transition-all duration-300 hover:border-neutral-700/80 focus:outline-none cursor-pointer hover:text-white"
-          >
-            <option value="ukrainian">UA</option>
-            <option value="english">EN</option>
-            <option value="russian">RU</option>
-          </select>
-          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-500">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          <NuxtLink to="/" class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
-          </div>
+            <span>Back to Library</span>
+          </NuxtLink>
+        </UiButton>
+
+        <div class="flex items-center gap-3">
+          <!-- Language Selector dropdown (shadcn select) -->
+          <UiSelect v-model="selectedLang" @update:modelValue="handleLangChange">
+            <UiSelectTrigger >
+              <UiSelectValue placeholder="Language" />
+            </UiSelectTrigger>
+            <UiSelectContent >
+              <UiSelectItem value="ukrainian">UA</UiSelectItem>
+              <UiSelectItem value="english">EN</UiSelectItem>
+              <UiSelectItem value="russian">RU</UiSelectItem>
+            </UiSelectContent>
+          </UiSelect>
+
+          <!-- Theme Toggle Button -->
+          <UiButton
+            variant="outline"
+            size="icon"
+            @click="toggleTheme"
+            title="Toggle theme"
+          >
+            <svg v-if="isDark" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </UiButton>
         </div>
       </header>
 
       <!-- Loading State (Hero Details) -->
-      <section v-if="isLoading" class="p-6 sm:p-8 rounded-2xl bg-neutral-900/30 border border-neutral-800/60 overflow-hidden mb-8 animate-pulse">
-        <div class="flex flex-col md:flex-row gap-6 items-center">
-          <div class="w-full md:w-[280px] aspect-[460/215] bg-neutral-800/50 rounded-xl"></div>
-          <div class="flex-1 space-y-4 w-full">
-            <div class="h-8 bg-neutral-800/60 rounded-md w-1/2"></div>
-            <div class="h-4 bg-neutral-800/40 rounded-md w-1/4"></div>
-            <div class="h-4 bg-neutral-800/40 rounded-md w-3/4 pt-4"></div>
+      <section v-if="isLoading" class="mb-8">
+        <UiCard class="bg-neutral-900 border border-neutral-800/60 p-6 sm:p-8 animate-pulse">
+          <div class="flex flex-col md:flex-row gap-6 items-center">
+            <UiSkeleton class="w-full md:w-[220px] aspect-[460/215] rounded-xl" />
+            <div class="flex-1 space-y-4 w-full">
+              <UiSkeleton class="h-8 w-1/2 rounded-md" />
+              <UiSkeleton class="h-4 w-1/4 rounded-md" />
+              <UiSkeleton class="h-4 w-3/4 rounded-md pt-4" />
+            </div>
           </div>
-        </div>
+        </UiCard>
       </section>
 
       <!-- Loaded State: Hero Game Info -->
-      <section v-else-if="!error" class="rounded-2xl bg-neutral-900 border border-neutral-800 p-6 sm:p-8 mb-8 animate-fade-in">
-        <div class="flex flex-col md:flex-row gap-6 md:items-center justify-between">
-          
-          <!-- Banner & Name -->
-          <div class="flex flex-col sm:flex-row gap-5 items-center text-center sm:text-left">
-            <div class="relative w-[220px] aspect-[460/215] rounded-xl overflow-hidden bg-neutral-950 shadow-lg border border-neutral-800 shrink-0">
-              <img 
-                :src="headerImgUrl" 
-                :alt="gameName"
-                class="w-full h-full object-cover"
-                @error="handleImageError"
-              />
-            </div>
-            
-            <div class="space-y-2">
-              <span class="inline-flex px-2.5 py-0.5 rounded-md bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-xs font-bold uppercase tracking-wider">
-                App ID: {{ appid }}
-              </span>
-              <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
-                {{ gameName }}
-              </h2>
-              <div class="flex flex-wrap justify-center sm:justify-start items-center gap-4 pt-1 text-sm text-neutral-400 font-medium">
-                <div class="flex items-center gap-1.5">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-neutral-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                  <span>Completion progress: <span class="text-neutral-200 font-semibold">{{ unlockedCount }} / {{ totalCount }}</span></span>
+      <section v-else-if="!error" class="mb-8 animate-fade-in">
+        <UiCard>
+          <UiCardContent class="flex flex-col md:flex-row gap-6 md:items-center justify-between">
+            <!-- Banner & Name -->
+            <div class="flex flex-col sm:flex-row gap-5 items-center text-center sm:text-left">
+              <div class="relative w-[220px] aspect-[460/215] rounded-xl overflow-hidden shadow-md border border-neutral-850 shrink-0">
+                <img 
+                  :src="headerImgUrl" 
+                  :alt="gameName"
+                  class="w-full h-full object-cover"
+                  @error="handleImageError"
+                />
+              </div>
+              
+              <div class="space-y-2">
+                <UiBadge variant="secondary">
+                  App ID: {{ appid }}
+                </UiBadge>
+                <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground leading-tight">
+                  {{ gameName }}
+                </h2>
+                <div class="flex flex-wrap justify-center sm:justify-start items-center gap-4 pt-1 text-sm text-muted-foreground font-medium">
+                  <div class="flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>Completion progress: <span class="text-foreground font-semibold">{{ unlockedCount }} / {{ totalCount }}</span></span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Progress Ring/Big Metric -->
-          <div class="flex flex-col items-center justify-center shrink-0 p-4 rounded-xl bg-neutral-950/40 border border-neutral-800/60 min-w-[140px]">
-            <span class="text-[10px] text-neutral-500 font-bold uppercase tracking-widest">Unlocked</span>
-            <span class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-indigo-400 mt-1 tracking-tight">
-              {{ unlockedPercent }}%
-            </span>
-            <div class="w-full bg-neutral-800/80 rounded-full h-1.5 mt-3 overflow-hidden">
-              <div 
-                class="bg-gradient-to-r from-cyan-400 to-indigo-500 h-1.5 rounded-full transition-all duration-1000 shadow-md shadow-cyan-400/30"
-                :style="{ width: unlockedPercent + '%' }"
-              ></div>
+            <!-- Achievements Progress (shadcn Progress) -->
+            <div class="flex flex-col items-center justify-center shrink-0 p-4 rounded-xl bg-muted/40 border border-border min-w-[150px]">
+              <span class="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Unlocked</span>
+              <span class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-indigo-400 mt-1 tracking-tight">
+                {{ unlockedPercent }}%
+              </span>
+              <UiProgress :model-value="unlockedPercent" class="w-full mt-3" />
             </div>
-          </div>
-
-        </div>
+          </UiCardContent>
+        </UiCard>
       </section>
 
       <!-- Main Content Block -->
       <section v-if="!isLoading && !error" class="space-y-6 animate-fade-in">
         
-        <!-- Filter Controls -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-neutral-900 border border-neutral-800">
+        <!-- Filter Controls (Search + Tabs) -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-card border border-border">
           
           <!-- Search in Achievements -->
           <div class="relative flex-1 max-w-md">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-neutral-500">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground z-10">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
             </span>
-            <input 
+            <UiInput 
               type="text" 
               v-model="searchQuery"
               placeholder="Search achievements..." 
-              class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-950/60 border border-neutral-800/80 text-neutral-200 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm"
+              class="w-full pl-9 pr-8"
             />
-            <button 
+            <UiButton 
               v-if="searchQuery" 
+              variant="ghost"
+              size="icon"
               @click="searchQuery = ''"
-              class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-neutral-400 hover:text-white"
+              class="absolute right-0 top-0 bottom-0"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
-            </button>
+            </UiButton>
           </div>
 
-          <!-- Tabs: All, Unlocked, Locked -->
+          <!-- Tabs: All, Unlocked, Locked (shadcn tabs) -->
           <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
             <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider mr-2 shrink-0">Filter:</span>
-            
-            <button 
-              @click="filterBy = 'all'" 
-              class="px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-300 border"
-              :class="filterBy === 'all' 
-                ? 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30' 
-                : 'bg-neutral-950/40 text-neutral-400 border-neutral-800/40 hover:border-neutral-700/60 hover:text-neutral-200'"
-            >
-              All ({{ totalCount }})
-            </button>
-
-            <button 
-              @click="filterBy = 'unlocked'" 
-              class="px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-300 border"
-              :class="filterBy === 'unlocked' 
-                ? 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30' 
-                : 'bg-neutral-950/40 text-neutral-400 border-neutral-800/40 hover:border-neutral-700/60 hover:text-neutral-200'"
-            >
-              Unlocked ({{ unlockedCount }})
-            </button>
-
-            <button 
-              @click="filterBy = 'locked'" 
-              class="px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-300 border"
-              :class="filterBy === 'locked' 
-                ? 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30' 
-                : 'bg-neutral-950/40 text-neutral-400 border-neutral-800/40 hover:border-neutral-700/60 hover:text-neutral-200'"
-            >
-              Locked ({{ totalCount - unlockedCount }})
-            </button>
+            <UiTabs v-model="filterBy" class="w-auto">
+              <UiTabsList>
+                <UiTabsTrigger value="all">All ({{ totalCount }})</UiTabsTrigger>
+                <UiTabsTrigger value="unlocked">Unlocked ({{ unlockedCount }})</UiTabsTrigger>
+                <UiTabsTrigger value="locked">Locked ({{ totalCount - unlockedCount }})</UiTabsTrigger>
+              </UiTabsList>
+            </UiTabs>
           </div>
         </div>
 
-        <!-- Skeleton Grid while loading list but hero is done (if any async parts) -->
+        <!-- Skeleton Grid while loading -->
         <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div v-for="i in 6" :key="i" class="h-24 rounded-2xl bg-neutral-900/30 border border-neutral-850 p-4 animate-pulse"></div>
+          <UiCard v-for="i in 6" :key="i" class="p-4 flex gap-4 items-center">
+            <UiSkeleton class="w-14 h-14 rounded-xl shrink-0" />
+            <div class="flex-1 space-y-2">
+              <UiSkeleton class="h-4.5 w-1/3 rounded-md" />
+              <UiSkeleton class="h-3 w-3/4 rounded-md" />
+            </div>
+          </UiCard>
         </div>
 
         <!-- Achievements Grid -->
         <div v-else-if="filteredAchievements.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
           
-          <!-- Achievement Card -->
-          <div 
+          <!-- Achievement Card (shadcn Card) -->
+          <UiCard 
             v-for="ach in filteredAchievements" 
             :key="ach.apiname"
-            class="group flex gap-4 p-4 rounded-2xl border ach-card hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/2"
-            :class="ach.achieved 
-              ? 'bg-neutral-900 border-neutral-800 hover:border-cyan-500/35' 
-              : 'bg-neutral-950/20 border-neutral-900/60 opacity-60 hover:opacity-90 hover:border-neutral-700'"
+            class="group flex gap-4 ach-card hover:-translate-y-0.5 p-4"
+            :class="ach.achieved ? '' : 'opacity-60 transition-opacity hover:opacity-90'"
           >
             <!-- Icon -->
-            <div class="relative w-14 h-14 rounded-xl overflow-hidden bg-neutral-900 border border-neutral-800 shrink-0">
+            <div class="relative w-14 h-14 rounded-xl overflow-hidden bg-muted border border-border shrink-0">
               <img 
                 :src="ach.achieved ? ach.icon : ach.icongray" 
                 :alt="ach.name"
@@ -192,78 +188,78 @@
                 class="w-full h-full object-cover ach-card-img group-hover:scale-[1.04]"
                 @error="handleIconError"
               />
-              <!-- Unlocked Border Glow -->
-              <div v-if="ach.achieved" class="absolute inset-0 border border-cyan-400/20 rounded-xl pointer-events-none"></div>
             </div>
 
             <!-- Text details -->
-            <div class="flex flex-col justify-center min-w-0 flex-1">
+            <div class="flex flex-col justify-center min-w-0 flex-1 pr-2">
               <div class="flex items-start justify-between gap-2">
-                <h4 class="font-bold text-sm sm:text-base text-neutral-100 group-hover:text-cyan-300 transition-colors truncate">
+                <h4 class="font-bold text-sm sm:text-base group-hover:text-cyan-500 dark:group-hover:text-cyan-300 transition-colors truncate">
                   {{ ach.name }}
                 </h4>
                 
-                <!-- Achieved badge -->
-                <span 
+                <!-- Unlocked Badge (shadcn badge) -->
+                <UiBadge 
                   v-if="ach.achieved" 
-                  class="shrink-0 px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 text-[10px] font-bold tracking-wider uppercase border border-cyan-500/20"
                 >
                   Unlocked
-                </span>
+                </UiBadge>
               </div>
               
               <!-- Description -->
-              <p class="text-xs text-neutral-400 line-clamp-2 mt-1 leading-normal pr-4">
+              <p class="text-xs text-muted-foreground line-clamp-2 mt-1 leading-normal pr-4">
                 {{ ach.description || 'No description provided.' }}
               </p>
 
               <!-- Unlock relative time -->
-              <p v-if="ach.achieved" class="text-[10px] text-neutral-500 mt-1.5 font-medium flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-neutral-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <p v-if="ach.achieved" class="text-[10px] text-muted-foreground mt-1.5 font-medium flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-muted-foreground/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
                 <span>Unlocked {{ ach.unlocktime_relative }}</span>
               </p>
             </div>
-          </div>
-
+          </UiCard>
         </div>
 
         <!-- Empty Grid/Search -->
-        <div v-else class="text-center py-16 px-4 rounded-2xl bg-neutral-900/20 border border-neutral-800/60 max-w-md mx-auto">
-          <div class="w-16 h-16 rounded-2xl bg-neutral-900/60 border border-neutral-800 flex items-center justify-center mx-auto text-neutral-500 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="12"></line>
-              <line x1="12" y1="16" x2="12.01" y2="16"></line>
-            </svg>
-          </div>
-          <h3 class="font-bold text-base text-neutral-200">No achievements found</h3>
-          <p class="text-xs text-neutral-500 mt-1 max-w-xs mx-auto">
-            {{ searchQuery ? 'Try clearing your search term.' : 'This game doesn\'t seem to have achievements matching the selected filter.' }}
-          </p>
-        </div>
+        <UiCard v-else class="max-w-md mx-auto text-center">
+          <UiCardContent>
+            <div class="w-16 h-16 rounded-2xl bg-card border border-border flex items-center justify-center mx-auto text-muted-foreground mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <h3 class="font-bold text-base">No achievements found</h3>
+            <p class="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
+              {{ searchQuery ? 'Try clearing your search term.' : 'This game doesn\'t seem to have achievements matching the selected filter.' }}
+            </p>
+          </UiCardContent>
+        </UiCard>
 
       </section>
 
       <!-- Global Error Alert / Back Action -->
       <section v-if="error" class="max-w-2xl mx-auto py-8">
-        <div class="p-6 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-200 text-sm flex items-start gap-4 shadow-lg shadow-red-500/2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-400 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <div class="p-6 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive-foreground text-sm flex items-start gap-4 shadow-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-destructive shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
             <line x1="12" y1="8" x2="12" y2="12"></line>
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
           </svg>
           <div class="flex-1">
-            <h3 class="font-extrabold text-base text-red-400 mb-1">Failed to load achievements</h3>
-            <p class="leading-relaxed text-neutral-300">{{ error }}</p>
+            <h3 class="font-extrabold text-base text-destructive mb-1">Failed to load achievements</h3>
+            <p class="leading-relaxed">{{ error }}</p>
             <div class="mt-4 flex items-center gap-3">
-              <NuxtLink to="/" class="px-4 py-2 rounded-xl bg-neutral-800 text-xs font-semibold hover:bg-neutral-700 text-white transition-all duration-300">
-                &larr; Return to Library
-              </NuxtLink>
-              <button @click="loadAchievements" class="px-4 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-300 text-xs font-semibold transition-all duration-300">
+              <UiButton variant="outline" as-child>
+                <NuxtLink to="/">
+                  &larr; Return to Library
+                </NuxtLink>
+              </UiButton>
+              <UiButton variant="outline" @click="loadAchievements">
                 Retry
-              </button>
+              </UiButton>
             </div>
           </div>
         </div>
@@ -276,6 +272,7 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useDark } from '@vueuse/core'
 import type { SteamAchievement, GameAchievementsResponse } from '../../types'
 
 const route = useRoute()
@@ -295,12 +292,24 @@ const searchQuery = ref('')
 const filterBy = ref<'all' | 'unlocked' | 'locked'>('all')
 const selectedLang = ref('ukrainian')
 
+// Theme variables
+const isDark = ref(true)
+let toggleTheme = () => {}
+
 // Compute standard Game capsule header
 const headerImgUrl = computed(() => {
   return `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${appid}/header.jpg`
 })
 
 onMounted(() => {
+  // Bind dark mode
+  const darkState = useDark()
+  isDark.value = darkState.value
+  toggleTheme = () => {
+    darkState.value = !darkState.value
+    isDark.value = darkState.value
+  }
+
   selectedLang.value = localStorage.getItem('steam_language') || 'ukrainian'
   loadAchievements()
 })

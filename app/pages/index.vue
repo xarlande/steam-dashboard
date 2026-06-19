@@ -1,13 +1,14 @@
 <template>
-  <div class="relative min-h-screen bg-[#08090c] bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.08),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.06),transparent_50%)] text-neutral-100 overflow-x-hidden font-sans pb-16 selection:bg-cyan-500/30 selection:text-cyan-200">
+  <div class="relative min-h-screen bg-background text-foreground transition-colors duration-300 overflow-x-hidden font-sans pb-16 selection:bg-cyan-500/30 selection:text-cyan-200 dark:bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.08),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.06),transparent_50%)] bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.04),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.03),transparent_50%)]">
+    
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
       
       <!-- Top Navigation & Header -->
-      <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-8 mb-8 border-b border-neutral-800/60">
+      <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-8 mb-8 border-b border-border/60">
         <div class="flex items-center gap-3">
-          <div class="p-2.5 rounded-xl bg-neutral-900 border border-neutral-800 shadow-md">
-            <!-- Custom Gamepad SVG Icon -->
+          <div class="p-2.5 rounded-xl bg-card border border-border shadow-xs">
+            <!-- Gamepad SVG Icon -->
             <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="6" y1="12" x2="10" y2="12"></line>
               <line x1="8" y1="10" x2="8" y2="14"></line>
@@ -17,319 +18,303 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-neutral-50 via-neutral-100 to-neutral-400">
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r dark:from-neutral-50 dark:via-neutral-100 dark:to-neutral-400 from-neutral-900 via-neutral-800 to-neutral-600">
               Steam Library Space
             </h1>
-            <p class="text-xs sm:text-sm text-neutral-400 font-medium">Your personalized gameplay analytics dashboard</p>
+            <p class="text-xs sm:text-sm text-muted-foreground font-medium">Your personalized gameplay analytics dashboard</p>
           </div>
         </div>
 
         <div class="flex items-center gap-3 self-end sm:self-auto">
-          <!-- Language Selector -->
-          <div class="relative shrink-0">
-            <select 
-              v-model="selectedLang" 
-              @change="handleLangChange"
-              class="appearance-none px-4 py-2.5 pr-9 rounded-xl bg-neutral-900/60 border border-neutral-800/80 text-neutral-300 text-sm font-semibold transition-all duration-300 hover:border-neutral-700/80 focus:outline-none cursor-pointer hover:text-white"
-            >
-              <option value="ukrainian">UA</option>
-              <option value="english">EN</option>
-              <option value="russian">RU</option>
-            </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-500">
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
-          </div>
+          <!-- Language Selector dropdown (shadcn select) -->
+          <UiSelect v-model="selectedLang" @update:modelValue="handleLangChange">
+            <UiSelectTrigger >
+              <UiSelectValue placeholder="Language" />
+            </UiSelectTrigger>
+            <UiSelectContent >
+              <UiSelectItem value="ukrainian">UA</UiSelectItem>
+              <UiSelectItem value="english">EN</UiSelectItem>
+              <UiSelectItem value="russian">RU</UiSelectItem>
+            </UiSelectContent>
+          </UiSelect>
 
-          <!-- Refresh Button (Only if config exists) -->
-          <button 
+          <!-- Theme Toggle Button -->
+          <UiButton
+            variant="outline"
+            size="icon"
+            @click="toggleTheme"
+            title="Toggle theme"
+          >
+            <svg v-if="isDark" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </UiButton>
+
+          <!-- Refresh Button -->
+          <UiButton 
             v-if="games.length > 0"
+            variant="outline"
+            size="icon"
             @click="fetchGames" 
             :disabled="isLoading"
-            class="flex items-center justify-center p-2.5 rounded-xl bg-neutral-900/60 border border-neutral-800/80 hover:border-neutral-700/80 text-neutral-300 hover:text-white transition-all duration-300 disabled:opacity-50 group hover:shadow-lg hover:shadow-cyan-500/5"
+            class="group"
             title="Refresh library"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-700 group-hover:rotate-180" :class="{'animate-spin': isLoading}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-75 group-hover:rotate-180" :class="{'animate-spin': isLoading}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
             </svg>
-          </button>
+          </UiButton>
 
-          <!-- Settings Button -->
-          <button 
+          <!-- Settings Config Button -->
+          <UiButton 
+            variant="outline"
             @click="showSettings = !showSettings"
-            class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 border"
-            :class="showSettings 
-              ? 'bg-neutral-800 text-white border-neutral-700' 
-              : 'bg-neutral-900/60 text-neutral-300 border-neutral-800/80 hover:border-neutral-700/80 hover:text-white hover:shadow-lg hover:shadow-cyan-500/5'"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"></circle>
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
             <span>Config</span>
-          </button>
+          </UiButton>
         </div>
       </header>
 
       <!-- Global Stats Summary (Show only when games loaded) -->
       <section v-if="games.length > 0 && !showSettings" class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8 animate-fade-in">
         <!-- Stat Card 1: Total Games -->
-        <div class="relative overflow-hidden rounded-2xl bg-neutral-900 border border-neutral-800 p-5">
-          <div class="absolute -right-4 -bottom-4 opacity-10 text-cyan-400">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="6" width="20" h="12" rx="3"></rect>
-            </svg>
-          </div>
-          <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Total Games Played</p>
-          <p class="text-3xl font-extrabold text-neutral-50 mt-2 tracking-tight">{{ totalCount }}</p>
-          <p class="text-xs text-neutral-500 mt-1">Games with recorded playtime</p>
-        </div>
+        <UiCard class="relative overflow-hidden">
+          <UiCardContent>
+            <div class="absolute -right-4 -bottom-4 opacity-10 text-cyan-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="6" width="20" h="12" rx="3"></rect>
+              </svg>
+            </div>
+            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Games Played</p>
+            <p class="text-3xl font-extrabold mt-2 tracking-tight">{{ totalCount }}</p>
+            <p class="text-xs text-muted-foreground/85 mt-1">Games with recorded playtime</p>
+          </UiCardContent>
+        </UiCard>
 
         <!-- Stat Card 2: Total Time -->
-        <div class="relative overflow-hidden rounded-2xl bg-neutral-900 border border-neutral-800 p-5">
-          <div class="absolute -right-4 -bottom-4 opacity-10 text-violet-400">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-          </div>
-          <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Total Playtime</p>
-          <p class="text-3xl font-extrabold text-neutral-50 mt-2 tracking-tight">{{ formatHours(totalHours) }} <span class="text-sm font-semibold text-neutral-400">hrs</span></p>
-          <p class="text-xs text-neutral-500 mt-1">Combined time in game space</p>
-        </div>
+        <UiCard class="relative overflow-hidden">
+          <UiCardContent>
+            <div class="absolute -right-4 -bottom-4 opacity-10 text-violet-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
+            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Playtime</p>
+            <p class="text-3xl font-extrabold mt-2 tracking-tight">{{ formatHours(totalHours) }} <span class="text-sm font-semibold text-muted-foreground">hrs</span></p>
+            <p class="text-xs text-muted-foreground/85 mt-1">Combined time in game space</p>
+          </UiCardContent>
+        </UiCard>
 
         <!-- Stat Card 3: Most Played -->
-        <div class="relative overflow-hidden rounded-2xl bg-neutral-900 border border-neutral-800 p-5">
-          <div class="absolute -right-4 -bottom-4 opacity-10 text-indigo-400">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-            </svg>
-          </div>
-          <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Most Played Game</p>
-          <p class="text-xl font-extrabold text-neutral-50 mt-2 truncate pr-16 tracking-tight">{{ mostPlayedGame?.name || 'None' }}</p>
-          <p class="text-xs text-neutral-400 mt-1 font-semibold text-indigo-400">{{ mostPlayedGame ? formatHours(mostPlayedGame.playtime_hours) + ' hrs' : '0 hrs' }}</p>
-        </div>
+        <UiCard class="relative overflow-hidden">
+          <UiCardContent>
+            <div class="absolute -right-4 -bottom-4 opacity-10 text-indigo-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            </div>
+            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Most Played Game</p>
+            <p class="text-xl font-extrabold mt-2 truncate pr-16 tracking-tight">{{ mostPlayedGame?.name || 'None' }}</p>
+            <p class="text-xs mt-1 font-semibold text-indigo-400">{{ mostPlayedGame ? formatHours(mostPlayedGame.playtime_hours) + ' hrs' : '0 hrs' }}</p>
+          </UiCardContent>
+        </UiCard>
       </section>
 
       <!-- Settings Configuration Panel -->
       <section v-if="showSettings" class="max-w-2xl mx-auto mb-8 animate-fade-in">
-        <div class="rounded-2xl bg-neutral-900 border border-neutral-800 shadow-xl p-6 sm:p-8">
-          <div class="flex items-center gap-3 pb-4 mb-6 border-b border-neutral-800/80">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            </svg>
-            <div>
-              <h2 class="text-lg font-bold text-neutral-50">Steam API Credentials</h2>
-              <p class="text-xs text-neutral-400">Credentials are stored locally in your browser and used only to query Steam.</p>
+        <UiCard>
+          <UiCardHeader>
+            <div class="flex items-center gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+              <div>
+                <UiCardTitle class="text-lg font-bold">Steam API Credentials</UiCardTitle>
+                <UiCardDescription class="text-xs text-neutral-400 mt-0.5">Credentials are stored locally in your browser and used only to query Steam.</UiCardDescription>
+              </div>
             </div>
-          </div>
+          </UiCardHeader>
 
-          <form @submit.prevent="saveSettings" class="space-y-5">
-            <div>
-              <label for="apiKey" class="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">Steam Web API Key</label>
-              <div class="relative rounded-xl shadow-sm">
-                <input 
+          <UiCardContent>
+            <form @submit.prevent="saveSettings" class="space-y-5">
+              <div>
+                <label for="apiKey" class="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Steam Web API Key</label>
+                <UiInput 
                   type="password" 
                   id="apiKey" 
                   v-model="apiKey"
                   placeholder="Paste your Steam Web API Key" 
-                  class="w-full px-4 py-3 rounded-xl bg-neutral-950/80 border border-neutral-800 text-neutral-200 placeholder-neutral-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500 transition-all text-sm font-mono"
                 />
+                <p class="mt-1.5 text-xs text-neutral-500 leading-normal">
+                  You can obtain a key for free from the official page: 
+                  <a href="https://steamcommunity.com/dev/apikey" target="_blank" class="text-cyan-400 hover:underline transition-colors font-medium">Steam Dev API Key</a>.
+                </p>
               </div>
-              <p class="mt-1.5 text-xs text-neutral-500 leading-normal">
-                You can obtain a key for free from the official page: 
-                <a href="https://steamcommunity.com/dev/apikey" target="_blank" class="text-cyan-400 hover:underline transition-colors font-medium">Steam Dev API Key</a>.
-              </p>
-            </div>
 
-            <div>
-              <label for="steamId" class="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">Steam 64-bit ID</label>
-              <input 
-                type="text" 
-                id="steamId" 
-                v-model="steamId"
-                placeholder="Example: 76561198034567890" 
-                class="w-full px-4 py-3 rounded-xl bg-neutral-950/80 border border-neutral-800 text-neutral-200 placeholder-neutral-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500 transition-all text-sm font-mono"
-              />
-              <p class="mt-1.5 text-xs text-neutral-500 leading-normal">
-                This is a 17-digit numeric code. You can find yours by searching your username at websites like 
-                <a href="https://steamid.io" target="_blank" class="text-cyan-400 hover:underline transition-colors font-medium">steamid.io</a> 
-                or checking your Steam Profile URL.
-              </p>
-            </div>
-
-            <div>
-              <label for="steamLanguage" class="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-2">Display Language / Мова відображення</label>
-              <select 
-                id="steamLanguage" 
-                v-model="selectedLang"
-                class="w-full px-4 py-3 rounded-xl bg-neutral-950/80 border border-neutral-800 text-neutral-200 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500 transition-all text-sm font-medium"
-              >
-                <option value="ukrainian">Українська (Ukrainian)</option>
-                <option value="english">English</option>
-                <option value="russian">Русский (Russian)</option>
-              </select>
-              <p class="mt-1.5 text-xs text-neutral-500 leading-normal">
-                Steam will return achievements and names in this language if they are supported by the game developer.
-              </p>
-            </div>
-
-            <!-- Server Config Info -->
-            <div v-if="loadedFromEnv" class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-start gap-2.5">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <path d="m9 12 2 2 4-4"></path>
-              </svg>
               <div>
-                <span class="font-bold">Active Configuration:</span> Currently loading your library automatically using key & ID from the server-side env variables (`.env`). Entering keys below will temporarily override the server defaults.
+                <label for="steamId" class="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Steam 64-bit ID</label>
+                <UiInput 
+                  type="text" 
+                  id="steamId" 
+                  v-model="steamId"
+                  placeholder="Example: 76561198034567890" 
+                />
+                <p class="mt-1.5 text-xs text-neutral-500 leading-normal">
+                  This is a 17-digit numeric code. You can find yours by searching your username at websites like 
+                  <a href="https://steamid.io" target="_blank" class="text-cyan-400 hover:underline transition-colors font-medium">steamid.io</a> 
+                  or checking your Steam Profile URL.
+                </p>
               </div>
-            </div>
 
-            <div class="flex items-center gap-3 pt-2">
-              <button 
-                type="submit" 
-                :disabled="isLoading"
-                class="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-semibold text-sm shadow-xl shadow-cyan-500/10 hover:shadow-cyan-400/20 hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 disabled:opacity-50"
-              >
-                <svg v-if="isLoading" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+              <!-- Display Language inside Config Modal -->
+              <div>
+                <label for="steamLanguage" class="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Display Language / Мова відображення</label>
+                <UiSelect v-model="selectedLang" @update:modelValue="handleLangChange">
+                  <UiSelectTrigger>
+                    <UiSelectValue placeholder="Choose Language" />
+                  </UiSelectTrigger>
+                  <UiSelectContent>
+                    <UiSelectItem value="ukrainian">Українська (Ukrainian)</UiSelectItem>
+                    <UiSelectItem value="english">English</UiSelectItem>
+                    <UiSelectItem value="russian">Русский (Russian)</UiSelectItem>
+                  </UiSelectContent>
+                </UiSelect>
+              </div>
+
+              <!-- Server Config Info -->
+              <div v-if="loadedFromEnv" class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-start gap-2.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="m9 12 2 2 4-4"></path>
                 </svg>
-                <span>{{ isLoading ? 'Loading...' : 'Save & Load Library' }}</span>
-              </button>
-              
-              <button 
-                v-if="hasSavedCredentials"
-                type="button" 
-                @click="clearSettings"
-                class="px-4 py-3 rounded-xl border border-red-500/20 hover:border-red-500/40 text-red-400 hover:bg-red-500/10 font-semibold text-sm transition-all duration-300"
-              >
-                Reset
-              </button>
-            </div>
-          </form>
-        </div>
+                <div>
+                  <span class="font-bold">Active Configuration:</span> Currently loading your library automatically using key & ID from the server-side env variables (`.env`). Entering keys above will temporarily override the server defaults.
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3 pt-2">
+                <UiButton 
+                  type="submit" 
+                  :disabled="isLoading"
+                  class="flex-1"
+                >
+                  <svg v-if="isLoading" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                  </svg>
+                  <span>{{ isLoading ? 'Loading...' : 'Save & Load Library' }}</span>
+                </UiButton>
+                
+                <UiButton 
+                  v-if="hasSavedCredentials"
+                  type="button" 
+                  variant="destructive"
+                  @click="clearSettings"
+                >
+                  Reset
+                </UiButton>
+              </div>
+            </form>
+          </UiCardContent>
+        </UiCard>
       </section>
 
       <!-- Main Controls and Grid -->
       <section v-if="!showSettings" class="space-y-6 animate-fade-in">
         
         <!-- Controls: Search & Sort Tabs -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-neutral-900 border border-neutral-800">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-card border border-border">
           
           <!-- Search Bar -->
           <div class="relative flex-1 max-w-md">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-neutral-500">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground z-10">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
             </span>
-            <input 
+            <UiInput 
               type="text" 
               v-model="searchQuery"
               placeholder="Search games..." 
-              class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-950/60 border border-neutral-800/80 text-neutral-200 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm"
+              class="w-full pl-9 pr-8"
             />
-            <button 
+            <UiButton 
               v-if="searchQuery" 
+              variant="ghost"
+              size="icon"
               @click="searchQuery = ''"
-              class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-neutral-400 hover:text-white"
+              class="absolute right-0 top-0 bottom-0"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
-            </button>
+            </UiButton>
           </div>
 
-          <!-- Sorting Selector -->
+          <!-- Sorting Tabs Selector (shadcn tabs) -->
           <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
-            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider mr-2 shrink-0">Sort By:</span>
-            
-            <button 
-              @click="sortBy = 'lastPlayed'" 
-              class="px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-300"
-              :class="sortBy === 'lastPlayed' 
-                ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' 
-                : 'bg-neutral-950/40 text-neutral-400 border border-neutral-800/40 hover:border-neutral-700/60 hover:text-neutral-200'"
-            >
-              Last Played
-            </button>
-
-            <button 
-              @click="sortBy = 'playtimeDesc'" 
-              class="px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-300"
-              :class="sortBy === 'playtimeDesc' 
-                ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' 
-                : 'bg-neutral-950/40 text-neutral-400 border border-neutral-800/40 hover:border-neutral-700/60 hover:text-neutral-200'"
-            >
-              Most Played
-            </button>
-
-            <button 
-              @click="sortBy = 'playtimeAsc'" 
-              class="px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-300"
-              :class="sortBy === 'playtimeAsc' 
-                ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' 
-                : 'bg-neutral-950/40 text-neutral-400 border border-neutral-800/40 hover:border-neutral-700/60 hover:text-neutral-200'"
-            >
-              Least Played
-            </button>
-
-            <button 
-              @click="sortBy = 'name'" 
-              class="px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-300"
-              :class="sortBy === 'name' 
-                ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' 
-                : 'bg-neutral-950/40 text-neutral-400 border border-neutral-800/40 hover:border-neutral-700/60 hover:text-neutral-200'"
-            >
-              Name A-Z
-            </button>
+            <span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-2 shrink-0">Sort By:</span>
+            <UiTabs v-model="sortBy" class="w-auto">
+              <UiTabsList>
+                <UiTabsTrigger value="lastPlayed">Last Played</UiTabsTrigger>
+                <UiTabsTrigger value="playtimeDesc">Most Played</UiTabsTrigger>
+                <UiTabsTrigger value="playtimeAsc">Least Played</UiTabsTrigger>
+                <UiTabsTrigger value="name">Name A-Z</UiTabsTrigger>
+              </UiTabsList>
+            </UiTabs>
           </div>
         </div>
 
         <!-- Error Alert -->
-        <div v-if="error" class="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-200 text-sm flex items-start gap-3 shadow-lg shadow-red-500/2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-400 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <div v-if="error" class="p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive-foreground text-sm flex items-start gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-destructive shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
             <line x1="12" y1="8" x2="12" y2="12"></line>
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
           </svg>
           <div class="flex-1">
             <span class="font-bold">Error loading library:</span> {{ error }}
-            <button @click="showSettings = true" class="block mt-2 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors">
+            <UiButton variant="link" @click="showSettings = true" class="p-0 h-auto text-xs font-bold block mt-2 text-cyan-400 hover:text-cyan-300">
               Configure Settings &rarr;
-            </button>
+            </UiButton>
           </div>
         </div>
 
         <!-- Loading Skeleton Grid -->
         <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <div v-for="i in 8" :key="i" class="rounded-2xl bg-neutral-900/30 border border-neutral-800/60 overflow-hidden animate-pulse">
-            <div class="aspect-[460/215] bg-neutral-800/50"></div>
-            <div class="p-4 space-y-3">
-              <div class="h-4.5 bg-neutral-800/60 rounded-md w-3/4"></div>
+          <UiCard v-for="i in 8" :key="i" class="flex flex-col h-full">
+            <UiSkeleton class="aspect-[460/215] w-full" />
+            <UiCardContent class="space-y-3 flex-1">
+              <UiSkeleton class="h-5 w-3/4" />
               <div class="space-y-2 pt-1">
-                <div class="h-3 bg-neutral-800/40 rounded-md w-1/2"></div>
-                <div class="h-3 bg-neutral-800/40 rounded-md w-1/3"></div>
+                <UiSkeleton class="h-3.5 w-1/2" />
+                <UiSkeleton class="h-3.5 w-1/3" />
               </div>
-            </div>
-          </div>
+            </UiCardContent>
+          </UiCard>
         </div>
 
         <!-- Games Grid (Loaded State) -->
         <div v-else-if="filteredAndSortedGames.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           
-          <!-- Game Card -->
-          <div 
+          <!-- Game Card (shadcn Card) -->
+          <UiCard 
             v-for="game in filteredAndSortedGames" 
             :key="game.appid"
-            class="group relative rounded-2xl bg-neutral-900 border border-neutral-800/80 hover:border-cyan-500/30 overflow-hidden flex flex-col h-full game-card hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-500/5"
+            class="group flex flex-col h-full game-card hover:-translate-y-1 relative"
           >
             <!-- Game Capsule Banner -->
-            <div class="relative aspect-[460/215] overflow-hidden bg-neutral-950 shrink-0">
+            <div class="relative aspect-[460/215] overflow-hidden shrink-0">
               <img 
                 :src="game.header_img" 
                 :alt="game.name" 
@@ -341,61 +326,59 @@
               <!-- Subtle top gradient overlay -->
               <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent opacity-60"></div>
               
-              <!-- App ID Badge -->
-              <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/60 text-[10px] font-bold text-neutral-400 border border-neutral-800/50">
+              <!-- App ID Badge (shadcn Badge) -->
+              <UiBadge variant="secondary" class="absolute top-2.5 right-2.5">
                 ID: {{ game.appid }}
-              </span>
+              </UiBadge>
 
-              <!-- Hover Play Launcher / View Achievements Action -->
+              <!-- Hover Actions overlay -->
               <div class="absolute inset-0 bg-neutral-950/85 opacity-0 group-hover:opacity-100 transition-opacity duration-100 flex flex-col items-center justify-center gap-3">
-                <a 
-                  :href="'steam://run/' + game.appid"
-                  class="flex items-center justify-center gap-2 py-2 px-5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-neutral-950 font-bold text-xs tracking-wide uppercase cursor-pointer w-[80%] text-center"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                  </svg>
-                  <span>Play Game</span>
-                </a>
+                <UiButton as-child class="w-[80%]">
+                  <a :href="'steam://run/' + game.appid">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-current mr-2" viewBox="0 0 24 24">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span>Play Game</span>
+                  </a>
+                </UiButton>
                 
-                <NuxtLink 
-                  :to="'/game/' + game.appid"
-                  class="flex items-center justify-center gap-2 py-2 px-5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-cyan-400 hover:text-cyan-300 font-bold text-xs tracking-wide uppercase border border-cyan-500/20 w-[80%] text-center"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                  </svg>
-                  <span>Achievements</span>
-                </NuxtLink>
+                <UiButton as-child variant="outline" class="w-[80%]">
+                  <NuxtLink :to="'/game/' + game.appid">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <span>Achievements</span>
+                  </NuxtLink>
+                </UiButton>
               </div>
             </div>
 
             <!-- Game Details -->
-            <div class="p-4 flex flex-col flex-1 justify-between gap-4">
+            <UiCardContent class="flex flex-col flex-1 justify-between gap-4">
               <div>
-                <h3 class="font-bold text-sm sm:text-base text-neutral-100 group-hover:text-cyan-300 line-clamp-1 transition-colors tracking-tight">
+                <h3 class="font-bold text-sm sm:text-base text-foreground group-hover:text-cyan-500 dark:group-hover:text-cyan-300 line-clamp-1 transition-colors tracking-tight">
                   {{ game.name }}
                 </h3>
                 
-                <div class="flex items-center gap-1.5 mt-2.5 text-xs text-neutral-400 font-medium">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-neutral-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="flex items-center gap-1.5 mt-2.5 text-xs text-muted-foreground font-medium">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
                   </svg>
-                  <span>Last launched: <span class="text-neutral-300 font-semibold">{{ game.last_played_relative }}</span></span>
+                  <span>Last launched: <span class="text-foreground font-semibold">{{ game.last_played_relative }}</span></span>
                 </div>
               </div>
 
               <!-- Playtime Stats -->
-              <div class="flex items-center justify-between pt-3 border-t border-neutral-800/80">
+              <div class="flex items-center justify-between pt-3 border-t border-border">
                 <div class="flex flex-col">
-                  <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-semibold">Total Playtime</span>
-                  <span class="text-xs font-extrabold text-neutral-300 mt-0.5">
-                    {{ formatHours(game.playtime_hours) }} <span class="text-[10px] font-medium text-neutral-500">hrs</span>
+                  <span class="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Total Playtime</span>
+                  <span class="text-xs font-extrabold text-foreground mt-0.5">
+                    {{ formatHours(game.playtime_hours) }} <span class="text-[10px] font-medium text-muted-foreground">hrs</span>
                   </span>
                 </div>
                 
-                <!-- If played recently (2weeks) -->
+                <!-- If played recently -->
                 <div v-if="game.playtime_2weeks && game.playtime_2weeks > 0" class="flex flex-col items-end">
                   <span class="text-[10px] text-cyan-500 uppercase tracking-wider font-semibold">Recent</span>
                   <span class="text-xs font-bold text-cyan-400 mt-0.5">
@@ -403,28 +386,31 @@
                   </span>
                 </div>
               </div>
-            </div>
-          </div>
+            </UiCardContent>
+          </UiCard>
 
         </div>
 
         <!-- Empty Results Page -->
-        <div v-else class="text-center py-16 px-4 rounded-2xl bg-neutral-900/20 border border-neutral-800/60 max-w-md mx-auto">
-          <div class="w-16 h-16 rounded-2xl bg-neutral-900/60 border border-neutral-800 flex items-center justify-center mx-auto text-neutral-500 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </div>
-          <h3 class="font-bold text-base text-neutral-200">No games match search</h3>
-          <p class="text-xs text-neutral-500 mt-1 max-w-xs mx-auto">Try refining your search keyword or clearing the search box.</p>
-          <button 
-            @click="searchQuery = ''" 
-            class="mt-4 px-4 py-2 rounded-xl bg-neutral-800 text-xs font-semibold hover:bg-neutral-700 hover:text-white transition-all duration-300"
-          >
-            Clear Search
-          </button>
-        </div>
+        <UiCard v-else class="max-w-md mx-auto text-center">
+          <UiCardContent>
+            <div class="w-16 h-16 rounded-2xl bg-neutral-900/60 border border-neutral-800 flex items-center justify-center mx-auto text-neutral-500 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </div>
+            <h3 class="font-bold text-base">No games match search</h3>
+            <p class="text-xs text-neutral-500 mt-1 max-w-xs mx-auto">Try refining your search keyword or clearing the search box.</p>
+            <UiButton 
+              variant="outline" 
+              @click="searchQuery = ''" 
+              class="mt-5"
+            >
+              Clear Search
+            </UiButton>
+          </UiCardContent>
+        </UiCard>
 
       </section>
 
@@ -434,6 +420,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue'
+import { useDark } from '@vueuse/core'
 import type { SteamGame, SteamApiResponse } from '../types'
 
 // State variables
@@ -450,6 +437,10 @@ const sortBy = ref<'lastPlayed' | 'playtimeDesc' | 'playtimeAsc' | 'name'>('last
 const showSettings = ref(false)
 const loadedFromEnv = ref(false)
 
+// Theme variables
+const isDark = ref(true)
+let toggleTheme = () => {}
+
 // Check if user has saved credentials in localStorage
 const hasSavedCredentials = computed(() => {
   if (import.meta.client) {
@@ -459,6 +450,14 @@ const hasSavedCredentials = computed(() => {
 })
 
 onMounted(() => {
+  // Bind dark mode
+  const darkState = useDark()
+  isDark.value = darkState.value
+  toggleTheme = () => {
+    darkState.value = !darkState.value
+    isDark.value = darkState.value
+  }
+
   // Load credentials if they exist
   apiKey.value = localStorage.getItem('steam_api_key') || ''
   steamId.value = localStorage.getItem('steam_id') || ''
