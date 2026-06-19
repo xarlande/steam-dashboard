@@ -1,21 +1,14 @@
 <template>
   <div class="relative min-h-screen bg-[#08090c] text-neutral-100 overflow-x-hidden font-sans pb-16 selection:bg-cyan-500/30 selection:text-cyan-200">
-    <!-- Ambient Background Glows -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-      <div class="absolute top-[-10%] left-[-20%] w-[60vw] h-[60vw] rounded-full bg-cyan-600/10 blur-[120px] animate-pulse" style="animation-duration: 8s;"></div>
-      <div class="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-violet-600/10 blur-[120px] animate-pulse" style="animation-duration: 12s;"></div>
-      <div class="absolute top-[30%] right-[10%] w-[30vw] h-[30vw] rounded-full bg-indigo-600/5 blur-[100px]"></div>
-    </div>
-
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
       
       <!-- Top Navigation & Header -->
       <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-8 mb-8 border-b border-neutral-800/60">
         <div class="flex items-center gap-3">
-          <div class="p-2.5 rounded-xl bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border border-cyan-500/30 shadow-lg shadow-cyan-500/5">
+          <div class="p-2.5 rounded-xl bg-neutral-900 border border-neutral-800 shadow-md">
             <!-- Custom Gamepad SVG Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-cyan-400 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="6" y1="12" x2="10" y2="12"></line>
               <line x1="8" y1="10" x2="8" y2="14"></line>
               <line x1="15" y1="13" x2="15.01" y2="13"></line>
@@ -81,10 +74,10 @@
       </header>
 
       <!-- Global Stats Summary (Show only when games loaded) -->
-      <section v-if="games.length > 0 && !showSettings" class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8 animate-fade-in">
+      <section v-if="games.length > 0 && !showSettings" class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
         <!-- Stat Card 1: Total Games -->
-        <div class="relative group overflow-hidden rounded-2xl bg-neutral-900/40 backdrop-blur-xl border border-neutral-800/80 p-5 transition-all duration-300 hover:border-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/2">
-          <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-300 text-cyan-400">
+        <div class="relative overflow-hidden rounded-2xl bg-neutral-900 border border-neutral-800 p-5">
+          <div class="absolute -right-4 -bottom-4 opacity-10 text-cyan-400">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="2" y="6" width="20" h="12" rx="3"></rect>
             </svg>
@@ -95,8 +88,8 @@
         </div>
 
         <!-- Stat Card 2: Total Time -->
-        <div class="relative group overflow-hidden rounded-2xl bg-neutral-900/40 backdrop-blur-xl border border-neutral-800/80 p-5 transition-all duration-300 hover:border-violet-500/30 hover:shadow-xl hover:shadow-violet-500/2">
-          <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-300 text-violet-400">
+        <div class="relative overflow-hidden rounded-2xl bg-neutral-900 border border-neutral-800 p-5">
+          <div class="absolute -right-4 -bottom-4 opacity-10 text-violet-400">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
@@ -108,8 +101,8 @@
         </div>
 
         <!-- Stat Card 3: Most Played -->
-        <div class="relative group overflow-hidden rounded-2xl bg-neutral-900/40 backdrop-blur-xl border border-neutral-800/80 p-5 transition-all duration-300 hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/2">
-          <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-300 text-indigo-400">
+        <div class="relative overflow-hidden rounded-2xl bg-neutral-900 border border-neutral-800 p-5">
+          <div class="absolute -right-4 -bottom-4 opacity-10 text-indigo-400">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
             </svg>
@@ -121,8 +114,8 @@
       </section>
 
       <!-- Settings Configuration Panel -->
-      <section v-if="showSettings" class="max-w-2xl mx-auto mb-8 animate-fade-in">
-        <div class="rounded-2xl bg-neutral-900/60 backdrop-blur-xl border border-neutral-800 shadow-2xl p-6 sm:p-8">
+      <section v-if="showSettings" class="max-w-2xl mx-auto mb-8">
+        <div class="rounded-2xl bg-neutral-900 border border-neutral-800 shadow-xl p-6 sm:p-8">
           <div class="flex items-center gap-3 pb-4 mb-6 border-b border-neutral-800/80">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
@@ -223,7 +216,7 @@
       <section v-if="!showSettings" class="space-y-6">
         
         <!-- Controls: Search & Sort Tabs -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-neutral-900/40 backdrop-blur-xl border border-neutral-800/80 shadow-md">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-neutral-900 border border-neutral-800">
           
           <!-- Search Bar -->
           <div class="relative flex-1 max-w-md">
@@ -333,7 +326,7 @@
           <div 
             v-for="game in filteredAndSortedGames" 
             :key="game.appid"
-            class="group relative rounded-2xl bg-neutral-900/40 backdrop-blur-xl border border-neutral-800/80 hover:border-cyan-500/40 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-cyan-500/10 hover:-translate-y-1.5 flex flex-col h-full"
+            class="group relative rounded-2xl bg-neutral-900/40 border border-neutral-800/80 hover:border-cyan-500/40 overflow-hidden flex flex-col h-full"
           >
             <!-- Game Capsule Banner -->
             <div class="relative aspect-[460/215] overflow-hidden bg-neutral-950 shrink-0">
@@ -341,7 +334,7 @@
                 :src="game.header_img" 
                 :alt="game.name" 
                 loading="lazy"
-                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                class="w-full h-full object-cover"
                 @error="handleImageError"
               />
               
@@ -349,15 +342,15 @@
               <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent opacity-60"></div>
               
               <!-- App ID Badge -->
-              <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-[10px] font-bold text-neutral-400 border border-neutral-800/50">
+              <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/60 text-[10px] font-bold text-neutral-400 border border-neutral-800/50">
                 ID: {{ game.appid }}
               </span>
 
               <!-- Hover Play Launcher / View Achievements Action -->
-              <div class="absolute inset-0 bg-neutral-950/85 backdrop-blur-[3px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-3">
+              <div class="absolute inset-0 bg-neutral-950/85 opacity-0 group-hover:opacity-100 transition-opacity duration-100 flex flex-col items-center justify-center gap-3">
                 <a 
                   :href="'steam://run/' + game.appid"
-                  class="flex items-center justify-center gap-2 py-2 px-5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-neutral-950 font-bold text-xs tracking-wide uppercase transition-all duration-200 transform scale-95 group-hover:scale-100 shadow-md shadow-cyan-500/35 cursor-pointer w-[80%] text-center"
+                  class="flex items-center justify-center gap-2 py-2 px-5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-neutral-950 font-bold text-xs tracking-wide uppercase cursor-pointer w-[80%] text-center"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-current" viewBox="0 0 24 24">
                     <polygon points="5 3 19 12 5 21 5 3"></polygon>
@@ -367,7 +360,7 @@
                 
                 <NuxtLink 
                   :to="'/game/' + game.appid"
-                  class="flex items-center justify-center gap-2 py-2 px-5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-cyan-400 hover:text-cyan-300 font-bold text-xs tracking-wide uppercase transition-all duration-200 transform scale-95 group-hover:scale-100 border border-cyan-500/20 w-[80%] text-center"
+                  class="flex items-center justify-center gap-2 py-2 px-5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-cyan-400 hover:text-cyan-300 font-bold text-xs tracking-wide uppercase border border-cyan-500/20 w-[80%] text-center"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>

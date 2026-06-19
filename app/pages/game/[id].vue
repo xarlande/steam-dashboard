@@ -1,12 +1,5 @@
 <template>
   <div class="relative min-h-screen bg-[#08090c] text-neutral-100 overflow-x-hidden font-sans pb-16 selection:bg-cyan-500/30 selection:text-cyan-200">
-    <!-- Ambient Background Glows -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-      <div class="absolute top-[-10%] left-[-20%] w-[60vw] h-[60vw] rounded-full bg-cyan-600/10 blur-[120px] animate-pulse" style="animation-duration: 8s;"></div>
-      <div class="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-violet-600/10 blur-[120px] animate-pulse" style="animation-duration: 12s;"></div>
-      <div class="absolute top-[30%] right-[10%] w-[30vw] h-[30vw] rounded-full bg-indigo-600/5 blur-[100px]"></div>
-    </div>
-
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
       
@@ -55,7 +48,7 @@
       </section>
 
       <!-- Loaded State: Hero Game Info -->
-      <section v-else-if="!error" class="relative group rounded-2xl bg-neutral-900/40 backdrop-blur-xl border border-neutral-800/80 p-6 sm:p-8 shadow-2xl mb-8 animate-fade-in">
+      <section v-else-if="!error" class="rounded-2xl bg-neutral-900 border border-neutral-800 p-6 sm:p-8 mb-8">
         <div class="flex flex-col md:flex-row gap-6 md:items-center justify-between">
           
           <!-- Banner & Name -->
@@ -106,10 +99,10 @@
       </section>
 
       <!-- Main Content Block -->
-      <section v-if="!isLoading && !error" class="space-y-6 animate-fade-in">
+      <section v-if="!isLoading && !error" class="space-y-6">
         
         <!-- Filter Controls -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-neutral-900/40 backdrop-blur-xl border border-neutral-800/80 shadow-md">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-neutral-900 border border-neutral-800">
           
           <!-- Search in Achievements -->
           <div class="relative flex-1 max-w-md">
@@ -185,9 +178,9 @@
           <div 
             v-for="ach in filteredAchievements" 
             :key="ach.apiname"
-            class="group flex gap-4 p-4 rounded-2xl transition-all duration-300 border"
+            class="group flex gap-4 p-4 rounded-2xl border"
             :class="ach.achieved 
-              ? 'bg-neutral-900/40 backdrop-blur-xl border-neutral-800/80 hover:border-cyan-500/35 hover:shadow-xl hover:shadow-cyan-500/2' 
+              ? 'bg-neutral-900 border-neutral-800' 
               : 'bg-neutral-950/20 border-neutral-900/60 opacity-60 hover:opacity-90'"
           >
             <!-- Icon -->
@@ -196,7 +189,7 @@
                 :src="ach.achieved ? ach.icon : ach.icongray" 
                 :alt="ach.name"
                 loading="lazy"
-                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                class="w-full h-full object-cover"
                 @error="handleIconError"
               />
               <!-- Unlocked Border Glow -->
