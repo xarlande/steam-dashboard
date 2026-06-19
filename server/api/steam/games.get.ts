@@ -33,6 +33,7 @@ export default defineEventHandler(async (event) => {
   // Read from query or environment variables
   const apiKey = (query.apiKey as string) || process.env.STEAM_API_KEY;
   const steamId = (query.steamId as string) || process.env.STEAM_ID;
+  const lang = (query.lang as string) || process.env.STEAM_LANGUAGE || 'ukrainian';
   
   if (!apiKey || !steamId) {
     return {
@@ -42,7 +43,7 @@ export default defineEventHandler(async (event) => {
   }
   
   try {
-    const url = `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${apiKey}&steamid=${steamId}&format=json&include_appinfo=true&include_played_free_games=true`;
+    const url = `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${apiKey}&steamid=${steamId}&format=json&include_appinfo=true&include_played_free_games=true&l=${lang}`;
     
     const data: any = await $fetch(url).catch((err) => {
       console.error('Steam API Fetch error:', err);

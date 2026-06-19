@@ -18,3 +18,24 @@ export interface SteamApiResponse {
   usingEnv?: boolean;
   error?: string;
 }
+
+export interface SteamAchievement {
+  apiname: string;
+  name: string; // display name
+  description: string;
+  achieved: boolean;
+  unlocktime: number;
+  unlocktime_relative: string;
+  icon: string;      // colored icon url
+  icongray: string;  // grayscale icon url
+}
+
+export interface GameAchievementsResponse {
+  success: boolean;
+  gameName?: string;
+  achievements?: SteamAchievement[];
+  total_count?: number;
+  unlocked_count?: number;
+  unlocked_percent?: number;
+  error?: string;
+}
