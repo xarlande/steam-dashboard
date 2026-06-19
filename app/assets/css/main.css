@@ -130,10 +130,7 @@ body {
     body {
         @apply bg-background text-foreground;
         @apply font-sans;
+        font-variant-numeric: tabular-nums;
+        font-feature-settings: "tnum" on, "cv05" on;
     }
-}
-
-.font-tnum {
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: "tnum" on, "cv05" on;
 }

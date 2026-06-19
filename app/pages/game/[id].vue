@@ -93,7 +93,7 @@
                       <circle cx="12" cy="12" r="10"></circle>
                       <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
-                    <span>Completion progress: <span class="text-foreground font-semibold">{{ unlockedCount }} / {{ totalCount }}</span></span>
+                    <span>Completion progress: <span class="text-foreground font-semibold">{{ unlockedCount }}</span> / <span class="text-foreground font-semibold">{{ totalCount }}</span></span>
                   </div>
                 </div>
               </div>

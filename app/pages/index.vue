@@ -131,7 +131,7 @@
 
       <!-- Gaming Time Quality Card -->
       <section v-if="games.length > 0 && !showSettings" class="mb-8 animate-fade-in">
-        <UiCard class="overflow-hidden border-border/80 shadow-md bg-gradient-to-br from-card to-card/50">
+        <UiCard :class="detoxCardClass" class="overflow-hidden bg-gradient-to-br from-card to-card/50 transition-all duration-500">
           <UiCardContent class="p-6">
             <!-- Header Row -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border/60">
@@ -974,6 +974,16 @@ const adviceBoxClass = computed(() => {
   }
 })
 
+const detoxCardClass = computed(() => {
+  switch (hygieneStatus.value) {
+    case 'excellent': return 'detox-card-excellent border-emerald-500/20'
+    case 'balanced': return 'detox-card-balanced border-cyan-500/20'
+    case 'poor': return 'detox-card-poor border-amber-500/20'
+    case 'critical': return 'detox-card-critical border-rose-500/30'
+    default: return 'border-border/80 shadow-md'
+  }
+})
+
 // Theme variables
 const isDark = ref(true)
 
@@ -1283,5 +1293,64 @@ const filteredAndSortedGames = computed(() => {
 .slide-fade-leave-to {
   transform: translateY(-12px);
   opacity: 0;
+}
+
+/* Detox Card Pulsing Glow Keyframes & Classes */
+.detox-card-excellent {
+  box-shadow: 0 0 15px 1px rgba(16, 185, 129, 0.08);
+  animation: pulse-excellent 4s infinite ease-in-out;
+}
+.detox-card-balanced {
+  box-shadow: 0 0 15px 1px rgba(6, 182, 212, 0.08);
+  animation: pulse-balanced 4s infinite ease-in-out;
+}
+.detox-card-poor {
+  box-shadow: 0 0 15px 1px rgba(245, 158, 11, 0.1);
+  animation: pulse-poor 4s infinite ease-in-out;
+}
+.detox-card-critical {
+  box-shadow: 0 0 18px 2px rgba(244, 63, 94, 0.15);
+  animation: pulse-critical 3s infinite ease-in-out;
+}
+
+@keyframes pulse-excellent {
+  0%, 100% {
+    box-shadow: 0 0 15px 1px rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px 3px rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.45);
+  }
+}
+@keyframes pulse-balanced {
+  0%, 100% {
+    box-shadow: 0 0 15px 1px rgba(6, 182, 212, 0.08);
+    border-color: rgba(6, 182, 212, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px 3px rgba(6, 182, 212, 0.15);
+    border-color: rgba(6, 182, 212, 0.45);
+  }
+}
+@keyframes pulse-poor {
+  0%, 100% {
+    box-shadow: 0 0 15px 1px rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px 4px rgba(245, 158, 11, 0.18);
+    border-color: rgba(245, 158, 11, 0.45);
+  }
+}
+@keyframes pulse-critical {
+  0%, 100% {
+    box-shadow: 0 0 18px 2px rgba(244, 63, 94, 0.12);
+    border-color: rgba(244, 63, 94, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 28px 5px rgba(244, 63, 94, 0.24);
+    border-color: rgba(244, 63, 94, 0.6);
+  }
 }
 </style>
