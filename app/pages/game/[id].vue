@@ -16,20 +16,20 @@
               <line x1="19" y1="12" x2="5" y2="12"></line>
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
-            <span>{{ t.backToLibrary }}</span>
+            <span>{{ $t('game.backToLibrary') }}</span>
           </NuxtLink>
         </UiButton>
 
         <div class="flex items-center gap-3">
           <!-- Language Selector dropdown (shadcn select) -->
-          <UiSelect v-model="selectedLang" @update:modelValue="handleLangChange">
+          <UiSelect v-model="locale" @update:modelValue="handleLangChange">
             <UiSelectTrigger >
-              <UiSelectValue placeholder="Language" />
+              <UiSelectValue :placeholder="$t('index.credentials.displayLanguage')" />
             </UiSelectTrigger>
             <UiSelectContent >
-              <UiSelectItem value="ukrainian">UA</UiSelectItem>
-              <UiSelectItem value="english">EN</UiSelectItem>
-              <UiSelectItem value="russian">RU</UiSelectItem>
+              <UiSelectItem value="uk">UA</UiSelectItem>
+              <UiSelectItem value="en">EN</UiSelectItem>
+              <UiSelectItem value="ru">RU</UiSelectItem>
             </UiSelectContent>
           </UiSelect>
 
@@ -93,7 +93,7 @@
                       <circle cx="12" cy="12" r="10"></circle>
                       <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
-                    <span>{{ t.completionProgress }}: <span class="text-foreground font-semibold">{{ unlockedCount }}</span> / <span class="text-foreground font-semibold">{{ totalCount }}</span></span>
+                    <span>{{ $t('game.completionProgress') }}: <span class="text-foreground font-semibold">{{ unlockedCount }}</span> / <span class="text-foreground font-semibold">{{ totalCount }}</span></span>
                   </div>
                 </div>
               </div>
@@ -101,7 +101,7 @@
 
             <!-- Achievements Progress (shadcn Progress) -->
             <div class="flex flex-col items-center justify-center shrink-0 p-4 rounded-xl bg-muted/40 border border-border min-w-[150px]">
-              <span class="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">{{ t.unlockedLabel }}</span>
+              <span class="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">{{ $t('game.unlockedLabel') }}</span>
               <span class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-indigo-400 mt-1 tracking-tight">
                 {{ unlockedPercent }}%
               </span>
@@ -118,8 +118,8 @@
             <div class="flex items-center gap-2.5 mb-4">
               <span class="text-xl">🎯</span>
               <div>
-                <h3 class="text-base font-bold text-foreground leading-snug">{{ t.nextTitle }}</h3>
-                <p class="text-xs text-muted-foreground mt-0.5">{{ t.nextDesc }}</p>
+                <h3 class="text-base font-bold text-foreground leading-snug">{{ $t('game.nextTitle') }}</h3>
+                <p class="text-xs text-muted-foreground mt-0.5">{{ $t('game.nextDesc') }}</p>
               </div>
             </div>
 
@@ -159,7 +159,7 @@
                   <!-- Unlock Rate Badge -->
                   <div class="mt-2 flex items-center gap-1">
                     <UiBadge class="text-[9px] font-black bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/10 border-cyan-500/20 py-0.5 px-1.5 rounded-md">
-                      {{ ach.global_percent }}% {{ t.globalUnlocked }}
+                      {{ ach.global_percent }}% {{ $t('game.globalUnlocked') }}
                     </UiBadge>
                   </div>
                 </div>
@@ -176,8 +176,8 @@
           <UiCardContent class="p-6 flex items-center gap-4">
             <span class="text-3xl select-none">🏆</span>
             <div>
-              <h3 class="text-base font-extrabold text-emerald-400 leading-snug">{{ t.congratsTitle }}</h3>
-              <p class="text-xs text-muted-foreground mt-0.5 font-medium">{{ t.congratsDesc }}</p>
+              <h3 class="text-base font-extrabold text-emerald-400 leading-snug">{{ $t('game.congratsTitle') }}</h3>
+              <p class="text-xs text-muted-foreground mt-0.5 font-medium">{{ $t('game.congratsDesc') }}</p>
             </div>
           </UiCardContent>
         </UiCard>
@@ -200,7 +200,7 @@
             <UiInput 
               type="text" 
               v-model="searchQuery"
-              :placeholder="t.searchPlaceholder" 
+              :placeholder="$t('game.searchPlaceholder')" 
               class="w-full pl-9 pr-8"
             />
             <UiButton 
@@ -219,12 +219,12 @@
 
           <!-- Tabs: All, Unlocked, Locked (shadcn tabs) -->
           <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
-            <span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-2 shrink-0">{{ t.filterLabel }}</span>
+            <span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-2 shrink-0">{{ $t('game.filterLabel') }}</span>
             <UiTabs v-model="filterBy" class="w-auto">
               <UiTabsList>
-                <UiTabsTrigger value="all">{{ t.filterAll }} ({{ totalCount }})</UiTabsTrigger>
-                <UiTabsTrigger value="unlocked">{{ t.filterUnlocked }} ({{ unlockedCount }})</UiTabsTrigger>
-                <UiTabsTrigger value="locked">{{ t.filterLocked }} ({{ totalCount - unlockedCount }})</UiTabsTrigger>
+                <UiTabsTrigger value="all">{{ $t('game.filterAll') }} ({{ totalCount }})</UiTabsTrigger>
+                <UiTabsTrigger value="unlocked">{{ $t('game.filterUnlocked') }} ({{ unlockedCount }})</UiTabsTrigger>
+                <UiTabsTrigger value="locked">{{ $t('game.filterLocked') }} ({{ totalCount - unlockedCount }})</UiTabsTrigger>
               </UiTabsList>
             </UiTabs>
           </div>
@@ -273,7 +273,7 @@
                 <UiBadge 
                   v-if="ach.achieved" 
                 >
-                  Unlocked
+                  {{ $t('game.unlockedLabel') }}
                 </UiBadge>
               </div>
               
@@ -287,7 +287,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-muted-foreground/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
-                <span>Unlocked {{ ach.unlocktime_relative }}</span>
+                <span>{{ $t('game.unlockedAt', { time: ach.unlocktime_relative }) }}</span>
               </p>
             </div>
           </UiCard>
@@ -303,9 +303,9 @@
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
             </div>
-            <h3 class="font-bold text-base">{{ t.noAchievements }}</h3>
+            <h3 class="font-bold text-base">{{ $t('game.noAchievements') }}</h3>
             <p class="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
-              {{ t.noAchievementsDesc }}
+              {{ $t('game.noAchievementsDesc') }}
             </p>
           </UiCardContent>
         </UiCard>
@@ -321,16 +321,16 @@
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
           </svg>
           <div class="flex-1">
-            <h3 class="font-extrabold text-base text-destructive mb-1">{{ t.failedLoad }}</h3>
+            <h3 class="font-extrabold text-base text-destructive mb-1">{{ $t('game.failedLoad') }}</h3>
             <p class="leading-relaxed">{{ error }}</p>
             <div class="mt-4 flex items-center gap-3">
               <UiButton variant="outline" as-child>
                 <NuxtLink to="/">
-                  &larr; {{ t.returnBtn }}
+                  &larr; {{ $t('game.returnBtn') }}
                 </NuxtLink>
               </UiButton>
               <UiButton variant="outline" @click="loadAchievements">
-                {{ t.retryBtn }}
+                {{ $t('game.retryBtn') }}
               </UiButton>
             </div>
           </div>
@@ -349,6 +349,7 @@ import type { SteamAchievement, GameAchievementsResponse } from '../../types'
 
 const route = useRoute()
 const appid = route.params.id as string
+const { locale } = useI18n()
 
 // Game stats
 const gameName = ref('Loading Game...')
@@ -362,73 +363,6 @@ const isLoading = ref(true)
 const error = ref('')
 const searchQuery = ref('')
 const filterBy = ref<'all' | 'unlocked' | 'locked'>('all')
-const selectedLang = ref('ukrainian')
-
-// Translations
-const pageTranslations: Record<string, any> = {
-  ukrainian: {
-    backToLibrary: "Назад до бібліотеки",
-    completionProgress: "Прогрес проходження",
-    unlockedLabel: "Відкрито",
-    searchPlaceholder: "Пошук досягнень...",
-    filterLabel: "Фільтр:",
-    filterAll: "Всі",
-    filterUnlocked: "Відкриті",
-    filterLocked: "Заблоковані",
-    noAchievements: "Досягнень не знайдено",
-    noAchievementsDesc: "Спробуйте очистити пошуковий запит або змінити вибраний фільтр.",
-    nextTitle: "Наступні цілі (Найлегші досягнення)",
-    nextDesc: "Ці заблоковані досягнення мають найвищий відсоток завоювання серед усіх гравців у світі. Їх найпростіше отримати!",
-    globalUnlocked: "гравців отримали",
-    congratsTitle: "Вітаємо! 🎉",
-    congratsDesc: "Ви розблокували всі досягнення в цій грі! Справжній перфекціоніст.",
-    retryBtn: "Повторити",
-    returnBtn: "Повернутися до бібліотеки",
-    failedLoad: "Не вдалося завантажити досягнення"
-  },
-  english: {
-    backToLibrary: "Back to Library",
-    completionProgress: "Completion progress",
-    unlockedLabel: "Unlocked",
-    searchPlaceholder: "Search achievements...",
-    filterLabel: "Filter:",
-    filterAll: "All",
-    filterUnlocked: "Unlocked",
-    filterLocked: "Locked",
-    noAchievements: "No achievements found",
-    noAchievementsDesc: "Try refining your search keyword or clearing the search box.",
-    nextTitle: "The Next Achievements (Easiest Targets)",
-    nextDesc: "These locked achievements have the highest global unlock percentages. They should be your next target!",
-    globalUnlocked: "unlocked",
-    congratsTitle: "Congratulations! 🎉",
-    congratsDesc: "You have unlocked all achievements in this game! A true perfectionist.",
-    retryBtn: "Retry",
-    returnBtn: "Return to Library",
-    failedLoad: "Failed to load achievements"
-  },
-  russian: {
-    backToLibrary: "Назад в библиотеку",
-    completionProgress: "Прогресс прохождения",
-    unlockedLabel: "Открыто",
-    searchPlaceholder: "Поиск достижений...",
-    filterLabel: "Фильтр:",
-    filterAll: "Все",
-    filterUnlocked: "Открытые",
-    filterLocked: "Заблокированные",
-    noAchievements: "Достижений не найдено",
-    noAchievementsDesc: "Попробуйте очистить поисковый запрос или изменить выбранный фильтр.",
-    nextTitle: "Следующие цели (Самые легкие достижения)",
-    nextDesc: "Эти заблокированные достижения имеют наивысший процент получения среди всех игроков в мире. Их проще всего открыть!",
-    globalUnlocked: "игроков получили",
-    congratsTitle: "Поздравляем! 🎉",
-    congratsDesc: "Вы разблокировали все достижения в этой игре! Настоящий перфекционист.",
-    retryBtn: "Повторить",
-    returnBtn: "Вернуться в библиотеку",
-    failedLoad: "Не удалось загрузить достижения"
-  }
-}
-
-const t = computed(() => pageTranslations[selectedLang.value] || pageTranslations.english)
 
 // Next locked achievements sorted by global unlock percentage
 const nextAchievements = computed(() => {
@@ -456,12 +390,13 @@ onMounted(() => {
     isDark.value = darkState.value
   }
 
-  selectedLang.value = localStorage.getItem('steam_language') || 'ukrainian'
+  const savedLang = localStorage.getItem('steam_language') || 'uk'
+  locale.value = savedLang === 'ukrainian' ? 'uk' : (savedLang === 'english' ? 'en' : (savedLang === 'russian' ? 'ru' : savedLang))
   loadAchievements()
 })
 
 function handleLangChange() {
-  localStorage.setItem('steam_language', selectedLang.value)
+  localStorage.setItem('steam_language', locale.value)
   loadAchievements()
 }
 
@@ -472,7 +407,7 @@ async function loadAchievements() {
   // Read credentials and language from localStorage
   const apiKey = localStorage.getItem('steam_api_key') || ''
   const steamId = localStorage.getItem('steam_id') || ''
-  const lang = selectedLang.value;
+  const lang = locale.value;
   
   try {
     const params = new URLSearchParams()

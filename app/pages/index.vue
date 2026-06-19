@@ -19,22 +19,22 @@
           </div>
           <div>
             <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r dark:from-neutral-50 dark:via-neutral-100 dark:to-neutral-400 from-neutral-900 via-neutral-800 to-neutral-600">
-              Steam Library Space
+              {{ $t('index.title') }}
             </h1>
-            <p class="text-xs sm:text-sm text-muted-foreground font-medium">Your personalized gameplay analytics dashboard</p>
+            <p class="text-xs sm:text-sm text-muted-foreground font-medium">{{ $t('index.subtitle') }}</p>
           </div>
         </div>
 
         <div class="flex items-center gap-3 self-end sm:self-auto">
           <!-- Language Selector dropdown (shadcn select) -->
-          <UiSelect v-model="selectedLang" @update:modelValue="handleLangChange">
+          <UiSelect v-model="locale" @update:modelValue="handleLangChange">
             <UiSelectTrigger >
-              <UiSelectValue placeholder="Language" />
+              <UiSelectValue :placeholder="$t('index.credentials.displayLanguage')" />
             </UiSelectTrigger>
             <UiSelectContent >
-              <UiSelectItem value="ukrainian">UA</UiSelectItem>
-              <UiSelectItem value="english">EN</UiSelectItem>
-              <UiSelectItem value="russian">RU</UiSelectItem>
+              <UiSelectItem value="uk">UA</UiSelectItem>
+              <UiSelectItem value="en">EN</UiSelectItem>
+              <UiSelectItem value="ru">RU</UiSelectItem>
             </UiSelectContent>
           </UiSelect>
 
@@ -43,7 +43,7 @@
             variant="outline"
             size="icon"
             @click="toggleTheme"
-            title="Toggle theme"
+            :title="$t('common.themeToggle')"
           >
             <svg v-if="isDark" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="4"></circle>
@@ -76,9 +76,9 @@
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
-            <span>Config</span>
+            <span>{{ $t('index.configBtn') }}</span>
           </UiButton>
         </div>
       </header>
@@ -93,9 +93,9 @@
                 <rect x="2" y="6" width="20" h="12" rx="3"></rect>
               </svg>
             </div>
-            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Games Played</p>
+            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{{ $t('index.stats.totalGames') }}</p>
             <p class="text-3xl font-extrabold mt-2 tracking-tight">{{ totalCount }}</p>
-            <p class="text-xs text-muted-foreground/85 mt-1">Games with recorded playtime</p>
+            <p class="text-xs text-muted-foreground/85 mt-1">{{ $t('index.stats.totalGamesDesc') }}</p>
           </UiCardContent>
         </UiCard>
 
@@ -108,9 +108,9 @@
                 <polyline points="12 6 12 12 16 14"></polyline>
               </svg>
             </div>
-            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Playtime</p>
-            <p class="text-3xl font-extrabold mt-2 tracking-tight">{{ formatHours(totalHours) }} <span class="text-sm font-semibold text-muted-foreground">hrs</span></p>
-            <p class="text-xs text-muted-foreground/85 mt-1">Combined time in game space</p>
+            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{{ $t('index.stats.totalPlaytime') }}</p>
+            <p class="text-3xl font-extrabold mt-2 tracking-tight">{{ formatHours(totalHours) }} <span class="text-sm font-semibold text-muted-foreground">{{ $t('common.hoursSuffix') }}</span></p>
+            <p class="text-xs text-muted-foreground/85 mt-1">{{ $t('index.stats.totalPlaytimeDesc') }}</p>
           </UiCardContent>
         </UiCard>
 
@@ -122,9 +122,9 @@
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
               </svg>
             </div>
-            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Most Played Game</p>
-            <p class="text-xl font-extrabold mt-2 truncate pr-16 tracking-tight">{{ mostPlayedGame?.name || 'None' }}</p>
-            <p class="text-xs mt-1 font-semibold text-indigo-400">{{ mostPlayedGame ? formatHours(mostPlayedGame.playtime_hours) + ' hrs' : '0 hrs' }}</p>
+            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{{ $t('index.stats.mostPlayed') }}</p>
+            <p class="text-xl font-extrabold mt-2 truncate pr-16 tracking-tight">{{ mostPlayedGame?.name || $t('index.stats.none') }}</p>
+            <p class="text-xs mt-1 font-semibold text-indigo-400">{{ mostPlayedGame ? formatHours(mostPlayedGame.playtime_hours) + ' ' + $t('common.hoursSuffix') : '0 ' + $t('common.hoursSuffix') }}</p>
           </UiCardContent>
         </UiCard>
       </section>
@@ -145,16 +145,16 @@
                   </svg>
                 </div>
                 <div>
-                  <h2 class="text-lg sm:text-xl font-bold tracking-tight text-foreground">{{ t.title }}</h2>
-                  <p class="text-xs text-muted-foreground font-medium mt-0.5">{{ t.description }}</p>
+                  <h2 class="text-lg sm:text-xl font-bold tracking-tight text-foreground">{{ $t('detox.title') }}</h2>
+                  <p class="text-xs text-muted-foreground font-medium mt-0.5">{{ $t('detox.description') }}</p>
                 </div>
               </div>
               
               <!-- Status Badge -->
               <div class="self-start sm:self-auto flex items-center gap-2">
-                <span class="text-xs text-muted-foreground font-semibold uppercase tracking-wider">{{ t.statusLabel }}:</span>
+                <span class="text-xs text-muted-foreground font-semibold uppercase tracking-wider">{{ $t('detox.statusLabel') }}:</span>
                 <UiBadge :class="hygieneBadgeClass" class="text-xs py-1 px-3 font-bold border rounded-lg transition-all duration-300">
-                  {{ t.states[hygieneStatus].title }}
+                  {{ $t('detox.states.' + hygieneStatus + '.title') }}
                 </UiBadge>
               </div>
             </div>
@@ -177,8 +177,8 @@
                     <span v-else>🌱</span>
                   </span>
                   <div>
-                    <h4 class="font-extrabold text-sm tracking-tight mb-1 uppercase tracking-wide opacity-90">{{ t.tipsTitle }}</h4>
-                    <p class="text-sm leading-relaxed font-semibold opacity-95">{{ t.states[hygieneStatus].desc }}</p>
+                    <h4 class="font-extrabold text-sm tracking-tight mb-1 uppercase tracking-wide opacity-90">{{ $t('detox.tipsTitle') }}</h4>
+                    <p class="text-sm leading-relaxed font-semibold opacity-95">{{ $t('detox.states.' + hygieneStatus + '.desc') }}</p>
                     
                     <!-- Roulette Trigger Button -->
                     <div v-if="hygieneStatus === 'critical' || hygieneStatus === 'poor'" class="mt-3.5 animate-bounce">
@@ -188,7 +188,7 @@
                         @click="startRoulette"
                       >
                         <span>🔮</span>
-                        <span>{{ t.rouletteBtn }}</span>
+                        <span>{{ $t('roulette.btn') }}</span>
                       </UiButton>
                     </div>
                   </div>
@@ -197,9 +197,9 @@
                 <!-- Progress Bar / Scale -->
                 <div class="space-y-3.5">
                   <div class="flex items-center justify-between text-xs font-semibold text-muted-foreground">
-                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> 🎮 {{ t.sessionLabel }}</span>
-                    <span class="text-foreground text-sm font-black">{{ storyPercentage }}% {{ t.storyLabel }}</span>
-                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span> 🎭 {{ t.storyLabel }}</span>
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> 🎮 {{ $t('detox.sessionLabel') }}</span>
+                    <span class="text-foreground text-sm font-black">{{ storyPercentage }}% {{ $t('detox.storyLabel') }}</span>
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span> 🎭 {{ $t('detox.storyLabel') }}</span>
                   </div>
                   
                   <UiProgress 
@@ -209,9 +209,9 @@
                   />
                   
                   <div class="flex items-center justify-between text-[10px] text-muted-foreground/80 font-bold uppercase tracking-wider">
-                    <span>100% {{ t.sessionLabel }}</span>
+                    <span>100% {{ $t('detox.sessionLabel') }}</span>
                     <span>50/50 Balance</span>
-                    <span>100% {{ t.storyLabel }}</span>
+                    <span>100% {{ $t('detox.storyLabel') }}</span>
                   </div>
                 </div>
               </div>
@@ -219,25 +219,25 @@
               <!-- Right Column: Recent Playtime Summary & Toggle -->
               <div class="p-5 rounded-2xl bg-card/30 border border-border/80 flex flex-col justify-between gap-6">
                 <div class="space-y-4">
-                  <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-widest">{{ t.recentPlaytime }}</h3>
+                  <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-widest">{{ $t('detox.recentPlaytime') }}</h3>
                   
                   <div class="space-y-3">
                     <!-- Total Recent Time -->
                     <div class="flex justify-between items-baseline pb-2.5 border-b border-border/60">
                       <span class="text-sm text-muted-foreground font-semibold">Total</span>
-                      <span class="text-2xl font-black text-foreground">{{ formatHours(recentTotalHours) }} <span class="text-xs font-semibold text-muted-foreground">{{ t.hoursSuffix }}</span></span>
+                      <span class="text-2xl font-black text-foreground">{{ formatHours(recentTotalHours) }} <span class="text-xs font-semibold text-muted-foreground">{{ $t('common.hoursSuffix') }}</span></span>
                     </div>
 
                     <!-- Story Hours -->
                     <div class="flex justify-between items-center">
-                      <span class="text-xs font-semibold text-muted-foreground">{{ t.storyLabel }}</span>
-                      <span class="text-sm font-bold text-cyan-400">{{ formatHours(recentStoryHours) }} {{ t.hoursSuffix }}</span>
+                      <span class="text-xs font-semibold text-muted-foreground">{{ $t('detox.storyLabel') }}</span>
+                      <span class="text-sm font-bold text-cyan-400">{{ formatHours(recentStoryHours) }} {{ $t('common.hoursSuffix') }}</span>
                     </div>
 
                     <!-- Session Hours -->
                     <div class="flex justify-between items-center">
-                      <span class="text-xs font-semibold text-muted-foreground">{{ t.sessionLabel }}</span>
-                      <span class="text-sm font-bold text-rose-500">{{ formatHours(recentSessionHours) }} {{ t.hoursSuffix }}</span>
+                      <span class="text-xs font-semibold text-muted-foreground">{{ $t('detox.sessionLabel') }}</span>
+                      <span class="text-sm font-bold text-rose-500">{{ formatHours(recentSessionHours) }} {{ $t('common.hoursSuffix') }}</span>
                     </div>
                   </div>
                 </div>
@@ -254,7 +254,7 @@
                     <circle cx="12" cy="12" r="3"></circle>
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                   </svg>
-                  <span>{{ showCategorizer ? 'Hide Categorizer' : 'Customize Categories' }}</span>
+                  <span>{{ showCategorizer ? $t('detox.hideCategorizer') : $t('detox.showCategorizer') }}</span>
                 </UiButton>
               </div>
             </div>
@@ -263,8 +263,8 @@
             <transition name="slide-fade">
               <div v-if="showCategorizer && recentlyPlayedGames.length > 0" class="mt-6 pt-6 border-t border-border/60">
                 <div class="mb-4">
-                  <h3 class="text-sm font-bold text-foreground">{{ t.customizeHeader }}</h3>
-                  <p class="text-xs text-muted-foreground font-medium mt-0.5">{{ t.customizeDesc }}</p>
+                  <h3 class="text-sm font-bold text-foreground">{{ $t('detox.customizeHeader') }}</h3>
+                  <p class="text-xs text-muted-foreground font-medium mt-0.5">{{ $t('detox.customizeDesc') }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -287,7 +287,7 @@
                           {{ game.name }}
                         </h4>
                         <p class="text-[10px] text-muted-foreground/90 font-semibold mt-0.5">
-                          {{ Math.round((game.playtime_2weeks / 60) * 10) / 10 }} {{ t.hoursSuffix }}
+                          {{ Math.round((game.playtime_2weeks / 60) * 10) / 10 }} {{ $t('common.hoursSuffix') }}
                         </p>
                       </div>
                     </div>
@@ -298,7 +298,7 @@
                       size="icon" 
                       class="h-8 w-8 rounded-xl shrink-0 transition-transform active:scale-95"
                       :class="getGameCategory(game) === 'story' ? 'text-cyan-400 bg-cyan-500/5 border-cyan-500/20 hover:text-cyan-300' : 'text-rose-500 bg-rose-500/5 border-rose-500/20 hover:text-rose-400'"
-                      :title="getGameCategory(game) === 'story' ? t.storyBtn : t.sessionBtn"
+                      :title="getGameCategory(game) === 'story' ? $t('detox.storyBtn') : $t('detox.sessionBtn')"
                       @click="toggleGameCategory(game.appid)"
                     >
                       <span class="text-base select-none">
@@ -324,8 +324,8 @@
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
               </svg>
               <div>
-                <UiCardTitle class="text-lg font-bold">Steam API Credentials</UiCardTitle>
-                <UiCardDescription class="text-xs text-neutral-400 mt-0.5">Credentials are stored locally in your browser and used only to query Steam.</UiCardDescription>
+                <UiCardTitle class="text-lg font-bold">{{ $t('index.credentials.title') }}</UiCardTitle>
+                <UiCardDescription class="text-xs text-neutral-400 mt-0.5">{{ $t('index.credentials.description') }}</UiCardDescription>
               </div>
             </div>
           </UiCardHeader>
@@ -333,45 +333,43 @@
           <UiCardContent>
             <form @submit.prevent="saveSettings" class="space-y-5">
               <div>
-                <label for="apiKey" class="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Steam Web API Key</label>
+                <label for="apiKey" class="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">{{ $t('index.credentials.apiKey') }}</label>
                 <UiInput 
                   type="password" 
                   id="apiKey" 
                   v-model="apiKey"
-                  placeholder="Paste your Steam Web API Key" 
+                  :placeholder="$t('index.credentials.apiKeyPlaceholder')" 
                 />
                 <p class="mt-1.5 text-xs text-neutral-500 leading-normal">
-                  You can obtain a key for free from the official page: 
+                  {{ $t('index.credentials.apiKeyHelp') }} 
                   <a href="https://steamcommunity.com/dev/apikey" target="_blank" class="text-cyan-400 hover:underline transition-colors font-medium">Steam Dev API Key</a>.
                 </p>
               </div>
 
               <div>
-                <label for="steamId" class="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Steam 64-bit ID</label>
+                <label for="steamId" class="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">{{ $t('index.credentials.steamId') }}</label>
                 <UiInput 
                   type="text" 
                   id="steamId" 
                   v-model="steamId"
-                  placeholder="Example: 76561198034567890" 
+                  :placeholder="$t('index.credentials.steamIdPlaceholder')" 
                 />
                 <p class="mt-1.5 text-xs text-neutral-500 leading-normal">
-                  This is a 17-digit numeric code. You can find yours by searching your username at websites like 
-                  <a href="https://steamid.io" target="_blank" class="text-cyan-400 hover:underline transition-colors font-medium">steamid.io</a> 
-                  or checking your Steam Profile URL.
+                  {{ $t('index.credentials.steamIdHelp') }}
                 </p>
               </div>
 
               <!-- Display Language inside Config Modal -->
               <div>
-                <label for="steamLanguage" class="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Display Language / Мова відображення</label>
-                <UiSelect v-model="selectedLang" @update:modelValue="handleLangChange">
+                <label for="steamLanguage" class="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">{{ $t('index.credentials.displayLanguage') }}</label>
+                <UiSelect v-model="locale" @update:modelValue="handleLangChange">
                   <UiSelectTrigger>
-                    <UiSelectValue placeholder="Choose Language" />
+                    <UiSelectValue :placeholder="$t('index.credentials.displayLanguage')" />
                   </UiSelectTrigger>
                   <UiSelectContent>
-                    <UiSelectItem value="ukrainian">Українська (Ukrainian)</UiSelectItem>
-                    <UiSelectItem value="english">English</UiSelectItem>
-                    <UiSelectItem value="russian">Русский (Russian)</UiSelectItem>
+                    <UiSelectItem value="uk">Українська (Ukrainian)</UiSelectItem>
+                    <UiSelectItem value="en">English</UiSelectItem>
+                    <UiSelectItem value="ru">Русский (Russian)</UiSelectItem>
                   </UiSelectContent>
                 </UiSelect>
               </div>
@@ -383,7 +381,7 @@
                   <path d="m9 12 2 2 4-4"></path>
                 </svg>
                 <div>
-                  <span class="font-bold">Active Configuration:</span> Currently loading your library automatically using key & ID from the server-side env variables (`.env`). Entering keys above will temporarily override the server defaults.
+                  <span class="font-bold">{{ $t('index.credentials.activeConfig') }}</span> {{ $t('index.credentials.activeConfigHelp') }}
                 </div>
               </div>
 
@@ -396,7 +394,7 @@
                   <svg v-if="isLoading" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
                   </svg>
-                  <span>{{ isLoading ? 'Loading...' : 'Save & Load Library' }}</span>
+                  <span>{{ isLoading ? $t('common.loading') : $t('index.saveLoadBtn') }}</span>
                 </UiButton>
                 
                 <UiButton 
@@ -405,7 +403,7 @@
                   variant="destructive"
                   @click="clearSettings"
                 >
-                  Reset
+                  {{ $t('common.reset') }}
                 </UiButton>
               </div>
             </form>
@@ -430,7 +428,7 @@
             <UiInput 
               type="text" 
               v-model="searchQuery"
-              placeholder="Search games..." 
+              :placeholder="$t('index.searchPlaceholder')" 
               class="w-full pl-9 pr-8"
             />
             <UiButton 
@@ -449,13 +447,13 @@
 
           <!-- Sorting Tabs Selector (shadcn tabs) -->
           <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
-            <span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-2 shrink-0">Sort By:</span>
+            <span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-2 shrink-0">{{ $t('index.sortBy') }}</span>
             <UiTabs v-model="sortBy" class="w-auto">
               <UiTabsList>
-                <UiTabsTrigger value="lastPlayed">Last Played</UiTabsTrigger>
-                <UiTabsTrigger value="playtimeDesc">Most Played</UiTabsTrigger>
-                <UiTabsTrigger value="playtimeAsc">Least Played</UiTabsTrigger>
-                <UiTabsTrigger value="name">Name A-Z</UiTabsTrigger>
+                <UiTabsTrigger value="lastPlayed">{{ $t('index.sortOptions.lastPlayed') }}</UiTabsTrigger>
+                <UiTabsTrigger value="playtimeDesc">{{ $t('index.sortOptions.playtimeDesc') }}</UiTabsTrigger>
+                <UiTabsTrigger value="playtimeAsc">{{ $t('index.sortOptions.playtimeAsc') }}</UiTabsTrigger>
+                <UiTabsTrigger value="name">{{ $t('index.sortOptions.name') }}</UiTabsTrigger>
               </UiTabsList>
             </UiTabs>
           </div>
@@ -469,9 +467,9 @@
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
           </svg>
           <div class="flex-1">
-            <span class="font-bold">Error loading library:</span> {{ error }}
+            <span class="font-bold">{{ $t('index.errorLoading') }}</span> {{ error }}
             <UiButton variant="link" @click="showSettings = true" class="p-0 h-auto text-xs font-bold block mt-2 text-cyan-400 hover:text-cyan-300">
-              Configure Settings &rarr;
+              {{ $t('index.configureSettings') }} &rarr;
             </UiButton>
           </div>
         </div>
@@ -524,17 +522,17 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-current mr-2" viewBox="0 0 24 24">
                       <polygon points="5 3 19 12 5 21 5 3"></polygon>
                     </svg>
-                    <span>Play Game</span>
+                    <span>{{ $t('index.playGame') }}</span>
                   </a>
                 </UiButton>
-                
+
                 <UiButton as-child variant="outline" class="w-[80%]">
-                  <NuxtLink :to="'/game/' + game.appid">
+                  <NuxtLinkLocale :to="`/game/${game.appid}`"> 
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                     </svg>
-                    <span>Achievements</span>
-                  </NuxtLink>
+                    <span>{{ $t('index.achievements') }}</span>
+                  </NuxtLinkLocale>
                 </UiButton>
               </div>
             </div>
@@ -551,24 +549,24 @@
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
                   </svg>
-                  <span>Last launched: <span class="text-foreground font-semibold">{{ game.last_played_relative }}</span></span>
+                  <span>{{ $t('index.lastLaunched', { time: game.last_played_relative }) }}</span>
                 </div>
               </div>
 
               <!-- Playtime Stats -->
               <div class="flex items-center justify-between pt-3 border-t border-border">
                 <div class="flex flex-col">
-                  <span class="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Total Playtime</span>
+                  <span class="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">{{ $t('index.totalPlaytimeCard') }}</span>
                   <span class="text-xs font-extrabold text-foreground mt-0.5">
-                    {{ formatHours(game.playtime_hours) }} <span class="text-[10px] font-medium text-muted-foreground">hrs</span>
+                    {{ formatHours(game.playtime_hours) }} <span class="text-[10px] font-medium text-muted-foreground">{{ $t('common.hoursSuffix') }}</span>
                   </span>
                 </div>
                 
                 <!-- If played recently -->
                 <div v-if="game.playtime_2weeks && game.playtime_2weeks > 0" class="flex flex-col items-end">
-                  <span class="text-[10px] text-cyan-500 uppercase tracking-wider font-semibold">Recent</span>
+                  <span class="text-[10px] text-cyan-500 uppercase tracking-wider font-semibold">{{ $t('index.recent') }}</span>
                   <span class="text-xs font-bold text-cyan-400 mt-0.5">
-                    +{{ Math.round((game.playtime_2weeks / 60) * 10) / 10 }} hrs
+                    +{{ Math.round((game.playtime_2weeks / 60) * 10) / 10 }} {{ $t('common.hoursSuffix') }}
                   </span>
                 </div>
               </div>
@@ -586,14 +584,14 @@
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
             </div>
-            <h3 class="font-bold text-base">No games match search</h3>
-            <p class="text-xs text-neutral-500 mt-1 max-w-xs mx-auto">Try refining your search keyword or clearing the search box.</p>
+            <h3 class="font-bold text-base">{{ $t('index.noGames') }}</h3>
+            <p class="text-xs text-neutral-500 mt-1 max-w-xs mx-auto">{{ $t('index.noGamesDesc') }}</p>
             <UiButton 
               variant="outline" 
               @click="searchQuery = ''" 
               class="mt-5"
             >
-              Clear Search
+              {{ $t('index.clearSearch') }}
             </UiButton>
           </UiCardContent>
         </UiCard>
@@ -625,7 +623,7 @@
 
           <!-- Modal Title -->
           <h3 class="text-xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400 mb-6 flex items-center gap-2">
-            <span>🎡</span> {{ t.rouletteTitle }}
+            <span>🎡</span> {{ $t('roulette.title') }}
           </h3>
 
           <!-- The Roulette Reel -->
@@ -660,7 +658,7 @@
           <!-- Spinner Status / Results -->
           <div class="w-full space-y-5">
             <div v-if="isSpinning" class="space-y-3">
-              <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest animate-pulse">{{ t.rouletteSpinning }}</p>
+              <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest animate-pulse">{{ $t('roulette.spinning') }}</p>
               <div class="flex justify-center gap-1.5">
                 <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-bounce"></span>
                 <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:0.2s]"></span>
@@ -671,10 +669,10 @@
             <div v-else-if="finalSelectedGame" class="animate-fade-in space-y-5">
               <div class="p-4.5 rounded-2xl bg-cyan-500/5 border border-cyan-500/20 text-sm">
                 <span class="text-2xl mb-2 block select-none">✨</span>
-                <p class="font-bold text-cyan-400 mb-2 leading-snug">{{ t.rouletteLanding }}</p>
+                <p class="font-bold text-cyan-400 mb-2 leading-snug">{{ $t('roulette.landing') }}</p>
                 <h4 class="text-lg font-black text-foreground tracking-tight">{{ finalSelectedGame.name }}</h4>
                 <p class="text-xs text-muted-foreground font-semibold mt-1">
-                  {{ t.roulettePlaytime.replace('{hours}', formatHours(finalSelectedGame.playtime_hours)) }}
+                  {{ $t('roulette.playtime', { hours: formatHours(finalSelectedGame.playtime_hours) }) }}
                 </p>
               </div>
 
@@ -685,25 +683,24 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 fill-current mr-2" viewBox="0 0 24 24">
                       <polygon points="5 3 19 12 5 21 5 3"></polygon>
                     </svg>
-                    <span>{{ t.rouletteLaunch }}</span>
+                    <span>{{ $t('roulette.launch') }}</span>
                   </a>
                 </UiButton>
                 
                 <div class="grid grid-cols-2 gap-2.5 w-full">
                   <UiButton as-child variant="outline" size="sm" class="font-semibold">
                     <NuxtLink :to="'/game/' + finalSelectedGame.appid">
-                      🏆 {{ t.rouletteAchievements }}
+                      🏆 {{ $t('roulette.achievements') }}
                     </NuxtLink>
                   </UiButton>
                   
                   <UiButton variant="outline" size="sm" class="font-semibold" @click="startRoulette">
-                    🔄 {{ t.rouletteAgain }}
+                    🔄 {{ $t('roulette.again') }}
                   </UiButton>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -716,10 +713,11 @@ import { ref, computed, onMounted } from 'vue'
 import { useDark } from '@vueuse/core'
 import type { SteamGame, SteamApiResponse } from '../types'
 
+const { locale } = useI18n()
+
 // State variables
 const apiKey = ref('')
 const steamId = ref('')
-const selectedLang = ref('ukrainian')
 const games = ref<SteamGame[]>([])
 const totalHours = ref(0)
 const totalCount = ref(0)
@@ -746,149 +744,6 @@ const SESSION_GAME_KEYWORDS = [
   'guild wars', 'final fantasy xiv', 'lineage', 'black desert', 'heartstone',
   'call of duty', 'battlefield', 'apex', 'pubg', 'deadlock', 'brawl stars', 'clash'
 ]
-
-const translations: Record<string, any> = {
-  ukrainian: {
-    title: "Якість ігрового часу",
-    description: "Метрика цифрового детоксу: показує баланс між емоційним відпочинком та рутинною ігровою «роботою». Сюжетні ігри дарують емоції, сесійні — споживають час.",
-    storyLabel: "Сюжетні / Емоційні",
-    sessionLabel: "Сесійні / Рутинні",
-    recentPlaytime: "Награно за 2 тижні:",
-    qualityMetric: "Показник балансу",
-    customizeHeader: "Налаштування категорій ігор",
-    customizeDesc: "Тут ви можете вручну змінити категорію ігор, зіграних за останні 2 тижні. Ми автоматично класифікували відомі ігри.",
-    statusLabel: "Статус",
-    storyBtn: "Сюжетна",
-    sessionBtn: "Сесійна",
-    hoursSuffix: "год",
-    tipsTitle: "Рекомендація",
-    states: {
-      inactive: {
-        title: "Чудовий баланс з реалом",
-        desc: "Мало ігрового часу за останні 2 тижні. Ви успішно фокусуєтеся на реальному житті!"
-      },
-      critical: {
-        title: "Друга зміна на роботі",
-        desc: "Чувак, ти не відпочиваєш, ти працюєш на другу зміну! Сходи пограй у щось лінійне й атмосферне або вимкни комп'ютер і прогуляйся."
-      },
-      poor: {
-        title: "Дефіцит емоцій",
-        desc: "У твоєму раціоні занадто багато сесійок. Вони виснажують, а не дають нові емоції. Спробуй розбавити їх хорошою сюжетною грою."
-      },
-      balanced: {
-        title: "Хороший баланс",
-        desc: "Хороший баланс! Ти успішно поєднуєш сесійні катки з атмосферними історіями. Продовжуй у тому ж дусі."
-      },
-      excellent: {
-        title: "Чисте задоволення",
-        desc: "Чудова якість ігрового часу! Ти граєш заради емоцій та сюжетів. Справжній відпочинок для душі."
-      }
-    },
-    // Roulette UA
-    rouletteBtn: "Витягни мене з цього болота!",
-    rouletteTitle: "Рятувальний круг",
-    rouletteSpinning: "Обираємо гру...",
-    rouletteLanding: "Забий на сесійки сьогодні! Повернись у цю гру, там на тебе чекають справжні емоції:",
-    roulettePlaytime: "У тебе там {hours} год. Грай атмосферно!",
-    rouletteAgain: "Крутити ще раз",
-    rouletteLaunch: "Запустити гру",
-    rouletteAchievements: "Досягнення"
-  },
-  english: {
-    title: "Gaming Time Quality",
-    description: "Digital detox metric: shows the balance between emotional rest and routine gaming 'work'. Story games yield emotions, session games drain time.",
-    storyLabel: "Story / Emotional",
-    sessionLabel: "Session / Routine",
-    recentPlaytime: "Played in 2 weeks:",
-    qualityMetric: "Balance Score",
-    customizeHeader: "Configure Game Categories",
-    customizeDesc: "Here you can manually toggle the category of games played in the last 2 weeks. We auto-classified popular titles.",
-    statusLabel: "Status",
-    storyBtn: "Story-driven",
-    sessionBtn: "Session-based",
-    hoursSuffix: "hrs",
-    tipsTitle: "Hygiene Tip",
-    states: {
-      inactive: {
-        title: "Great real-life balance",
-        desc: "Very little playtime in the past 2 weeks. A great balance with real life!"
-      },
-      critical: {
-        title: "Second shift worker",
-        desc: "Dude, you're not resting, you're working a second shift! Go play something linear and atmospheric, or just turn off the computer and go outside."
-      },
-      poor: {
-        title: "Emotional deficit",
-        desc: "Too many session games in your diet. They drain you rather than give new emotions. Try diluting them with a good story game."
-      },
-      balanced: {
-        title: "Good balance",
-        desc: "Good balance! You successfully combine session matches with atmospheric stories. Keep it up."
-      },
-      excellent: {
-        title: "Pure enjoyment",
-        desc: "Excellent gaming quality! You play for emotions and stories. A true rest for your mind."
-      }
-    },
-    // Roulette EN
-    rouletteBtn: "Get Me Out of This Swamp!",
-    rouletteTitle: "Life Saver Roulette",
-    rouletteSpinning: "Choosing a game...",
-    rouletteLanding: "Forget about competitive matches today! Return to this game for some real emotions:",
-    roulettePlaytime: "You have {hours} hrs there. Play atmospheric!",
-    rouletteAgain: "Spin Again",
-    rouletteLaunch: "Launch Game",
-    rouletteAchievements: "Achievements"
-  },
-  russian: {
-    title: "Качество игрового времени",
-    description: "Метрика цифрового детокса: показывает баланс между эмоциональным отдыхом и рутинной игровой «работой». Сюжетные игры дарят эмоции, сессионные — сжигают время.",
-    storyLabel: "Сюжетные / Эмоциональные",
-    sessionLabel: "Сессионные / Рутинные",
-    recentPlaytime: "Наиграно за 2 недели:",
-    qualityMetric: "Показатель баланса",
-    customizeHeader: "Настройка категорий игр",
-    customizeDesc: "Здесь вы можете вручную изменить категорию игр, запущенных за последние 2 недели. Известные игры классифицированы автоматически.",
-    statusLabel: "Статус",
-    storyBtn: "Сюжетная",
-    sessionBtn: "Сессионная",
-    hoursSuffix: "ч",
-    tipsTitle: "Рекомендация",
-    states: {
-      inactive: {
-        title: "Отличный баланс с реалом",
-        desc: "Мало игрового времени за последние 2 недели. Вы отлично справляетесь в реальном мире!"
-      },
-      critical: {
-        title: "Вторая смена на работе",
-        desc: "Чувак, ты не отдыхаешь, ты работаешь во вторую смену! Сходи поиграй во что-то линейное и атмосферное или вообще выключи компьютер и прогуляйся."
-      },
-      poor: {
-        title: "Дефицит эмоций",
-        desc: "В твоем рационе слишком много сессионок. Они истощают, а не дают новые эмоции. Попробуй разбавить их хорошей сюжетной игрой."
-      },
-      balanced: {
-        title: "Хороший баланс",
-        desc: "Хороший баланс! Ты успешно совмещаешь сессионные катки с атмосферными историями. Продолжай в том же духе."
-      },
-      excellent: {
-        title: "Чистое удовольствие",
-        desc: "Отличное качество игрового времени! Ты играешь ради эмоций и сюжетов. Настоящий отдых для души."
-      }
-    },
-    // Roulette RU
-    rouletteBtn: "Вытащи меня из этого болота!",
-    rouletteTitle: "Спасательный круг",
-    rouletteSpinning: "Выбираем игру...",
-    rouletteLanding: "Забей на сессионки сегодня! Вернись в эту игру, там тебя ждут настоящие эмоции:",
-    roulettePlaytime: "У тебя там {hours} ч. Играй атмосферно!",
-    rouletteAgain: "Крутить еще раз",
-    rouletteLaunch: "Запустить игру",
-    rouletteAchievements: "Достижения"
-  }
-}
-
-const t = computed(() => translations[selectedLang.value] || translations.english)
 
 function isDefaultSessionGame(name: string): boolean {
   const lowercaseName = name.toLowerCase()
@@ -1093,7 +948,8 @@ onMounted(() => {
   // Load credentials if they exist
   apiKey.value = localStorage.getItem('steam_api_key') || ''
   steamId.value = localStorage.getItem('steam_id') || ''
-  selectedLang.value = localStorage.getItem('steam_language') || 'ukrainian'
+  const savedLang = localStorage.getItem('steam_language') || 'uk'
+  locale.value = savedLang === 'ukrainian' ? 'uk' : (savedLang === 'english' ? 'en' : (savedLang === 'russian' ? 'ru' : savedLang))
 
   // Load manual categories from local storage
   if (import.meta.client) {
@@ -1121,7 +977,7 @@ async function fetchGames() {
     // Pass local storage credentials if we have them
     if (apiKey.value.trim()) params.append('apiKey', apiKey.value.trim())
     if (steamId.value.trim()) params.append('steamId', steamId.value.trim())
-    params.append('lang', selectedLang.value)
+    params.append('lang', locale.value)
     
     const response = await $fetch<SteamApiResponse>(`/api/steam/games?${params.toString()}`)
     
@@ -1136,7 +992,7 @@ async function fetchGames() {
         localStorage.setItem('steam_api_key', apiKey.value.trim())
         localStorage.setItem('steam_id', steamId.value.trim())
       }
-      localStorage.setItem('steam_language', selectedLang.value)
+      localStorage.setItem('steam_language', locale.value)
       
       showSettings.value = false
     } else {
@@ -1157,7 +1013,7 @@ async function fetchGames() {
 }
 
 function handleLangChange() {
-  localStorage.setItem('steam_language', selectedLang.value)
+  localStorage.setItem('steam_language', locale.value)
   fetchGames()
 }
 
@@ -1169,14 +1025,14 @@ function saveSettings() {
     showSettings.value = true
     return
   }
-  localStorage.setItem('steam_language', selectedLang.value)
+  localStorage.setItem('steam_language', locale.value)
   fetchGames()
 }
 
 function clearSettings() {
   apiKey.value = ''
   steamId.value = ''
-  selectedLang.value = 'ukrainian'
+  locale.value = 'uk'
   localStorage.removeItem('steam_api_key')
   localStorage.removeItem('steam_id')
   localStorage.removeItem('steam_language')

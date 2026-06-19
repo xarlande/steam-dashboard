@@ -1,29 +1,69 @@
 import { defineEventHandler, getQuery } from 'h3';
 
-function getRelativeTime(timestamp: number): string {
-  if (!timestamp || timestamp === 0) return 'Never';
+function getRelativeTime(timestamp: number, lang: string): string {
+  const isUa = lang === 'uk' || lang === 'ukrainian';
+  const isRu = lang === 'ru' || lang === 'russian';
+
+  if (!timestamp || timestamp === 0) {
+    if (isUa) return 'Ніколи';
+    if (isRu) return 'Никогда';
+    return 'Never';
+  }
   const now = Math.floor(Date.now() / 1000);
   const diff = now - timestamp;
   
-  if (diff < 0) return 'Just now';
-  if (diff < 60) return 'Just now';
+  if (diff < 0 || diff < 60) {
+    if (isUa) return 'Щойно';
+    if (isRu) return 'Только что';
+    return 'Just now';
+  }
   
   const mins = Math.floor(diff / 60);
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 60) {
+    if (isUa) return `${mins} хв. тому`;
+    if (isRu) return `${mins} мин. назад`;
+    return `${mins}m ago`;
+  }
   
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) {
+    if (isUa) return `${hours} год. тому`;
+    if (isRu) return `${hours} ч. назад`;
+    return `${hours}h ago`;
+  }
   
   const days = Math.floor(hours / 24);
-  if (days === 1) return 'Yesterday';
-  if (days < 30) return `${days}d ago`;
+  if (days === 1) {
+    if (isUa) return 'Вчора';
+    if (isRu) return 'Вчера';
+    return 'Yesterday';
+  }
+  if (days < 30) {
+    if (isUa) return `${days} дн. тому`;
+    if (isRu) return `${days} дн. назад`;
+    return `${days}d ago`;
+  }
   
   const months = Math.floor(days / 30);
-  if (months === 1) return '1 month ago';
-  if (months < 12) return `${months} months ago`;
+  if (months === 1) {
+    if (isUa) return '1 місяць тому';
+    if (isRu) return '1 месяц назад';
+    return '1 month ago';
+  }
+  if (months < 12) {
+    if (isUa) return `${months} міс. тому`;
+    if (isRu) return `${months} мес. назад`;
+    return `${months} months ago`;
+  }
   
   const years = Math.floor(months / 12);
-  if (years === 1) return '1 year ago';
+  if (years === 1) {
+    if (isUa) return '1 рік тому';
+    if (isRu) return '1 год назад';
+    return '1 year ago';
+  }
+  if (isUa) return `${years} р. тому`;
+  if (isRu) return `${years} г. назад`;
   return `${years} years ago`;
 }
 
@@ -33,7 +73,21 @@ export default defineEventHandler(async (event) => {
   const appid = query.appid as string;
   const apiKey = (query.apiKey as string) || process.env.STEAM_API_KEY;
   const steamId = (query.steamId as string) || process.env.STEAM_ID;
-  const lang = (query.lang as string) || process.env.STEAM_LANGUAGE || 'ukrainian';
+  const rawLang = (query.lang as string) || process.env.STEAM_LANGUAGE || 'uk';
+  
+  let steamLang = 'ukrainian';
+  if (rawLang === 'en' || rawLang === 'english') {
+    steamLang = 'english';
+  } else if (rawLang === 'ru' || rawLang === 'russian') {
+    steamLang = 'russian';
+  } else if (rawLang === 'uk' || rawLang === 'ukrainian') {
+    steamLang = 'ukrainian';
+  } else {
+    steamLang = 'english';
+  }
+  
+  const isUa = rawLang === 'uk' || rawLang === 'ukrainian';
+  const isRu = rawLang === 'ru' || rawLang === 'russian';
   
   if (!appid) {
     return {
@@ -49,8 +103,8 @@ export default defineEventHandler(async (event) => {
     };
   }
   
-  const playerUrl = `https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/?appid=${appid}&key=${apiKey}&steamid=${steamId}&l=${lang}`;
-  const schemaUrl = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?appid=${appid}&key=${apiKey}&l=${lang}`;
+  const playerUrl = `https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/?appid=${appid}&key=${apiKey}&steamid=${steamId}&l=${steamLang}`;
+  const schemaUrl = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?appid=${appid}&key=${apiKey}&l=${steamLang}`;
   const globalUrl = `https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v2/?gameid=${appid}&format=json`;
   
   try {
@@ -164,7 +218,7 @@ export default defineEventHandler(async (event) => {
         description: schemaAch.description || '',
         achieved,
         unlocktime: playerAch.unlocktime || 0,
-        unlocktime_relative: achieved ? getRelativeTime(playerAch.unlocktime) : 'Locked',
+        unlocktime_relative: achieved ? getRelativeTime(playerAch.unlocktime, rawLang) : (isUa ? 'Заблоковано' : (isRu ? 'Заблокировано' : 'Locked')),
         icon: schemaAch.icon || 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/252490/achievements/default.jpg',
         icongray: schemaAch.icongray || 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/252490/achievements/default.jpg',
         global_percent

@@ -1,0 +1,126 @@
+{
+  "common": {
+    "hoursSuffix": "hrs",
+    "hoursShort": "hrs",
+    "themeToggle": "Toggle theme",
+    "loading": "Loading...",
+    "retry": "Retry",
+    "reset": "Reset",
+    "close": "Close"
+  },
+  "index": {
+    "title": "Steam Library Space",
+    "subtitle": "Your personalized gameplay analytics dashboard",
+    "configBtn": "Config",
+    "saveLoadBtn": "Save & Load Library",
+    "searchPlaceholder": "Search games...",
+    "sortBy": "Sort By:",
+    "sortOptions": {
+      "lastPlayed": "Last Played",
+      "playtimeDesc": "Most Played",
+      "playtimeAsc": "Least Played",
+      "name": "Name A-Z"
+    },
+    "stats": {
+      "totalGames": "Total Games Played",
+      "totalGamesDesc": "Games with recorded playtime",
+      "totalPlaytime": "Total Playtime",
+      "totalPlaytimeDesc": "Combined time in game space",
+      "mostPlayed": "Most Played Game",
+      "none": "None"
+    },
+    "credentials": {
+      "title": "Steam API Credentials",
+      "description": "Credentials are stored locally in your browser and used only to query Steam.",
+      "apiKey": "Steam Web API Key",
+      "apiKeyPlaceholder": "Paste your Steam Web API Key",
+      "apiKeyHelp": "You can obtain a key for free from the official page:",
+      "steamId": "Steam 64-bit ID",
+      "steamIdPlaceholder": "Example: 76561198034567890",
+      "steamIdHelp": "This is a 17-digit numeric code. You can find yours by searching your username at websites like steamid.io or checking your Steam Profile URL.",
+      "displayLanguage": "Display Language",
+      "activeConfig": "Active Configuration:",
+      "activeConfigHelp": "Currently loading your library automatically using key & ID from the server-side env variables (.env). Entering keys above will temporarily override the server defaults.",
+      "validationError": "Please provide both a Steam API Key and a Steam 64 ID."
+    },
+    "errorLoading": "Error loading library:",
+    "configureSettings": "Configure Settings",
+    "playGame": "Play Game",
+    "achievements": "Achievements",
+    "lastLaunched": "Last launched: {time}",
+    "totalPlaytimeCard": "Total Playtime",
+    "recentPlaytimeCard": "Recent: +{hours} hrs",
+    "noGames": "No games match search",
+    "noGamesDesc": "Try refining your search keyword or clearing the search box.",
+    "clearSearch": "Clear Search"
+  },
+  "detox": {
+    "title": "Gaming Time Quality",
+    "description": "Digital detox metric: shows the balance between emotional rest and routine gaming 'work'. Story games yield emotions, session games drain time.",
+    "storyLabel": "Story / Emotional",
+    "sessionLabel": "Session / Routine",
+    "recentPlaytime": "Played in 2 weeks:",
+    "storyRatio": "Story Games",
+    "balanceScore": "Balance Score",
+    "customizeHeader": "Configure Game Categories",
+    "customizeDesc": "Here you can manually toggle the category of games played in the last 2 weeks. We auto-classified popular titles.",
+    "statusLabel": "Status",
+    "storyBtn": "Story-driven",
+    "sessionBtn": "Session-based",
+    "tipsTitle": "Hygiene Tip",
+    "showCategorizer": "Customize Categories",
+    "hideCategorizer": "Hide Categorizer",
+    "states": {
+      "inactive": {
+        "title": "Great real-life balance",
+        "desc": "Very little playtime in the past 2 weeks. A great balance with real life!"
+      },
+      "critical": {
+        "title": "Second shift worker",
+        "desc": "Dude, you're not resting, you're working a second shift! Go play something linear and atmospheric, or just turn off the computer and go outside."
+      },
+      "poor": {
+        "title": "Emotional deficit",
+        "desc": "Too many session games in your diet. They drain you rather than give new emotions. Try diluting them with a good story game."
+      },
+      "balanced": {
+        "title": "Good balance",
+        "desc": "Good balance! You successfully combine session matches with atmospheric stories. Keep it up."
+      },
+      "excellent": {
+        "title": "Pure enjoyment",
+        "desc": "Excellent gaming quality! You play for emotions and stories. A true rest for your mind."
+      }
+    }
+  },
+  "roulette": {
+    "btn": "Get Me Out of This Swamp!",
+    "title": "Life Saver Roulette",
+    "spinning": "Choosing a game...",
+    "landing": "Forget about competitive matches today! Return to this game for some real emotions:",
+    "playtime": "You have {hours} hrs there. Play atmospheric!",
+    "again": "Spin Again",
+    "launch": "Launch Game",
+    "achievements": "Achievements"
+  },
+  "game": {
+    "backToLibrary": "Back to Library",
+    "completionProgress": "Completion progress",
+    "unlockedLabel": "Unlocked",
+    "searchPlaceholder": "Search achievements...",
+    "filterLabel": "Filter:",
+    "filterAll": "All",
+    "filterUnlocked": "Unlocked",
+    "filterLocked": "Locked",
+    "noAchievements": "No achievements found",
+    "noAchievementsDesc": "Try refining your search keyword or clearing the search box.",
+    "nextTitle": "The Next Achievements (Easiest Targets)",
+    "nextDesc": "These locked achievements have the highest global unlock percentages. They should be your next target!",
+    "globalUnlocked": "unlocked",
+    "congratsTitle": "Congratulations! 🎉",
+    "congratsDesc": "You have unlocked all achievements in this game! A true perfectionist.",
+    "returnBtn": "Return to Library",
+    "failedLoad": "Failed to load achievements",
+    "unlockedAt": "Unlocked {time}"
+  }
+}
