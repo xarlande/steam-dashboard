@@ -51,12 +51,14 @@ export default defineEventHandler(async (event) => {
   
   const playerUrl = `https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/?appid=${appid}&key=${apiKey}&steamid=${steamId}&l=${lang}`;
   const schemaUrl = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?appid=${appid}&key=${apiKey}&l=${lang}`;
+  const globalUrl = `https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v2/?gameid=${appid}&format=json`;
   
   try {
-    // Fetch both endpoints in parallel using Promise.allSettled for robustness
-    const [playerResult, schemaResult] = await Promise.allSettled([
+    // Fetch all three endpoints in parallel using Promise.allSettled for robustness
+    const [playerResult, schemaResult, globalResult] = await Promise.allSettled([
       $fetch<any>(playerUrl),
-      $fetch<any>(schemaUrl)
+      $fetch<any>(schemaUrl),
+      $fetch<any>(globalUrl)
     ]);
     
     // 1. Handle Player Achievements status
@@ -130,6 +132,20 @@ export default defineEventHandler(async (event) => {
       console.warn(`Could not load schema for game ${appid}. Falling back to basic values.`, schemaResult.reason);
     }
     
+    // Parse global percentages
+    const globalPercentages = new Map<string, number>();
+    if (globalResult.status === 'fulfilled') {
+      const globalData = globalResult.value;
+      const pctList = globalData?.achievementpercentages?.achievements || [];
+      pctList.forEach((item: any) => {
+        if (item.name) {
+          globalPercentages.set(item.name, Math.round((item.percent || 0) * 10) / 10);
+        }
+      });
+    } else {
+      console.warn(`Could not load global achievement percentages for game ${appid}.`, globalResult.reason);
+    }
+    
     // Create lookup map for schema details
     const schemaMap = new Map<string, any>();
     schemaAchievements.forEach((item) => {
@@ -140,6 +156,7 @@ export default defineEventHandler(async (event) => {
     const achievements = playerAchievements.map((playerAch: any) => {
       const schemaAch = schemaMap.get(playerAch.apiname) || {};
       const achieved = playerAch.achieved === 1;
+      const global_percent = globalPercentages.get(playerAch.apiname) || 0;
       
       return {
         apiname: playerAch.apiname,
@@ -149,7 +166,8 @@ export default defineEventHandler(async (event) => {
         unlocktime: playerAch.unlocktime || 0,
         unlocktime_relative: achieved ? getRelativeTime(playerAch.unlocktime) : 'Locked',
         icon: schemaAch.icon || 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/252490/achievements/default.jpg',
-        icongray: schemaAch.icongray || 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/252490/achievements/default.jpg'
+        icongray: schemaAch.icongray || 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/252490/achievements/default.jpg',
+        global_percent
       };
     });
     
