@@ -58,17 +58,12 @@
 </template>
 
 <script lang="ts" setup>
-const { locale, locales, loadLocaleMessages } = useI18n()
-const switchLocalePath = useSwitchLocalePath()
+const { locales, setLocale, locale } = useI18n()
 const colorMode = useColorMode()
-async function handleLangChange(value: typeof locale.value) {
-  await loadLocaleMessages(value)
-  locale.value = value
-  localStorage.setItem('steam_language', value)
-  
-  const newPath = switchLocalePath(value)
-  if (newPath) {
-    await navigateTo(newPath)
+async function handleLangChange(value: any) {
+  if (typeof value === 'string') {
+    localStorage.setItem('steam_language', value)
+    await setLocale(value as any)
   }
 }
 

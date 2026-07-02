@@ -17,13 +17,18 @@ export default defineNuxtConfig({
     }
   },
   i18n: {
-    strategy: 'prefix_except_default',
+    strategy: 'prefix_and_default',
     locales: [
       { code: 'uk', name: 'UA', file: 'uk.json' },
       { code: 'en', name: 'EN', file: 'en.json' },
       { code: 'ru', name: 'RU', file: 'ru.json' }
     ],
     defaultLocale: 'uk',
+    detectBrowserLanguage: {
+      redirectOn: 'root',
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+    }
   },
   css: ['./app/assets/css/main.css'],
   vite: {

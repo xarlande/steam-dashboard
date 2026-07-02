@@ -345,7 +345,7 @@
               <!-- Display Language inside Config Modal -->
               <div>
                 <label for="steamLanguage" class="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">{{ $t('index.credentials.displayLanguage') }}</label>
-                <UiSelect v-model="locale" @update:modelValue="handleLangChange">
+                <UiSelect :model-value="locale" @update:model-value="handleLangChange">
                   <UiSelectTrigger>
                     <UiSelectValue :placeholder="$t('index.credentials.displayLanguage')" />
                   </UiSelectTrigger>
@@ -748,7 +748,14 @@
 <script lang="ts" setup>
 import type { SteamGame, SteamApiResponse } from '../types'
 
-const { locale, t, loadLocaleMessages } = useI18n()
+const { locale, setLocale, t } = useI18n()
+
+async function handleLangChange(value: any) {
+  if (typeof value === 'string') {
+    localStorage.setItem('steam_language', value)
+    await setLocale(value as any)
+  }
+}
 
 
 // State variables
@@ -1064,10 +1071,10 @@ function saveSettings() {
   fetchGames()
 }
 
-function clearSettings() {
+async function clearSettings() {
   apiKey.value = ''
   steamId.value = ''
-  locale.value = 'uk'
+  await setLocale('uk')
   localStorage.removeItem('steam_api_key')
   localStorage.removeItem('steam_id')
   localStorage.removeItem('steam_language')
@@ -1109,7 +1116,7 @@ function handleImportFile(event: Event) {
   if (!file) return
 
   const reader = new FileReader()
-  reader.onload = (e) => {
+  reader.onload = async (e) => {
     try {
       const raw = e.target?.result as string
       const data = JSON.parse(raw)
@@ -1127,7 +1134,7 @@ function handleImportFile(event: Event) {
       }
       if (data.steam_language !== undefined) {
         localStorage.setItem('steam_language', String(data.steam_language))
-        locale.value = String(data.steam_language)
+        await setLocale(String(data.steam_language) as any)
       }
       if (data.steam_game_categories && typeof data.steam_game_categories === 'object') {
         localStorage.setItem('steam_game_categories', JSON.stringify(data.steam_game_categories))

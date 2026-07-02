@@ -343,8 +343,6 @@ const headerImgUrl = computed(() => {
 })
 
 onMounted(() => {
-  const savedLang = localStorage.getItem('steam_language') || 'uk'
-  locale.value = savedLang === 'ukrainian' ? 'uk' : (savedLang === 'english' ? 'en' : (savedLang === 'russian' ? 'ru' : savedLang))
   loadAchievements()
 })
 
