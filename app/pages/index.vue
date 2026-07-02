@@ -84,7 +84,7 @@
       </header>
 
       <!-- Global Stats Summary (Show only when games loaded) -->
-      <section v-if="games.length > 0 && !showSettings" class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8 animate-fade-in">
+      <section v-if="games.length > 0 && !showSettings" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8 animate-fade-in">
         <!-- Stat Card 1: Total Games -->
         <UiCard class="relative overflow-hidden">
           <UiCardContent>
@@ -125,6 +125,20 @@
             <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{{ $t('index.stats.mostPlayed') }}</p>
             <p class="text-xl font-extrabold mt-2 truncate pr-16 tracking-tight">{{ mostPlayedGame?.name || $t('index.stats.none') }}</p>
             <p class="text-xs mt-1 font-semibold text-indigo-400">{{ mostPlayedGame ? formatHours(mostPlayedGame.playtime_hours) + ' ' + $t('common.hoursSuffix') : '0 ' + $t('common.hoursSuffix') }}</p>
+          </UiCardContent>
+        </UiCard>
+
+        <!-- Stat Card 4: Perfect Games -->
+        <UiCard class="relative overflow-hidden">
+          <UiCardContent>
+            <div class="absolute -right-4 -bottom-4 opacity-10 text-amber-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            </div>
+            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{{ $t('index.stats.perfectGames') }}</p>
+            <p class="text-3xl font-extrabold mt-2 tracking-tight">{{ perfectGamesCount }}</p>
+            <p class="text-xs text-muted-foreground/85 mt-1">{{ $t('index.stats.perfectGamesDesc') }}</p>
           </UiCardContent>
         </UiCard>
       </section>
@@ -469,11 +483,11 @@
       <!-- Main Controls and Grid -->
       <section v-if="!showSettings" class="space-y-6 animate-fade-in">
         
-        <!-- Controls: Search & Sort Tabs -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-card border border-border">
+        <!-- Controls: Search & Sort Tabs & Progress Filter -->
+        <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 p-4 rounded-2xl bg-card border border-border">
           
           <!-- Search Bar -->
-          <div class="relative flex-1 max-w-md">
+          <div class="relative w-full xl:flex-1 max-w-md">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground z-10">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
@@ -500,17 +514,32 @@
             </UiButton>
           </div>
 
-          <!-- Sorting Tabs Selector (shadcn tabs) -->
-          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
-            <span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-2 shrink-0">{{ $t('index.sortBy') }}</span>
-            <UiTabs v-model="sortBy" class="w-auto">
-              <UiTabsList>
-                <UiTabsTrigger value="lastPlayed">{{ $t('index.sortOptions.lastPlayed') }}</UiTabsTrigger>
-                <UiTabsTrigger value="playtimeDesc">{{ $t('index.sortOptions.playtimeDesc') }}</UiTabsTrigger>
-                <UiTabsTrigger value="playtimeAsc">{{ $t('index.sortOptions.playtimeAsc') }}</UiTabsTrigger>
-                <UiTabsTrigger value="name">{{ $t('index.sortOptions.name') }}</UiTabsTrigger>
-              </UiTabsList>
-            </UiTabs>
+          <!-- Selectors Group -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 flex-wrap">
+            <!-- Progress Completion Filter Tabs -->
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+              <span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-2 shrink-0">{{ $t('index.filterCompletion') }}</span>
+              <UiTabs v-model="filterCompletion" class="w-auto">
+                <UiTabsList>
+                  <UiTabsTrigger value="all">{{ $t('index.filterCompletionOptions.all') }}</UiTabsTrigger>
+                  <UiTabsTrigger value="perfect">{{ $t('index.filterCompletionOptions.perfect') }}</UiTabsTrigger>
+                  <UiTabsTrigger value="inProgress">{{ $t('index.filterCompletionOptions.inProgress') }}</UiTabsTrigger>
+                </UiTabsList>
+              </UiTabs>
+            </div>
+
+            <!-- Sorting Tabs Selector (shadcn tabs) -->
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+              <span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-2 shrink-0">{{ $t('index.sortBy') }}</span>
+              <UiTabs v-model="sortBy" class="w-auto">
+                <UiTabsList>
+                  <UiTabsTrigger value="lastPlayed">{{ $t('index.sortOptions.lastPlayed') }}</UiTabsTrigger>
+                  <UiTabsTrigger value="playtimeDesc">{{ $t('index.sortOptions.playtimeDesc') }}</UiTabsTrigger>
+                  <UiTabsTrigger value="playtimeAsc">{{ $t('index.sortOptions.playtimeAsc') }}</UiTabsTrigger>
+                  <UiTabsTrigger value="name">{{ $t('index.sortOptions.name') }}</UiTabsTrigger>
+                </UiTabsList>
+              </UiTabs>
+            </div>
           </div>
         </div>
 
@@ -551,6 +580,7 @@
             v-for="game in filteredAndSortedGames" 
             :key="game.appid"
             class="group flex flex-col h-full game-card hover:-translate-y-1 relative"
+            :class="game.is_perfect ? 'game-card-perfect' : ''"
           >
             <!-- Game Capsule Banner -->
             <div class="relative aspect-[460/215] overflow-hidden shrink-0">
@@ -568,6 +598,11 @@
               <!-- App ID Badge (shadcn Badge) -->
               <UiBadge variant="secondary" class="absolute top-2.5 right-2.5">
                 ID: {{ game.appid }}
+              </UiBadge>
+
+              <!-- 100% achievements badge -->
+              <UiBadge v-if="game.is_perfect" class="absolute top-2.5 left-2.5 bg-amber-500 hover:bg-amber-600 text-black font-black flex items-center gap-1 border-0 shadow-md">
+                🏆 100%
               </UiBadge>
 
               <!-- Hover Actions overlay -->
@@ -605,6 +640,19 @@
                     <polyline points="12 6 12 12 16 14"></polyline>
                   </svg>
                   <span>{{ $t('index.lastLaunched', { time: game.last_played_relative }) }}</span>
+                </div>
+
+                <!-- Achievements Progress -->
+                <div v-if="game.has_achievements" class="mt-3.5 space-y-1.5">
+                  <div class="flex justify-between items-center text-[10px] font-bold text-muted-foreground">
+                    <span class="flex items-center gap-1">🏆 {{ game.achievements_unlocked }} / {{ game.achievements_total }}</span>
+                    <span>{{ Math.round((game.achievements_unlocked / game.achievements_total) * 100) }}%</span>
+                  </div>
+                  <UiProgress 
+                    :model-value="Math.round((game.achievements_unlocked / game.achievements_total) * 100)" 
+                    class="h-1.5 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-800" 
+                    :class="game.is_perfect ? 'progress-perfect' : ''"
+                  />
                 </div>
               </div>
 
@@ -779,8 +827,13 @@ const isLoading = ref(false)
 const error = ref('')
 const searchQuery = ref('')
 const sortBy = ref<'lastPlayed' | 'playtimeDesc' | 'playtimeAsc' | 'name'>('lastPlayed')
+const filterCompletion = ref<'all' | 'perfect' | 'inProgress'>('all')
 const showSettings = ref(false)
 const loadedFromEnv = ref(false)
+
+const perfectGamesCount = computed(() => {
+  return games.value.filter(g => g.is_perfect).length
+})
 
 // Import/Export feedback state
 const settingsFeedback = ref('')
@@ -1196,6 +1249,13 @@ const mostPlayedGame = computed(() => {
 const filteredAndSortedGames = computed(() => {
   let list = [...games.value]
   
+  // Apply completion status filter
+  if (filterCompletion.value === 'perfect') {
+    list = list.filter(game => game.is_perfect)
+  } else if (filterCompletion.value === 'inProgress') {
+    list = list.filter(game => game.has_achievements && !game.is_perfect)
+  }
+  
   // Apply search query
   if (searchQuery.value.trim()) {
     const q = searchQuery.value.toLowerCase().trim()
@@ -1337,5 +1397,20 @@ const filteredAndSortedGames = computed(() => {
     box-shadow: 0 0 28px 5px rgba(244, 63, 94, 0.24);
     border-color: rgba(244, 63, 94, 0.6);
   }
+}
+
+.progress-perfect :deep([data-slot="progress-indicator"]) {
+  background-color: var(--amber-500, #f59e0b) !important;
+}
+
+.game-card-perfect {
+  border-color: rgba(245, 158, 11, 0.25) !important;
+  background: linear-gradient(185deg, rgba(245, 158, 11, 0.015), transparent) !important;
+  box-shadow: 0 0 12px 1px rgba(245, 158, 11, 0.02);
+}
+
+.game-card-perfect:hover {
+  border-color: rgba(245, 158, 11, 0.45) !important;
+  box-shadow: 0 0 16px 2px rgba(245, 158, 11, 0.08) !important;
 }
 </style>

@@ -8,6 +8,10 @@ export interface SteamGame {
   header_img: string; // pre-computed URL
   playtime_hours: number; // pre-computed
   last_played_relative: string; // pre-computed string
+  achievements_total?: number;
+  achievements_unlocked?: number;
+  has_achievements?: boolean;
+  is_perfect?: boolean;
 }
 
 export interface SteamApiResponse {

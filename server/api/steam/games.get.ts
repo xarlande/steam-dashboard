@@ -110,27 +110,70 @@ export default defineEventHandler(async (event) => {
     }
     
     const rawGames = data.response.games as any[];
+    const playedGamesList = rawGames.filter((game) => game.playtime_forever > 0);
     
-    // Process and filter games
-    const games = rawGames
-      .filter((game) => game.playtime_forever > 0) // Only games that have been played
-      .map((game) => {
-        const appid = game.appid;
-        const playtimeMinutes = game.playtime_forever || 0;
-        const playtimeHours = Math.round((playtimeMinutes / 60) * 10) / 10;
+    // Fetch achievements progress in batches of 50 to stay within URL/param limits
+    const achievementMap = new Map<number, { total: number, unlocked: number }>();
+    try {
+      const appids = playedGamesList.map((g) => g.appid);
+      const chunkSize = 50;
+      const chunks: number[][] = [];
+      for (let i = 0; i < appids.length; i += chunkSize) {
+        chunks.push(appids.slice(i, i + chunkSize));
+      }
+      
+      const batchPromises = chunks.map(async (chunk) => {
+        let chunkParams = `key=${apiKey}&steamid=${steamId}&max_achievements=2000`;
+        chunk.forEach((appid, index) => {
+          chunkParams += `&appids[${index}]=${appid}`;
+        });
         
-        return {
-          appid,
-          name: game.name || `App ${appid}`,
-          playtime_forever: playtimeMinutes,
-          playtime_2weeks: game.playtime_2weeks || 0,
-          img_icon_url: game.img_icon_url || '',
-          rtime_last_played: game.rtime_last_played || 0,
-          header_img: `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${appid}/header.jpg`,
-          playtime_hours: playtimeHours,
-          last_played_relative: getRelativeTime(game.rtime_last_played || 0, rawLang)
-        };
+        const batchUrl = `https://api.steampowered.com/IPlayerService/GetTopAchievementsForGames/v1/?${chunkParams}`;
+        const res: any = await $fetch(batchUrl).catch((err) => {
+          console.warn('Error fetching achievements batch:', err.message);
+          return null;
+        });
+        return res;
       });
+      
+      const batchResults = await Promise.all(batchPromises);
+      batchResults.forEach((res) => {
+        if (res?.response?.games) {
+          res.response.games.forEach((gameRes: any) => {
+            const appid = gameRes.appid;
+            const total = gameRes.total_achievements || 0;
+            const unlocked = gameRes.achievements ? gameRes.achievements.length : 0;
+            achievementMap.set(appid, { total, unlocked });
+          });
+        }
+      });
+    } catch (err) {
+      console.error('Error fetching batch achievements:', err);
+    }
+
+    // Process and filter games
+    const games = playedGamesList.map((game) => {
+      const appid = game.appid;
+      const playtimeMinutes = game.playtime_forever || 0;
+      const playtimeHours = Math.round((playtimeMinutes / 60) * 10) / 10;
+      const achInfo = achievementMap.get(appid) || { total: 0, unlocked: 0 };
+      
+      return {
+        appid,
+        name: game.name || `App ${appid}`,
+        playtime_forever: playtimeMinutes,
+        playtime_2weeks: game.playtime_2weeks || 0,
+        img_icon_url: game.img_icon_url || '',
+        rtime_last_played: game.rtime_last_played || 0,
+        header_img: `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${appid}/header.jpg`,
+        playtime_hours: playtimeHours,
+        last_played_relative: getRelativeTime(game.rtime_last_played || 0, rawLang),
+        achievements_total: achInfo.total,
+        achievements_unlocked: achInfo.unlocked,
+        has_achievements: achInfo.total > 0,
+        is_perfect: achInfo.total > 0 && achInfo.unlocked === achInfo.total
+      };
+    });
       
     // Sort by rtime_last_played in descending order (most recently played first)
     games.sort((a, b) => b.rtime_last_played - a.rtime_last_played);

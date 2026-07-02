@@ -21,12 +21,20 @@
       "playtimeAsc": "Меньше всего наиграно",
       "name": "Название А-Я"
     },
+    "filterCompletion": "Прогресс:",
+    "filterCompletionOptions": {
+      "all": "Все",
+      "perfect": "Идеальные 🏆",
+      "inProgress": "В процессе 🎮"
+    },
     "stats": {
       "totalGames": "Всего игр",
       "totalGamesDesc": "Игры с зафиксированным временем",
       "totalPlaytime": "Общее время",
       "totalPlaytimeDesc": "Суммарно времени в игровом пространстве",
       "mostPlayed": "Самая популярная игра",
+      "perfectGames": "Идеальные игры",
+      "perfectGamesDesc": "100% полученных достижений",
       "none": "Нет"
     },
     "credentials": {

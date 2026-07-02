@@ -21,12 +21,20 @@
       "playtimeAsc": "Least Played",
       "name": "Name A-Z"
     },
+    "filterCompletion": "Progress:",
+    "filterCompletionOptions": {
+      "all": "All",
+      "perfect": "Perfect 🏆",
+      "inProgress": "In Progress 🎮"
+    },
     "stats": {
       "totalGames": "Total Games Played",
       "totalGamesDesc": "Games with recorded playtime",
       "totalPlaytime": "Total Playtime",
       "totalPlaytimeDesc": "Combined time in game space",
       "mostPlayed": "Most Played Game",
+      "perfectGames": "Perfect Games",
+      "perfectGamesDesc": "100% achievements unlocked",
       "none": "None"
     },
     "credentials": {

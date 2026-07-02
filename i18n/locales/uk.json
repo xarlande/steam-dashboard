@@ -22,12 +22,20 @@
       "playtimeAsc": "Найменш награно",
       "name": "Назва А-Я"
     },
+    "filterCompletion": "Прогрес:",
+    "filterCompletionOptions": {
+      "all": "Всі",
+      "perfect": "Ідеальні 🏆",
+      "inProgress": "В процесі 🎮"
+    },
     "stats": {
       "totalGames": "Всього ігор",
       "totalGamesDesc": "Ігри із зафіксованим часом",
       "totalPlaytime": "Загальний час",
       "totalPlaytimeDesc": "Сумарно часу в ігровому просторі",
       "mostPlayed": "Найпопулярніша гра",
+      "perfectGames": "Ідеальні ігри",
+      "perfectGamesDesc": "100% отриманих досягнень",
       "none": "Немає"
     },
     "credentials": {
