@@ -1,87 +1,70 @@
 <template>
-  <div class="relative min-h-screen bg-background text-foreground transition-colors duration-300 overflow-x-hidden font-sans pb-16 selection:bg-cyan-500/30 selection:text-cyan-200 dark:bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.08),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.06),transparent_50%)] bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.04),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.03),transparent_50%)]">
-    
-    <!-- Main Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-      
-      <!-- Top Navigation & Header -->
-      <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-8 mb-8 border-b border-border/60">
-        <div class="flex items-center gap-3">
-          <div class="p-2.5 rounded-xl bg-card border border-border shadow-xs">
-            <!-- Gamepad SVG Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="6" y1="12" x2="10" y2="12"></line>
-              <line x1="8" y1="10" x2="8" y2="14"></line>
-              <line x1="15" y1="13" x2="15.01" y2="13"></line>
-              <line x1="18" y1="11" x2="18.01" y2="11"></line>
-              <rect x="2" y="6" width="20" h="12" rx="3"></rect>
-            </svg>
-          </div>
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r dark:from-neutral-50 dark:via-neutral-100 dark:to-neutral-400 from-neutral-900 via-neutral-800 to-neutral-600">
-              {{ $t('index.title') }}
-            </h1>
-            <p class="text-xs sm:text-sm text-muted-foreground font-medium">{{ $t('index.subtitle') }}</p>
-          </div>
-        </div>
+  <NuxtLayout>
+    <!-- Left slot of layout header -->
+    <template #header-left>
+      <div class="p-2.5 rounded-xl bg-card border border-border shadow-xs">
+        <!-- Gamepad SVG Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="6" y1="12" x2="10" y2="12"></line>
+          <line x1="8" y1="10" x2="8" y2="14"></line>
+          <line x1="15" y1="13" x2="15.01" y2="13"></line>
+          <line x1="18" y1="11" x2="18.01" y2="11"></line>
+          <rect x="2" y="6" width="20" h="12" rx="3"></rect>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r dark:from-neutral-50 dark:via-neutral-100 dark:to-neutral-400 from-neutral-900 via-neutral-800 to-neutral-600">
+          {{ $t('index.title') }}
+        </h1>
+        <p class="text-xs sm:text-sm text-muted-foreground font-medium">{{ $t('index.subtitle') }}</p>
+      </div>
+    </template>
 
-        <div class="flex items-center gap-3 self-end sm:self-auto">
-          <!-- Language Selector dropdown (shadcn select) -->
-          <UiSelect :model-value="locale" @update:modelValue="handleLangChange">
-            <UiSelectTrigger >
-              <UiSelectValue :placeholder="$t('index.credentials.displayLanguage')" />
-            </UiSelectTrigger>
-            <UiSelectContent >
-              <UiSelectItem value="uk">UA</UiSelectItem>
-              <UiSelectItem value="en">EN</UiSelectItem>
-              <UiSelectItem value="ru">RU</UiSelectItem>
-            </UiSelectContent>
-          </UiSelect>
+    <!-- Right slot of layout header (action buttons) -->
+    <template #header-actions>
+      <!-- Refresh Button -->
+      <UiButton 
+        v-if="games.length > 0"
+        variant="outline"
+        size="icon"
+        @click="fetchGames" 
+        :disabled="isLoading"
+        class="group"
+        title="Refresh library"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-75 group-hover:rotate-180" :class="{'animate-spin': isLoading}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+        </svg>
+      </UiButton>
 
-          <!-- Theme Toggle Button -->
-          <UiButton
-            variant="outline"
-            size="icon"
-            @click="toggleTheme"
-            :title="$t('common.themeToggle')"
-          >
-            <svg v-if="darkState" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="4"></circle>
-              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
-            </svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
-            </svg>
-          </UiButton>
+      <!-- Analytics Button -->
+      <UiButton 
+        v-if="games.length > 0"
+        variant="outline"
+        as-child
+      >
+        <NuxtLinkLocale to="/analytics" class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span>{{ $t('index.analyticsBtn') }}</span>
+        </NuxtLinkLocale>
+      </UiButton>
 
-          <!-- Refresh Button -->
-          <UiButton 
-            v-if="games.length > 0"
-            variant="outline"
-            size="icon"
-            @click="fetchGames" 
-            :disabled="isLoading"
-            class="group"
-            title="Refresh library"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-75 group-hover:rotate-180" :class="{'animate-spin': isLoading}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
-            </svg>
-          </UiButton>
-
-          <!-- Settings Config Button -->
-          <UiButton 
-            variant="outline"
-            @click="showSettings = !showSettings"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-            <span>{{ $t('index.configBtn') }}</span>
-          </UiButton>
-        </div>
-      </header>
+      <!-- Settings Config Button -->
+      <UiButton 
+        variant="outline"
+        @click="showSettings = !showSettings"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span>{{ $t('index.configBtn') }}</span>
+      </UiButton>
+    </template>
 
       <!-- Global Stats Summary (Show only when games loaded) -->
       <section v-if="games.length > 0 && !showSettings" class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8 animate-fade-in">
@@ -759,15 +742,14 @@
         </div>
       </div>
 
-    </main>
-  </div>
+    </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
 import type { SteamGame, SteamApiResponse } from '../types'
 
 const { locale, t, loadLocaleMessages } = useI18n()
-const darkState = useDark()
+
 
 // State variables
 const apiKey = ref('')
@@ -991,9 +973,7 @@ function startRoulette() {
     }, 3100)
   }, 50)
 }
-const toggleTheme = () => {
-   darkState.value = !darkState.value
-}
+
 
 // Check if user has saved credentials in localStorage
 const hasSavedCredentials = computed(() => {
@@ -1070,12 +1050,7 @@ async function fetchGames() {
   }
 }
 
-async function handleLangChange(value: string) {
-  await loadLocaleMessages(value as any)
-  locale.value = value as any
-  localStorage.setItem('steam_language', locale.value)
-  fetchGames()
-}
+
 
 function saveSettings() {
   error.value = ''

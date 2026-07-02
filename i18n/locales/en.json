@@ -12,6 +12,7 @@
     "title": "Steam Library Space",
     "subtitle": "Your personalized gameplay analytics dashboard",
     "configBtn": "Config",
+    "analyticsBtn": "Analytics",
     "saveLoadBtn": "Save & Load Library",
     "searchPlaceholder": "Search games...",
     "sortBy": "Sort By:",
@@ -98,6 +99,19 @@
         "desc": "Excellent gaming quality! You play for emotions and stories. A true rest for your mind."
       }
     }
+  },
+  "analytics": {
+    "title": "Library Analytics",
+    "description": "Visual breakdown of your gaming playtime and preferences",
+    "balanceTitle": "Playtime Balance",
+    "topGamesTitle": "Top 5 Most Played Games",
+    "toggleRecent": "Recent (2 Weeks)",
+    "toggleAllTime": "All-time",
+    "legendStory": "Story / Emotional",
+    "legendSession": "Session / Routine",
+    "legendHours": "{hours} hrs ({percent}%)",
+    "legendNoData": "No recorded hours for this period",
+    "backToLibrary": "Back to Library"
   },
   "roulette": {
     "btn": "Get Me Out of This Swamp!",
