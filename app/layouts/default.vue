@@ -17,14 +17,18 @@
           <slot name="header-actions" />
 
           <!-- Shared Language Selector -->
-          <UiSelect :model-value="locale" @update:modelValue="handleLangChange">
+          <UiSelect :model-value="locale" @update:model-value="handleLangChange">
             <UiSelectTrigger>
               <UiSelectValue :placeholder="$t('index.credentials.displayLanguage')" />
             </UiSelectTrigger>
             <UiSelectContent>
-              <UiSelectItem value="uk">UA</UiSelectItem>
-              <UiSelectItem value="en">EN</UiSelectItem>
-              <UiSelectItem value="ru">RU</UiSelectItem>
+              <UiSelectItem
+                v-for="lang in locales"
+                :key="lang.code"
+                :value="lang.code"
+              >
+                {{ lang.name }}
+              </UiSelectItem>
             </UiSelectContent>
           </UiSelect>
 
@@ -57,10 +61,9 @@
 const { locale, locales, loadLocaleMessages } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
 const colorMode = useColorMode()
-
-async function handleLangChange(value: string) {
-  await loadLocaleMessages(value as any)
-  locale.value = value as any
+async function handleLangChange(value: typeof locale.value) {
+  await loadLocaleMessages(value)
+  locale.value = value
   localStorage.setItem('steam_language', value)
   
   const newPath = switchLocalePath(value)

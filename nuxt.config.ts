@@ -19,9 +19,9 @@ export default defineNuxtConfig({
   i18n: {
     strategy: 'prefix_except_default',
     locales: [
-      { code: 'uk', file: 'uk.json' },
-      { code: 'en', file: 'en.json' },
-      { code: 'ru', file: 'ru.json' }
+      { code: 'uk', name: 'UA', file: 'uk.json' },
+      { code: 'en', name: 'EN', file: 'en.json' },
+      { code: 'ru', name: 'RU', file: 'ru.json' }
     ],
     defaultLocale: 'uk',
   },
