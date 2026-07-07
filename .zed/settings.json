@@ -1,0 +1,35 @@
+{
+  "format_on_save": "on",
+  "prettier": {
+    "allowed": false
+  },
+  "code_actions_on_format": {
+    "source.fixAll.oxc": true
+  },
+  "formatter": {
+    "language_server": {
+      "name": "oxfmt"
+    }
+  },
+  "lsp": {
+    "oxlint": {
+      "initialization_options": {
+        "settings": {
+          "configPath": null,
+          "run": "onType",
+          "disableNestedConfig": false,
+          "fixKind": "safe_fix",
+          "unusedDisableDirectives": "deny"
+        }
+      }
+    },
+    "oxfmt": {
+      "initialization_options": {
+        "settings": {
+          "fmt.configPath": null,
+          "run": "onSave"
+        }
+      }
+    }
+  }
+}

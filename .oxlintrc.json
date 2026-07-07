@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "vue"],
+  "categories": {
+    "correctness": "error",
+    "perf": "warn",
+    "style": "error",
+    "restriction": "error"
+  },
+  "rules": {
+    "eslint/sort-imports": "off"
+  },
+  "env": {
+    "builtin": true
+  }
+}
