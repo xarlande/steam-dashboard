@@ -414,7 +414,7 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import type { SteamAchievement, GameAchievementsResponse } from "../../types";
+import type { SteamAchievement, GameAchievementsResponse } from "@/types";
 
 const route = useRoute();
 const appid = route.params.id as string;

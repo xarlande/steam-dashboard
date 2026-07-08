@@ -1134,7 +1134,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { SteamGame } from "../types";
+import type { SteamGame } from "@/types";
 
 const { locale, setLocale, t } = useI18n();
 const {

@@ -322,7 +322,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted, watch } from "vue";
-import type { SteamGame } from "../types";
+import type { SteamGame } from "@/types";
 
 const { locale, t } = useI18n();
 

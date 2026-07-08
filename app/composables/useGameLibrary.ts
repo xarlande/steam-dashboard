@@ -1,4 +1,4 @@
-import type { SteamGame, SteamApiResponse } from "../types";
+import type { SteamGame, SteamApiResponse } from "@/types";
 
 export function useGameLibrary() {
   const { locale } = useI18n();
