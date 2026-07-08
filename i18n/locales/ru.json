@@ -16,6 +16,7 @@
     "saveLoadBtn": "Сохранить и загрузить библиотеку",
     "searchPlaceholder": "Поиск игр...",
     "sortBy": "Сортировать по:",
+    "recent": "Недавние",
     "sortOptions": {
       "lastPlayed": "Последний запуск",
       "playtimeDesc": "Больше всего наиграно",

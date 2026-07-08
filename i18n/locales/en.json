@@ -16,6 +16,7 @@
     "saveLoadBtn": "Save & Load Library",
     "searchPlaceholder": "Search games...",
     "sortBy": "Sort By:",
+    "recent": "Recent",
     "sortOptions": {
       "lastPlayed": "Last Played",
       "playtimeDesc": "Most Played",

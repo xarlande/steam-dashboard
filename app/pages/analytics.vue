@@ -546,7 +546,7 @@ const topFiveGames = computed(() => {
 
 const topFiveMaxPlaytime = computed(() => {
   if (topFiveGames.value.length === 0) return 1;
-  return topFiveGames.value[0].display_hours || 1;
+  return topFiveGames.value[0]?.display_hours || 1;
 });
 
 function formatHours(hours: number): string {
