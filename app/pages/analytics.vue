@@ -322,6 +322,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted, watch } from "vue";
+import { GameTypes } from "@/types";
 import type { SteamGame } from "@/types";
 
 const { locale, t } = useI18n();
@@ -333,7 +334,7 @@ watch(locale, () => {
   fetchGames();
 });
 
-const manualCategories = ref<Record<number, "story" | "session">>({});
+const manualCategories = ref<Record<number, GameTypes.Category>>({});
 
 // Game list categorization constants
 const SESSION_GAME_KEYWORDS = [
@@ -404,11 +405,12 @@ function isDefaultSessionGame(name: string): boolean {
   return SESSION_GAME_KEYWORDS.some((keyword) => lowercaseName.includes(keyword));
 }
 
-function getGameCategory(game: SteamGame): "story" | "session" {
-  if (manualCategories.value[game.appid]) {
-    return manualCategories.value[game.appid];
+function getGameCategory(game: SteamGame): GameTypes.Category {
+  const manual = manualCategories.value[game.appid];
+  if (manual) {
+    return manual;
   }
-  return isDefaultSessionGame(game.name) ? "session" : "story";
+  return isDefaultSessionGame(game.name) ? GameTypes.Category.Session : GameTypes.Category.Story;
 }
 
 onMounted(() => {
@@ -438,14 +440,16 @@ const recentlyPlayedGames = computed(() => {
 
 const recentStoryMinutes = computed(() => {
   return recentlyPlayedGames.value.reduce(
-    (sum, g) => (getGameCategory(g) === "story" ? sum + (g.playtime_2weeks || 0) : sum),
+    (sum, g) =>
+      getGameCategory(g) === GameTypes.Category.Story ? sum + (g.playtime_2weeks || 0) : sum,
     0,
   );
 });
 
 const recentSessionMinutes = computed(() => {
   return recentlyPlayedGames.value.reduce(
-    (sum, g) => (getGameCategory(g) === "session" ? sum + (g.playtime_2weeks || 0) : sum),
+    (sum, g) =>
+      getGameCategory(g) === GameTypes.Category.Session ? sum + (g.playtime_2weeks || 0) : sum,
     0,
   );
 });
@@ -461,7 +465,7 @@ const recentTotalHours = computed(() => Math.round((recentTotalMinutes.value / 6
 // All time computed values
 const allTimeStoryHours = computed(() => {
   const mins = games.value.reduce(
-    (sum, g) => (getGameCategory(g) === "story" ? sum + g.playtime_forever : sum),
+    (sum, g) => (getGameCategory(g) === GameTypes.Category.Story ? sum + g.playtime_forever : sum),
     0,
   );
   return Math.round((mins / 60) * 10) / 10;
@@ -469,7 +473,8 @@ const allTimeStoryHours = computed(() => {
 
 const allTimeSessionHours = computed(() => {
   const mins = games.value.reduce(
-    (sum, g) => (getGameCategory(g) === "session" ? sum + g.playtime_forever : sum),
+    (sum, g) =>
+      getGameCategory(g) === GameTypes.Category.Session ? sum + g.playtime_forever : sum,
     0,
   );
   return Math.round((mins / 60) * 10) / 10;

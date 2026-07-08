@@ -72,7 +72,9 @@
 
 <script lang="ts" setup>
 const { locales, setLocale, locale } = useI18n();
+
 const colorMode = useColorMode();
+
 async function handleLangChange(value: any) {
   if (typeof value === "string") {
     localStorage.setItem("steam_language", value);

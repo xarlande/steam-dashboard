@@ -40,3 +40,11 @@ export interface GameAchievementsResponse {
   unlocked_percent?: number;
   error?: string;
 }
+
+export namespace GameTypes {
+  export enum Category {
+    Story = "story",
+    Session = "session",
+  }
+}
+

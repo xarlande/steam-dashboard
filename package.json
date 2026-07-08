@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@nuxtjs/i18n": "^10.4.0",
+    "@types/node": "^26.1.0",
     "@vueuse/core": "^14.3.0",
     "@vueuse/nuxt": "^14.3.0",
     "oxfmt": "^0.57.0",

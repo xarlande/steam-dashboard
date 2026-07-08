@@ -434,7 +434,10 @@
                       <h4 class="text-xs font-bold text-foreground truncate" :title="game.name">
                         {{ game.name }}
                       </h4>
-                      <p class="text-[10px] text-muted-foreground/90 font-semibold mt-0.5">
+                      <p
+                        v-if="game.playtime_2weeks"
+                        class="text-[10px] text-muted-foreground/90 font-semibold mt-0.5"
+                      >
                         {{ Math.round((game.playtime_2weeks / 60) * 10) / 10 }}
                         {{ $t("common.hoursSuffix") }}
                       </p>
@@ -1134,6 +1137,7 @@
 </template>
 
 <script lang="ts" setup>
+import { GameTypes } from "@/types";
 import type { SteamGame } from "@/types";
 
 const { locale, setLocale, t } = useI18n();
@@ -1182,7 +1186,7 @@ function showFeedback(message: string, type: "success" | "error" = "success") {
 }
 
 // State variables for Gaming Time Quality Feature
-const manualCategories = ref<Record<number, "story" | "session">>({});
+const manualCategories = ref<Record<number, GameTypes.Category>>({});
 const showCategorizer = ref(false);
 
 const SESSION_GAME_KEYWORDS = [
@@ -1253,20 +1257,21 @@ function isDefaultSessionGame(name: string): boolean {
   return SESSION_GAME_KEYWORDS.some((keyword) => lowercaseName.includes(keyword));
 }
 
-function getGameCategory(game: SteamGame): "story" | "session" {
-  if (manualCategories.value[game.appid]) {
-    return manualCategories.value[game.appid];
+function getGameCategory(game: SteamGame): GameTypes.Category {
+  const manual = manualCategories.value[game.appid];
+  if (manual) {
+    return manual;
   }
-  return isDefaultSessionGame(game.name) ? "session" : "story";
+  return isDefaultSessionGame(game.name) ? GameTypes.Category.Session : GameTypes.Category.Story;
 }
 
 function toggleGameCategory(appid: number) {
   const current =
     manualCategories.value[appid] ||
     (isDefaultSessionGame(games.value.find((g) => g.appid === appid)?.name || "")
-      ? "session"
-      : "story");
-  const next = current === "story" ? "session" : "story";
+      ? GameTypes.Category.Session
+      : GameTypes.Category.Story);
+  const next = current === GameTypes.Category.Story ? GameTypes.Category.Session : GameTypes.Category.Story;
   manualCategories.value[appid] = next;
   if (import.meta.client) {
     localStorage.setItem("steam_game_categories", JSON.stringify(manualCategories.value));
@@ -1280,14 +1285,14 @@ const recentlyPlayedGames = computed(() =>
 
 const recentStoryMinutes = computed(() =>
   recentlyPlayedGames.value.reduce(
-    (sum, g) => (getGameCategory(g) === "story" ? sum + (g.playtime_2weeks || 0) : sum),
+    (sum, g) => (getGameCategory(g) === GameTypes.Category.Story ? sum + (g.playtime_2weeks || 0) : sum),
     0,
   ),
 );
 
 const recentSessionMinutes = computed(() =>
   recentlyPlayedGames.value.reduce(
-    (sum, g) => (getGameCategory(g) === "session" ? sum + (g.playtime_2weeks || 0) : sum),
+    (sum, g) => (getGameCategory(g) === GameTypes.Category.Session ? sum + (g.playtime_2weeks || 0) : sum),
     0,
   ),
 );
@@ -1402,20 +1407,20 @@ function selectRouletteCandidates() {
   // Filter story games that have playtime between 1h (60m) and 100h (6000m)
   let candidates = games.value.filter((g) => {
     const category = getGameCategory(g);
-    return category === "story" && g.playtime_forever >= 60 && g.playtime_forever <= 6000;
+    return category === GameTypes.Category.Story && g.playtime_forever >= 60 && g.playtime_forever <= 6000;
   });
 
   // Fallback 1: Allow any story game with playtime >= 5 mins (started but not finished)
   if (candidates.length < 3) {
     candidates = games.value.filter((g) => {
       const category = getGameCategory(g);
-      return category === "story" && g.playtime_forever >= 5;
+      return category === GameTypes.Category.Story && g.playtime_forever >= 5;
     });
   }
 
   // Fallback 2: Allow any story game in the library
   if (candidates.length < 3) {
-    candidates = games.value.filter((g) => getGameCategory(g) === "story");
+    candidates = games.value.filter((g) => getGameCategory(g) === GameTypes.Category.Story);
   }
 
   // Fallback 3: Allow any game at all
@@ -1466,7 +1471,7 @@ function startRoulette() {
 
     setTimeout(() => {
       isSpinning.value = false;
-      finalSelectedGame.value = pool[randomIndex];
+      finalSelectedGame.value = pool[randomIndex] ?? null;
     }, 3100);
   }, 50);
 }

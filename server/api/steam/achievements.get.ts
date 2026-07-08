@@ -32,11 +32,14 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Fetch all three endpoints in parallel using Promise.allSettled for robustness
-    const [playerResult, schemaResult, globalResult] = await Promise.allSettled([
+    const results = await Promise.allSettled([
       $fetch<any>(playerUrl),
       $fetch<any>(schemaUrl),
       $fetch<any>(globalUrl),
     ]);
+    const playerResult = results[0] as PromiseSettledResult<any>;
+    const schemaResult = results[1] as PromiseSettledResult<any>;
+    const globalResult = results[2] as PromiseSettledResult<any>;
 
     // 1. Handle Player Achievements status
     if (playerResult.status === "rejected") {
