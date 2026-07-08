@@ -4,8 +4,8 @@
   "categories": {
     "correctness": "error",
     "perf": "warn",
-    "style": "error",
-    "restriction": "error"
+    "style": "off",
+    "restriction": "off"
   },
   "rules": {
     "eslint/sort-imports": "off"

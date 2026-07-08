@@ -26,8 +26,8 @@ export interface SteamAchievement {
   achieved: boolean;
   unlocktime: number;
   unlocktime_relative: string;
-  icon: string;      // colored icon url
-  icongray: string;  // grayscale icon url
+  icon: string; // colored icon url
+  icongray: string; // grayscale icon url
   global_percent?: number;
 }
 

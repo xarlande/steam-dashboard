@@ -4,6 +4,6 @@
 
 <script lang="ts" setup>
 useSeoMeta({
-  title: 'Steam Library Space'
-})
+  title: "Steam Library Space",
+});
 </script>

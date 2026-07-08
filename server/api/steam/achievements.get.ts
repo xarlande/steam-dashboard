@@ -1,168 +1,96 @@
-import { defineEventHandler, getQuery } from 'h3';
-
-function getRelativeTime(timestamp: number, lang: string): string {
-  const isUa = lang === 'uk' || lang === 'ukrainian';
-  const isRu = lang === 'ru' || lang === 'russian';
-
-  if (!timestamp || timestamp === 0) {
-    if (isUa) return 'Ніколи';
-    if (isRu) return 'Никогда';
-    return 'Never';
-  }
-  const now = Math.floor(Date.now() / 1000);
-  const diff = now - timestamp;
-  
-  if (diff < 0 || diff < 60) {
-    if (isUa) return 'Щойно';
-    if (isRu) return 'Только что';
-    return 'Just now';
-  }
-  
-  const mins = Math.floor(diff / 60);
-  if (mins < 60) {
-    if (isUa) return `${mins} хв. тому`;
-    if (isRu) return `${mins} мин. назад`;
-    return `${mins}m ago`;
-  }
-  
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) {
-    if (isUa) return `${hours} год. тому`;
-    if (isRu) return `${hours} ч. назад`;
-    return `${hours}h ago`;
-  }
-  
-  const days = Math.floor(hours / 24);
-  if (days === 1) {
-    if (isUa) return 'Вчора';
-    if (isRu) return 'Вчера';
-    return 'Yesterday';
-  }
-  if (days < 30) {
-    if (isUa) return `${days} дн. тому`;
-    if (isRu) return `${days} дн. назад`;
-    return `${days}d ago`;
-  }
-  
-  const months = Math.floor(days / 30);
-  if (months === 1) {
-    if (isUa) return '1 місяць тому';
-    if (isRu) return '1 месяц назад';
-    return '1 month ago';
-  }
-  if (months < 12) {
-    if (isUa) return `${months} міс. тому`;
-    if (isRu) return `${months} мес. назад`;
-    return `${months} months ago`;
-  }
-  
-  const years = Math.floor(months / 12);
-  if (years === 1) {
-    if (isUa) return '1 рік тому';
-    if (isRu) return '1 год назад';
-    return '1 year ago';
-  }
-  if (isUa) return `${years} р. тому`;
-  if (isRu) return `${years} г. назад`;
-  return `${years} years ago`;
-}
+import { defineEventHandler, getQuery } from "h3";
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
-  
+
   const appid = query.appid as string;
   const apiKey = (query.apiKey as string) || process.env.STEAM_API_KEY;
   const steamId = (query.steamId as string) || process.env.STEAM_ID;
-  const rawLang = (query.lang as string) || process.env.STEAM_LANGUAGE || 'uk';
-  
-  let steamLang = 'ukrainian';
-  if (rawLang === 'en' || rawLang === 'english') {
-    steamLang = 'english';
-  } else if (rawLang === 'ru' || rawLang === 'russian') {
-    steamLang = 'russian';
-  } else if (rawLang === 'uk' || rawLang === 'ukrainian') {
-    steamLang = 'ukrainian';
-  } else {
-    steamLang = 'english';
-  }
-  
-  const isUa = rawLang === 'uk' || rawLang === 'ukrainian';
-  const isRu = rawLang === 'ru' || rawLang === 'russian';
-  
+  const rawLang = (query.lang as string) || process.env.STEAM_LANGUAGE || "uk";
+
+  const steamLang = mapSteamLocale(rawLang);
+  const isUa = isUkrainian(rawLang);
+  const isRu = isRussian(rawLang);
+
   if (!appid) {
     return {
       success: false,
-      error: 'Missing App ID parameter.'
+      error: "Missing App ID parameter.",
     };
   }
-  
+
   if (!apiKey || !steamId) {
     return {
       success: false,
-      error: 'Missing Steam API Key or Steam ID. Please enter them in config settings.'
+      error: "Missing Steam API Key or Steam ID. Please enter them in config settings.",
     };
   }
-  
+
   const playerUrl = `https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/?appid=${appid}&key=${apiKey}&steamid=${steamId}&l=${steamLang}`;
   const schemaUrl = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?appid=${appid}&key=${apiKey}&l=${steamLang}`;
   const globalUrl = `https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v2/?gameid=${appid}&format=json`;
-  
+
   try {
     // Fetch all three endpoints in parallel using Promise.allSettled for robustness
     const [playerResult, schemaResult, globalResult] = await Promise.allSettled([
       $fetch<any>(playerUrl),
       $fetch<any>(schemaUrl),
-      $fetch<any>(globalUrl)
+      $fetch<any>(globalUrl),
     ]);
-    
+
     // 1. Handle Player Achievements status
-    if (playerResult.status === 'rejected') {
-      const errMessage = playerResult.reason?.message || '';
+    if (playerResult.status === "rejected") {
+      const errMessage = playerResult.reason?.message || "";
       console.error(`Error fetching player achievements for app ${appid}:`, playerResult.reason);
-      
+
       // Look for common Steam API responses embedded in error
-      if (errMessage.includes('400') || errMessage.includes('403') || errMessage.includes('500')) {
+      if (errMessage.includes("400") || errMessage.includes("403") || errMessage.includes("500")) {
         return {
           success: false,
-          error: 'Could not retrieve achievements. Make sure your Steam Profile and Game Details are set to "Public" in your Steam Privacy settings, or check your API key.'
+          error:
+            'Could not retrieve achievements. Make sure your Steam Profile and Game Details are set to "Public" in your Steam Privacy settings, or check your API key.',
         };
       }
       return {
         success: false,
-        error: 'Failed to retrieve achievements from Steam API.'
+        error: "Failed to retrieve achievements from Steam API.",
       };
     }
-    
+
     const playerData = playerResult.value;
-    
+
     if (playerData?.playerstats?.success === false) {
-      const errMsg = playerData.playerstats.error || '';
-      if (errMsg.includes('not available for this user') || errMsg.includes('Requested dataset is not available')) {
+      const errMsg = playerData.playerstats.error || "";
+      if (
+        errMsg.includes("not available for this user") ||
+        errMsg.includes("Requested dataset is not available")
+      ) {
         return {
           success: false,
-          error: 'This profile details or achievements list is set to private. Change your Steam privacy settings to public to view achievements.'
+          error:
+            "This profile details or achievements list is set to private. Change your Steam privacy settings to public to view achievements.",
         };
       }
-      
-      if (errMsg.includes('has no stats') || errMsg.includes('no achievements')) {
+
+      if (errMsg.includes("has no stats") || errMsg.includes("no achievements")) {
         return {
           success: true,
           achievements: [],
           total_count: 0,
           unlocked_count: 0,
           unlocked_percent: 0,
-          gameName: 'Unknown Game'
+          gameName: "Unknown Game",
         };
       }
-      
+
       return {
         success: false,
-        error: errMsg || 'Steam API returned an unsuccessful status.'
+        error: errMsg || "Steam API returned an unsuccessful status.",
       };
     }
-    
+
     const playerAchievements = playerData?.playerstats?.achievements || [];
-    
+
     if (playerAchievements.length === 0) {
       return {
         success: true,
@@ -170,25 +98,28 @@ export default defineEventHandler(async (event) => {
         total_count: 0,
         unlocked_count: 0,
         unlocked_percent: 0,
-        gameName: playerData?.playerstats?.gameName || 'Unknown Game'
+        gameName: playerData?.playerstats?.gameName || "Unknown Game",
       };
     }
-    
+
     // 2. Handle Schema status
     let schemaAchievements: any[] = [];
-    let gameName = playerData?.playerstats?.gameName || '';
-    
-    if (schemaResult.status === 'fulfilled') {
+    let gameName = playerData?.playerstats?.gameName || "";
+
+    if (schemaResult.status === "fulfilled") {
       const schemaData = schemaResult.value;
-      gameName = schemaData?.game?.gameName || gameName || 'Unknown Game';
+      gameName = schemaData?.game?.gameName || gameName || "Unknown Game";
       schemaAchievements = schemaData?.game?.availableGameStats?.achievements || [];
     } else {
-      console.warn(`Could not load schema for game ${appid}. Falling back to basic values.`, schemaResult.reason);
+      console.warn(
+        `Could not load schema for game ${appid}. Falling back to basic values.`,
+        schemaResult.reason,
+      );
     }
-    
+
     // Parse global percentages
     const globalPercentages = new Map<string, number>();
-    if (globalResult.status === 'fulfilled') {
+    if (globalResult.status === "fulfilled") {
       const globalData = globalResult.value;
       const pctList = globalData?.achievementpercentages?.achievements || [];
       pctList.forEach((item: any) => {
@@ -197,34 +128,47 @@ export default defineEventHandler(async (event) => {
         }
       });
     } else {
-      console.warn(`Could not load global achievement percentages for game ${appid}.`, globalResult.reason);
+      console.warn(
+        `Could not load global achievement percentages for game ${appid}.`,
+        globalResult.reason,
+      );
     }
-    
+
     // Create lookup map for schema details
     const schemaMap = new Map<string, any>();
     schemaAchievements.forEach((item) => {
       schemaMap.set(item.name, item);
     });
-    
+
     // 3. Merge player status and schema details
     const achievements = playerAchievements.map((playerAch: any) => {
       const schemaAch = schemaMap.get(playerAch.apiname) || {};
       const achieved = playerAch.achieved === 1;
       const global_percent = globalPercentages.get(playerAch.apiname) || 0;
-      
+
       return {
         apiname: playerAch.apiname,
         name: schemaAch.displayName || playerAch.apiname,
-        description: schemaAch.description || '',
+        description: schemaAch.description || "",
         achieved,
         unlocktime: playerAch.unlocktime || 0,
-        unlocktime_relative: achieved ? getRelativeTime(playerAch.unlocktime, rawLang) : (isUa ? 'Заблоковано' : (isRu ? 'Заблокировано' : 'Locked')),
-        icon: schemaAch.icon || 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/252490/achievements/default.jpg',
-        icongray: schemaAch.icongray || 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/252490/achievements/default.jpg',
-        global_percent
+        unlocktime_relative: achieved
+          ? getRelativeTime(playerAch.unlocktime, rawLang)
+          : isUa
+            ? "Заблоковано"
+            : isRu
+              ? "Заблокировано"
+              : "Locked",
+        icon:
+          schemaAch.icon ||
+          "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/252490/achievements/default.jpg",
+        icongray:
+          schemaAch.icongray ||
+          "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/252490/achievements/default.jpg",
+        global_percent,
       };
     });
-    
+
     // Sort: Unlocked first (by unlock time descending), then locked
     achievements.sort((a: any, b: any) => {
       if (a.achieved && !b.achieved) return -1;
@@ -234,24 +178,24 @@ export default defineEventHandler(async (event) => {
       }
       return a.name.localeCompare(b.name); // alphabetical for locked
     });
-    
+
     const unlockedCount = achievements.filter((a: any) => a.achieved).length;
     const totalCount = achievements.length;
     const unlockedPercent = totalCount > 0 ? Math.round((unlockedCount / totalCount) * 100) : 0;
-    
+
     return {
       success: true,
       gameName,
       achievements,
       total_count: totalCount,
       unlocked_count: unlockedCount,
-      unlocked_percent: unlockedPercent
+      unlocked_percent: unlockedPercent,
     };
   } catch (error: any) {
     console.error(`Error processing achievements for game ${appid}:`, error);
     return {
       success: false,
-      error: error.message || 'An unexpected error occurred while loading achievements.'
+      error: error.message || "An unexpected error occurred while loading achievements.",
     };
   }
 });
