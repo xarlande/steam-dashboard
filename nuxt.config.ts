@@ -11,14 +11,7 @@ export default defineNuxtConfig({
     preference: "system", // fallback до системної теми
     storageKey: "color-mode",
   },
-  fonts: {
-    families: [
-      {
-        name: "Geist",
-        provider: "google",
-      },
-    ],
-  },
+  fonts: {},
   i18n: {
     strategy: "prefix_and_default",
     locales: [
