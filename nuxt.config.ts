@@ -12,9 +12,12 @@ export default defineNuxtConfig({
     storageKey: "color-mode",
   },
   fonts: {
-    defaults: {
-      subsets: ["Inter"],
-    },
+    families: [
+      {
+        name: "Inter",
+        provider: "google",
+      },
+    ],
   },
   i18n: {
     strategy: "prefix_and_default",
