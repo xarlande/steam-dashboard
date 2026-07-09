@@ -3,23 +3,8 @@
     <!-- Left slot of layout header -->
     <template #header-left>
       <div class="p-2.5 rounded-xl bg-card border border-border shadow-xs">
-        <!-- Gamepad SVG Icon -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-8 h-8 text-cyan-400"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <line x1="6" y1="12" x2="10" y2="12"></line>
-          <line x1="8" y1="10" x2="8" y2="14"></line>
-          <line x1="15" y1="13" x2="15.01" y2="13"></line>
-          <line x1="18" y1="11" x2="18.01" y2="11"></line>
-          <rect x="2" y="6" width="20" h="12" rx="3"></rect>
-        </svg>
+        <!-- Gamepad Icon -->
+        <Gamepad2Icon class="w-8 h-8 text-cyan-400" />
       </div>
       <div>
         <h1
@@ -45,59 +30,23 @@
         class="group"
         title="Refresh library"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
+        <RotateCwIcon
           class="w-5 h-5 transition-transform duration-75 group-hover:rotate-180"
           :class="{ 'animate-spin': isLoading }"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
-        </svg>
+        />
       </UiButton>
 
       <!-- Analytics Button -->
       <UiButton v-if="games.length > 0" variant="outline" as-child>
         <NuxtLinkLocale to="/analytics" class="flex items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-4 h-4 text-violet-400"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <line x1="18" y1="20" x2="18" y2="10"></line>
-            <line x1="12" y1="20" x2="12" y2="4"></line>
-            <line x1="6" y1="20" x2="6" y2="14"></line>
-          </svg>
+          <BarChart2Icon class="w-4 h-4 text-violet-400" />
           <span>{{ $t("index.analyticsBtn") }}</span>
         </NuxtLinkLocale>
       </UiButton>
 
       <!-- Settings Config Button -->
       <UiButton variant="outline" @click="showSettings = !showSettings">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-4 h-4 mr-2"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <circle cx="12" cy="12" r="3"></circle>
-          <path
-            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
-          ></path>
-        </svg>
+        <SettingsIcon class="w-4 h-4 mr-2" />
         <span>{{ $t("index.configBtn") }}</span>
       </UiButton>
     </template>
@@ -111,16 +60,7 @@
       <UiCard class="relative overflow-hidden">
         <UiCardContent>
           <div class="absolute -right-4 -bottom-4 opacity-10 text-cyan-400">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-24 h-24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <rect x="2" y="6" width="20" h="12" rx="3"></rect>
-            </svg>
+            <Gamepad2Icon class="w-24 h-24" />
           </div>
           <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             {{ $t("index.stats.totalGames") }}
@@ -136,17 +76,7 @@
       <UiCard class="relative overflow-hidden">
         <UiCardContent>
           <div class="absolute -right-4 -bottom-4 opacity-10 text-violet-400">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-24 h-24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
+            <ClockIcon class="w-24 h-24" />
           </div>
           <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             {{ $t("index.stats.totalPlaytime") }}
@@ -167,18 +97,7 @@
       <UiCard class="relative overflow-hidden">
         <UiCardContent>
           <div class="absolute -right-4 -bottom-4 opacity-10 text-indigo-400">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-24 h-24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <polygon
-                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-              ></polygon>
-            </svg>
+            <StarIcon class="w-24 h-24" />
           </div>
           <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             {{ $t("index.stats.mostPlayed") }}
@@ -212,21 +131,7 @@
               <div
                 class="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shrink-0"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-6 h-6"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                  <circle cx="12" cy="11" r="3"></circle>
-                  <path d="M12 8v6"></path>
-                  <path d="M10 12h4"></path>
-                </svg>
+                <ShieldIcon class="w-6 h-6" />
               </div>
               <div>
                 <h2 class="text-lg sm:text-xl font-bold tracking-tight text-foreground">
@@ -380,21 +285,7 @@
                 class="w-full text-xs font-semibold hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
                 @click="showCategorizer = !showCategorizer"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-4 h-4 mr-2"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <circle cx="12" cy="12" r="3"></circle>
-                  <path
-                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
-                  ></path>
-                </svg>
+                <SettingsIcon class="w-4 h-4 mr-2" />
                 <span>{{
                   showCategorizer ? $t("detox.hideCategorizer") : $t("detox.showCategorizer")
                 }}</span>
@@ -479,16 +370,7 @@
       <UiCard>
         <UiCardHeader>
           <div class="flex items-center gap-3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-6 h-6 text-cyan-400"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            </svg>
+            <ShieldIcon class="w-6 h-6 text-cyan-400" />
             <div>
               <UiCardTitle class="text-lg font-bold">{{
                 $t("index.credentials.title")
@@ -566,17 +448,7 @@
               v-if="loadedFromEnv"
               class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-start gap-2.5"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4 mt-0.5 shrink-0"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <circle cx="12" cy="12" r="10"></circle>
-                <path d="m9 12 2 2 4-4"></path>
-              </svg>
+              <CheckCircle2Icon class="w-4 h-4 mt-0.5 shrink-0" />
               <div>
                 <span class="font-bold">{{ $t("index.credentials.activeConfig") }}</span>
                 {{ $t("index.credentials.activeConfigHelp") }}
@@ -594,48 +466,18 @@
                     : 'bg-rose-500/10 border border-rose-500/20 text-rose-400'
                 "
               >
-                <svg
+                <CheckCircle2Icon
                   v-if="settingsFeedbackType === 'success'"
-                  xmlns="http://www.w3.org/2000/svg"
                   class="w-4 h-4 shrink-0"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <path d="m9 12 2 2 4-4"></path>
-                </svg>
-                <svg
-                  v-else
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-4 h-4 shrink-0"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="12" y1="8" x2="12" y2="12"></line>
-                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                </svg>
+                />
+                <AlertCircleIcon v-else class="w-4 h-4 shrink-0" />
                 {{ settingsFeedback }}
               </div>
             </transition>
 
             <div class="flex items-center gap-3 pt-2">
               <UiButton type="submit" :disabled="isLoading" class="flex-1">
-                <svg
-                  v-if="isLoading"
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-4 h-4 mr-2 animate-spin"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
-                </svg>
+                <RotateCwIcon v-if="isLoading" class="w-4 h-4 mr-2 animate-spin" />
                 <span>{{ isLoading ? $t("common.loading") : $t("index.saveLoadBtn") }}</span>
               </UiButton>
 
@@ -658,20 +500,7 @@
                 class="flex-1 text-xs"
                 @click="exportSettings"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-4 h-4 mr-2"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="17 8 12 3 7 8"></polyline>
-                  <line x1="12" y1="3" x2="12" y2="15"></line>
-                </svg>
+                <UploadIcon class="w-4 h-4 mr-2" />
                 {{ $t("index.credentials.exportSettings") }}
               </UiButton>
 
@@ -682,20 +511,7 @@
                 class="flex-1 text-xs"
                 @click="triggerImport"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-4 h-4 mr-2"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="7 10 12 15 17 10"></polyline>
-                  <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
+                <DownloadIcon class="w-4 h-4 mr-2" />
                 {{ $t("index.credentials.importSettings") }}
               </UiButton>
 
@@ -724,19 +540,7 @@
           <span
             class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground z-10"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-4.5 h-4.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
+            <SearchIcon class="w-4.5 h-4.5" />
           </span>
           <UiInput
             type="text"
@@ -751,17 +555,7 @@
             @click="searchQuery = ''"
             class="absolute right-0 top-0 bottom-0"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
+            <XIcon class="w-4 h-4" />
           </UiButton>
         </div>
 
@@ -793,18 +587,7 @@
         v-if="error"
         class="p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive-foreground text-sm flex items-start gap-3"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-5 h-5 text-destructive shrink-0 mt-0.5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
+        <AlertCircleIcon class="w-5 h-5 text-destructive shrink-0 mt-0.5" />
         <div class="flex-1">
           <span class="font-bold">{{ $t("index.errorLoading") }}</span> {{ error }}
           <UiButton
@@ -871,33 +654,14 @@
             >
               <UiButton as-child class="w-[80%]">
                 <a :href="'steam://run/' + game.appid">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="w-4 h-4 fill-current mr-2"
-                    viewBox="0 0 24 24"
-                  >
-                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                  </svg>
+                  <PlayIcon class="w-4 h-4 fill-current mr-2" />
                   <span>{{ $t("index.playGame") }}</span>
                 </a>
               </UiButton>
 
               <UiButton as-child variant="outline" class="w-[80%]">
                 <NuxtLinkLocale :to="`/game/${game.appid}`">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="w-4 h-4 mr-2"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <polygon
-                      points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-                    ></polygon>
-                  </svg>
+                  <StarIcon class="w-4 h-4 mr-2" />
                   <span>{{ $t("index.achievements") }}</span>
                 </NuxtLinkLocale>
               </UiButton>
@@ -916,17 +680,7 @@
               <div
                 class="flex items-center gap-1.5 mt-2.5 text-xs text-muted-foreground font-medium"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-3.5 h-3.5 text-muted-foreground"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
+                <ClockIcon class="w-3.5 h-3.5 text-muted-foreground" />
                 <span>{{ $t("index.lastLaunched", { time: game.last_played_relative }) }}</span>
               </div>
             </div>
@@ -970,17 +724,7 @@
           <div
             class="w-16 h-16 rounded-2xl bg-neutral-900/60 border border-neutral-800 flex items-center justify-center mx-auto text-neutral-500 mb-4"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-8 h-8"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
+            <SearchIcon class="w-8 h-8" />
           </div>
           <h3 class="font-bold text-base">{{ $t("index.noGames") }}</h3>
           <p class="text-xs text-neutral-500 mt-1 max-w-xs mx-auto">
@@ -1015,17 +759,7 @@
           class="absolute top-4 right-4 p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-neutral-800 transition-colors cursor-pointer"
           title="Close"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
+          <XIcon class="w-5 h-5" />
         </button>
 
         <!-- Modal Title -->
@@ -1106,13 +840,7 @@
             <div class="flex flex-col gap-2.5 w-full">
               <UiButton as-child class="w-full py-5 font-bold shadow-lg shadow-cyan-900/10">
                 <a :href="'steam://run/' + finalSelectedGame.appid">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="w-4.5 h-4.5 fill-current mr-2"
-                    viewBox="0 0 24 24"
-                  >
-                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                  </svg>
+                  <PlayIcon class="w-4.5 h-4.5 fill-current mr-2" />
                   <span>{{ $t("roulette.launch") }}</span>
                 </a>
               </UiButton>
@@ -1137,6 +865,22 @@
 </template>
 
 <script lang="ts" setup>
+import {
+  Gamepad2Icon,
+  RotateCwIcon,
+  BarChart2Icon,
+  SettingsIcon,
+  ClockIcon,
+  StarIcon,
+  ShieldIcon,
+  CheckCircle2Icon,
+  AlertCircleIcon,
+  UploadIcon,
+  DownloadIcon,
+  SearchIcon,
+  XIcon,
+  PlayIcon,
+} from "@lucide/vue";
 import { GameTypes } from "@/types";
 import type { SteamGame } from "@/types";
 

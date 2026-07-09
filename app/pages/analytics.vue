@@ -4,19 +4,9 @@
     <template #header-left>
       <UiButton variant="outline" as-child class="group">
         <NuxtLinkLocale to="/" class="flex items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
+          <ArrowLeftIcon
             class="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
+          />
           <span>{{ $t("analytics.backToLibrary") }}</span>
         </NuxtLinkLocale>
       </UiButton>
@@ -28,20 +18,7 @@
         <div
           class="p-2.5 rounded-xl bg-violet-500/10 text-violet-400 border border-violet-500/20 shrink-0"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-8 h-8"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <line x1="18" y1="20" x2="18" y2="10"></line>
-            <line x1="12" y1="20" x2="12" y2="4"></line>
-            <line x1="6" y1="20" x2="6" y2="14"></line>
-          </svg>
+          <BarChart2Icon class="w-8 h-8" />
         </div>
         <div>
           <h1
@@ -69,18 +46,7 @@
       <div
         class="p-6 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive-foreground text-sm flex items-start gap-4 shadow-lg"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-6 h-6 text-destructive shrink-0 mt-0.5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
+        <AlertCircleIcon class="w-6 h-6 text-destructive shrink-0 mt-0.5" />
         <div class="flex-1">
           <h3 class="font-extrabold text-base text-destructive mb-1">Failed to Load Analytics</h3>
           <p class="leading-relaxed">{{ error }}</p>
@@ -322,6 +288,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted, watch } from "vue";
+import { ArrowLeftIcon, BarChart2Icon, AlertCircleIcon } from "@lucide/vue";
 import { GameTypes } from "@/types";
 import type { SteamGame } from "@/types";
 

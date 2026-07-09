@@ -3,19 +3,9 @@
     <template #header-left>
       <UiButton variant="outline" as-child class="group">
         <NuxtLinkLocale to="/" class="flex items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
+          <ArrowLeftIcon
             class="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
+          />
           <span>{{ $t("game.backToLibrary") }}</span>
         </NuxtLinkLocale>
       </UiButton>
@@ -63,17 +53,7 @@
                 class="flex flex-wrap justify-center sm:justify-start items-center gap-4 pt-1 text-sm text-muted-foreground font-medium"
               >
                 <div class="flex items-center gap-1.5">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="w-4 h-4 text-muted-foreground"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
+                  <ClockIcon class="w-4 h-4 text-muted-foreground" />
                   <span
                     >{{ $t("game.completionProgress") }}:
                     <span class="text-foreground font-semibold">{{ unlockedCount }}</span> /
@@ -208,19 +188,7 @@
           <span
             class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground z-10"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-4.5 h-4.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
+            <SearchIcon class="w-4.5 h-4.5" />
           </span>
           <UiInput
             type="text"
@@ -235,17 +203,7 @@
             @click="searchQuery = ''"
             class="absolute right-0 top-0 bottom-0"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
+            <XIcon class="w-4 h-4" />
           </UiButton>
         </div>
 
@@ -332,16 +290,7 @@
               v-if="ach.achieved"
               class="text-[10px] text-muted-foreground mt-1.5 font-medium flex items-center gap-1"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-3 h-3 text-muted-foreground/80"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
+              <CheckIcon class="w-3 h-3 text-muted-foreground/80" />
               <span>{{ $t("game.unlockedAt", { time: ach.unlocktime_relative }) }}</span>
             </p>
           </div>
@@ -354,18 +303,7 @@
           <div
             class="w-16 h-16 rounded-2xl bg-card border border-border flex items-center justify-center mx-auto text-muted-foreground mb-4"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-8 h-8"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="12"></line>
-              <line x1="12" y1="16" x2="12.01" y2="16"></line>
-            </svg>
+            <AlertCircleIcon class="w-8 h-8" />
           </div>
           <h3 class="font-bold text-base">{{ $t("game.noAchievements") }}</h3>
           <p class="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
@@ -380,18 +318,7 @@
       <div
         class="p-6 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive-foreground text-sm flex items-start gap-4 shadow-lg"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-6 h-6 text-destructive shrink-0 mt-0.5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
+        <AlertCircleIcon class="w-6 h-6 text-destructive shrink-0 mt-0.5" />
         <div class="flex-1">
           <h3 class="font-extrabold text-base text-destructive mb-1">
             {{ $t("game.failedLoad") }}
@@ -414,6 +341,14 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import {
+  ArrowLeftIcon,
+  ClockIcon,
+  SearchIcon,
+  XIcon,
+  CheckIcon,
+  AlertCircleIcon,
+} from "@lucide/vue";
 import type { SteamAchievement, GameAchievementsResponse } from "@/types";
 
 const route = useRoute();
