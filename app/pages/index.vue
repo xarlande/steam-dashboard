@@ -44,6 +44,12 @@
         </NuxtLinkLocale>
       </UiButton>
 
+      <!-- Copy Report Button -->
+      <UiButton v-if="games.length > 0" variant="outline" @click="openCopyModal" class="flex items-center gap-2">
+        <CopyIcon class="w-4 h-4 text-cyan-400" />
+        <span>{{ $t("exportReport.btn") }}</span>
+      </UiButton>
+
       <!-- Settings Config Button -->
       <UiButton variant="outline" @click="showSettings = !showSettings">
         <SettingsIcon class="w-4 h-4 mr-2" />
@@ -861,6 +867,178 @@
         </div>
       </div>
     </div>
+
+    <!-- Export Achievements Report Modal -->
+    <transition name="fade">
+      <div
+        v-if="showCopyModal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md transition-opacity duration-300"
+      >
+        <div
+          class="relative w-full max-w-2xl max-h-[85vh] flex flex-col rounded-2xl bg-card border border-border/80 shadow-2xl overflow-hidden animate-fade-in"
+        >
+          <!-- Modal Header -->
+          <div class="flex items-center justify-between p-5 border-b border-border/60">
+            <div class="flex items-center gap-3">
+              <FileTextIcon class="w-5.5 h-5.5 text-cyan-400" />
+              <div>
+                <h3 class="text-base font-bold text-foreground">
+                  {{ $t("exportReport.title") }}
+                </h3>
+                <p class="text-xs text-muted-foreground mt-0.5 leading-normal">
+                  {{ $t("exportReport.desc") }}
+                </p>
+              </div>
+            </div>
+            <UiButton
+              variant="ghost"
+              size="icon"
+              @click="showCopyModal = false"
+              class="rounded-full w-8 h-8 hover:bg-accent"
+            >
+              <XIcon class="w-4 h-4" />
+            </UiButton>
+          </div>
+
+          <!-- Modal Body (Content) -->
+          <div class="flex-1 overflow-y-auto p-5 space-y-5">
+            <!-- Loading Progress Section -->
+            <div v-if="isCopying" class="py-8 flex flex-col items-center justify-center text-center space-y-4">
+              <div class="relative flex items-center justify-center">
+                <Loader2Icon class="w-10 h-10 text-cyan-400 animate-spin" />
+              </div>
+              <div class="space-y-1">
+                <p class="font-bold text-sm text-foreground">
+                  {{ $t("exportReport.fetchProgress", { current: copyProgress, total: copyTotal }) }}
+                </p>
+                <p class="text-xs text-muted-foreground italic max-w-md truncate">
+                  {{ $t("exportReport.fetching", { game: copyCurrentGameName }) }}
+                </p>
+              </div>
+              
+              <!-- Progress Bar -->
+              <div class="w-full max-w-md bg-muted rounded-full h-2.5 overflow-hidden">
+                <div
+                  class="bg-cyan-500 h-full transition-all duration-300 ease-out"
+                  :style="{ width: `${(copyProgress / copyTotal) * 100}%` }"
+                ></div>
+              </div>
+
+              <UiButton variant="outline" size="sm" @click="cancelExportReport">
+                {{ $t("exportReport.cancel") }}
+              </UiButton>
+            </div>
+
+            <!-- Report Options and Preview Section -->
+            <div v-else class="space-y-5">
+              <!-- Options Grid -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-muted/30 border border-border/40">
+                <div class="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="exportIncludeLocked"
+                    v-model="exportIncludeLocked"
+                    @change="regenerateReport"
+                    class="rounded border-input text-cyan-500 focus:ring-cyan-500 w-4.5 h-4.5 bg-background cursor-pointer"
+                  />
+                  <label for="exportIncludeLocked" class="text-xs font-medium text-foreground cursor-pointer select-none">
+                    {{ $t("exportReport.optIncludeLocked") }}
+                  </label>
+                </div>
+
+                <div class="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="exportIncludeUnlocked"
+                    v-model="exportIncludeUnlocked"
+                    @change="regenerateReport"
+                    class="rounded border-input text-cyan-500 focus:ring-cyan-500 w-4.5 h-4.5 bg-background cursor-pointer"
+                  />
+                  <label for="exportIncludeUnlocked" class="text-xs font-medium text-foreground cursor-pointer select-none">
+                    {{ $t("exportReport.optIncludeUnlocked") }}
+                  </label>
+                </div>
+
+                <div v-if="exportIncludeLocked" class="sm:col-span-2 pt-2 border-t border-border/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <label for="exportLimitLocked" class="text-xs font-medium text-muted-foreground select-none">
+                    {{ $t("exportReport.optLimitLocked") }}
+                  </label>
+                  <div class="flex items-center gap-2">
+                    <UiInput
+                      type="number"
+                      id="exportLimitLocked"
+                      v-model.number="exportLimitLocked"
+                      min="0"
+                      max="100"
+                      @input="regenerateReport"
+                      class="w-20 text-center h-8 text-xs py-1"
+                    />
+                    <span class="text-[10px] text-neutral-500 leading-none">
+                      {{ $t("exportReport.optLimitHelp") }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Empty state: Click to generate -->
+              <div v-if="!copyReportText" class="py-12 flex flex-col items-center justify-center text-center space-y-4">
+                <div class="p-3 bg-cyan-500/10 text-cyan-400 rounded-full">
+                  <FileTextIcon class="w-8 h-8" />
+                </div>
+                <UiButton @click="startExportReport">
+                  {{ $t("exportReport.generateBtn") }}
+                </UiButton>
+              </div>
+
+              <!-- Report Text Area -->
+              <div v-else class="space-y-2">
+                <textarea
+                  readonly
+                  class="w-full h-80 p-3.5 rounded-xl border border-border/80 bg-neutral-900 text-neutral-100 font-mono text-xs focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                  :value="copyReportText"
+                  placeholder="Report will appear here..."
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="flex items-center justify-between p-4 border-t border-border/60 bg-muted/20">
+            <span class="text-xs text-muted-foreground">
+              {{ copyReportText ? $t("exportReport.totalGames", { count: totalCount }) : "" }}
+            </span>
+            <div class="flex items-center gap-3">
+              <UiButton
+                v-if="copyReportText && !isCopying"
+                variant="outline"
+                @click="startExportReport"
+                size="sm"
+                class="text-xs"
+              >
+                🔄 {{ $t("roulette.again") }}
+              </UiButton>
+              <UiButton
+                v-if="copyReportText && !isCopying"
+                @click="copyTextToClipboard(copyReportText)"
+                size="sm"
+                class="text-xs"
+              >
+                <CopyIcon class="w-4 h-4 mr-2" />
+                {{ $t("exportReport.copyBtn") }}
+              </UiButton>
+              <UiButton
+                variant="secondary"
+                @click="showCopyModal = false"
+                size="sm"
+                class="text-xs"
+              >
+                {{ $t("common.close") }}
+              </UiButton>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
   </NuxtLayout>
 </template>
 
@@ -880,6 +1058,9 @@ import {
   SearchIcon,
   XIcon,
   PlayIcon,
+  CopyIcon,
+  Loader2Icon,
+  FileTextIcon,
 } from "@lucide/vue";
 import { GameTypes } from "@/types";
 import type { SteamGame } from "@/types";
@@ -911,6 +1092,215 @@ async function handleLangChange(value: any) {
 const searchQuery = ref("");
 const sortBy = ref<"lastPlayed" | "playtimeDesc" | "playtimeAsc" | "name">("lastPlayed");
 const showSettings = ref(false);
+
+// Export achievements report states
+const showCopyModal = ref(false);
+const isCopying = ref(false);
+const copyProgress = ref(0);
+const copyTotal = ref(0);
+const copyCurrentGameName = ref("");
+const copyReportText = ref("");
+
+// Export options
+const exportIncludeLocked = ref(true);
+const exportIncludeUnlocked = ref(false);
+const exportLimitLocked = ref(5);
+
+// Cache for achievements to prevent redundant network requests
+const achievementsCache = ref<Record<number, any>>({});
+
+function openCopyModal() {
+  showCopyModal.value = true;
+  copyReportText.value = "";
+}
+
+function cancelExportReport() {
+  isCopying.value = false;
+}
+
+async function startExportReport() {
+  if (games.value.length === 0) {
+    showFeedback(t("exportReport.noGames"), "error");
+    return;
+  }
+
+  isCopying.value = true;
+  copyProgress.value = 0;
+  copyTotal.value = games.value.length;
+  copyReportText.value = "";
+
+  const apiKeyVal = apiKey.value || localStorage.getItem("steam_api_key") || "";
+  const steamIdVal = steamId.value || localStorage.getItem("steam_id") || "";
+  const langVal = locale.value;
+
+  const results = [];
+  const chunkSize = 5; // Fetch in chunks of 5 parallel requests to be friendly to Steam API
+
+  for (let i = 0; i < games.value.length; i += chunkSize) {
+    if (!isCopying.value) break;
+
+    const chunk = games.value.slice(i, i + chunkSize);
+    const promises = chunk.map(async (game) => {
+      // Check memory cache first
+      if (achievementsCache.value[game.appid]) {
+        return { game, ...achievementsCache.value[game.appid] };
+      }
+
+      try {
+        copyCurrentGameName.value = game.name;
+        const params = new URLSearchParams();
+        params.append("appid", String(game.appid));
+        if (apiKeyVal.trim()) params.append("apiKey", apiKeyVal.trim());
+        if (steamIdVal.trim()) params.append("steamId", steamIdVal.trim());
+        params.append("lang", langVal);
+
+        const response = await $fetch<any>(`/api/steam/achievements?${params.toString()}`);
+        if (response.success) {
+          const data = {
+            hasAchievements: response.total_count !== undefined && response.total_count > 0,
+            achievements: response.achievements || [],
+            totalCount: response.total_count || 0,
+            unlockedCount: response.unlocked_count || 0,
+            unlockedPercent: response.unlocked_percent || 0
+          };
+          achievementsCache.value[game.appid] = data;
+          return { game, ...data };
+        }
+      } catch (err) {
+        console.error(`Failed to fetch achievements for ${game.name}:`, err);
+      }
+
+      const defaultData = { hasAchievements: false, achievements: [], totalCount: 0, unlockedCount: 0, unlockedPercent: 0 };
+      achievementsCache.value[game.appid] = defaultData;
+      return { game, ...defaultData };
+    });
+
+    const chunkResults = await Promise.all(promises);
+    results.push(...chunkResults);
+    copyProgress.value = Math.min(i + chunkSize, games.value.length);
+  }
+
+  if (isCopying.value) {
+    isCopying.value = false;
+    regenerateReport();
+  }
+}
+
+function regenerateReport() {
+  const results = [];
+  for (const game of games.value) {
+    if (achievementsCache.value[game.appid]) {
+      results.push({ game, ...achievementsCache.value[game.appid] });
+    } else {
+      results.push({ game, hasAchievements: false, achievements: [], totalCount: 0, unlockedCount: 0, unlockedPercent: 0 });
+    }
+  }
+  generateReport(results);
+}
+
+function generateReport(results: any[]) {
+  let text = `🏆 Steam Library Report 🏆\n`;
+  text += `Generated: ${new Date().toLocaleString()}\n`;
+  text += `${t("exportReport.totalGames", { count: totalCount.value })}\n`;
+  text += `Total Playtime: ${formatHours(totalHours.value)} ${t("common.hoursSuffix")}\n\n`;
+
+  // Sort results by playtime descending
+  const sortedResults = [...results].sort((a, b) => b.game.playtime_forever - a.game.playtime_forever);
+
+  // Categorize games
+  const completed = sortedResults.filter((r) => r.hasAchievements && r.unlockedCount === r.totalCount);
+  const uncompleted = sortedResults.filter((r) => r.hasAchievements && r.unlockedCount < r.totalCount);
+  const noAchievements = sortedResults.filter((r) => !r.hasAchievements);
+
+  // 1. Completed Games Section
+  text += `==========================================\n`;
+  text += `${t("exportReport.completedSection")} [${completed.length}]\n`;
+  text += `==========================================\n`;
+  if (completed.length === 0) {
+    text += `${t("exportReport.none")}\n`;
+  } else {
+    completed.forEach((r, idx) => {
+      text += `${idx + 1}. ${r.game.name}\n`;
+      text += `   - ${t("exportReport.playtime", { hours: formatHours(r.game.playtime_hours) })}\n`;
+      text += `   - ${t("exportReport.achievementsProgress", { unlocked: r.unlockedCount, total: r.totalCount, percent: 100 })}\n`;
+      if (exportIncludeUnlocked.value && r.achievements.length > 0) {
+        text += `   - ${t("exportReport.unlockedAchievementsTitle")}\n`;
+        r.achievements.forEach((ach: any) => {
+          text += `     * [✓] ${ach.name} - ${ach.description || ""}\n`;
+        });
+      }
+      text += `\n`;
+    });
+  }
+
+  // 2. Uncompleted Games Section
+  text += `==========================================\n`;
+  text += `${t("exportReport.uncompletedSection")} [${uncompleted.length}]\n`;
+  text += `==========================================\n`;
+  if (uncompleted.length === 0) {
+    text += `${t("exportReport.none")}\n`;
+  } else {
+    uncompleted.forEach((r, idx) => {
+      text += `${idx + 1}. ${r.game.name}\n`;
+      text += `   - ${t("exportReport.playtime", { hours: formatHours(r.game.playtime_hours) })}\n`;
+      text += `   - ${t("exportReport.achievementsProgress", { unlocked: r.unlockedCount, total: r.totalCount, percent: r.unlockedPercent })}\n`;
+      
+      // Locked achievements list
+      if (exportIncludeLocked.value) {
+        const locked = r.achievements.filter((ach: any) => !ach.achieved);
+        const limit = exportLimitLocked.value;
+        const toShow = limit > 0 ? locked.slice(0, limit) : locked;
+        if (toShow.length > 0) {
+          text += `   - ${t("exportReport.lockedAchievementsTitle")} (${toShow.length} shown of ${locked.length}):\n`;
+          toShow.forEach((ach: any) => {
+            text += `     * [ ] ${ach.name} - ${ach.description || ""}\n`;
+          });
+        }
+      }
+
+      // Unlocked achievements list
+      if (exportIncludeUnlocked.value) {
+        const unlocked = r.achievements.filter((ach: any) => ach.achieved);
+        if (unlocked.length > 0) {
+          text += `   - ${t("exportReport.unlockedAchievementsTitle")}:\n`;
+          unlocked.forEach((ach: any) => {
+            text += `     * [✓] ${ach.name} - ${ach.description || ""}\n`;
+          });
+        }
+      }
+      text += `\n`;
+    });
+  }
+
+  // 3. Games without achievements
+  text += `==========================================\n`;
+  text += `${t("exportReport.noAchievementsSection")} [${noAchievements.length}]\n`;
+  text += `==========================================\n`;
+  if (noAchievements.length === 0) {
+    text += `${t("exportReport.none")}\n`;
+  } else {
+    noAchievements.forEach((r, idx) => {
+      text += `${idx + 1}. ${r.game.name} (${formatHours(r.game.playtime_hours)} ${t("common.hoursSuffix")})\n`;
+    });
+  }
+
+  copyReportText.value = text;
+
+  // Auto copy to clipboard
+  copyTextToClipboard(text);
+}
+
+function copyTextToClipboard(text: string) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        showFeedback(t("exportReport.copied"), "success");
+      })
+      .catch((err) => {
+        console.error("Failed to copy report to clipboard:", err);
+      });
+  }
+}
 
 // Settings feedback state
 const settingsFeedback = ref("");
@@ -1441,6 +1831,16 @@ const filteredAndSortedGames = computed(() => {
 .slide-fade-enter-from,
 .slide-fade-leave-to {
   transform: translateY(-12px);
+  opacity: 0;
+}
+
+/* Fade transition for modals */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 

@@ -143,5 +143,31 @@
     "returnBtn": "Return to Library",
     "failedLoad": "Failed to load achievements",
     "unlockedAt": "Unlocked {time}"
+  },
+  "exportReport": {
+    "btn": "Library Report",
+    "title": "Export Library Achievements",
+    "desc": "Create and copy a detailed report of your completed (100%) and uncompleted games with achievement details.",
+    "fetchProgress": "Loading achievements: {current} of {total} games...",
+    "fetching": "Fetching info for {game}...",
+    "optIncludeLocked": "Include locked achievements list",
+    "optIncludeUnlocked": "Include unlocked achievements list",
+    "optLimitLocked": "Locked achievements limit per game",
+    "optLimitHelp": "0 — display all locked achievements",
+    "generateBtn": "Generate Report",
+    "generating": "Generating...",
+    "copyBtn": "Copy to Clipboard",
+    "copied": "Copied to clipboard!",
+    "noGames": "No games found to export.",
+    "cancel": "Cancel",
+    "completedSection": "🏆 COMPLETED GAMES (100% Achievements)",
+    "uncompletedSection": "🎮 IN-PROGRESS GAMES",
+    "noAchievementsSection": "📦 NO ACHIEVEMENTS OR UNPROCESSED GAMES",
+    "playtime": "playtime: {hours} hrs",
+    "achievementsProgress": "achievements: {unlocked}/{total} ({percent}%)",
+    "lockedAchievementsTitle": "Locked achievements:",
+    "unlockedAchievementsTitle": "Unlocked achievements:",
+    "none": "none",
+    "totalGames": "Total games in report: {count}"
   }
 }
