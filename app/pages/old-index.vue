@@ -56,7 +56,7 @@
       </UiButton>
 
       <!-- Settings Config Button -->
-      <UiButton variant="outline" @click="showSettings = !showSettings">
+      <UiButton variant="outline" @click="showSettings = true">
         <SettingsIcon class="w-4 h-4 mr-2" />
         <span>{{ $t("index.configBtn") }}</span>
       </UiButton>
@@ -64,7 +64,7 @@
 
     <!-- Global Stats Summary (Show only when games loaded) -->
     <section
-      v-if="games.length > 0 && !showSettings"
+      v-if="games.length > 0"
       class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8 animate-fade-in"
     >
       <!-- Stat Card 1: Total Games -->
@@ -128,7 +128,7 @@
     </section>
 
     <!-- Gaming Time Quality Card -->
-    <section v-if="games.length > 0 && !showSettings" class="mb-8 animate-fade-in">
+    <section v-if="games.length > 0" class="mb-8 animate-fade-in">
       <UiCard
         :class="detoxCardClass"
         class="overflow-hidden bg-gradient-to-br from-card to-card/50 transition-all duration-500"
@@ -377,171 +377,20 @@
     </section>
 
     <!-- Settings Configuration Panel -->
-    <section v-if="showSettings" class="max-w-2xl mx-auto mb-8 animate-fade-in">
-      <UiCard>
-        <UiCardHeader>
-          <div class="flex items-center gap-3">
-            <ShieldIcon class="w-6 h-6 text-cyan-400" />
-            <div>
-              <UiCardTitle class="text-lg font-bold">{{
-                $t("index.credentials.title")
-              }}</UiCardTitle>
-              <UiCardDescription class="text-xs text-neutral-400 mt-0.5">{{
-                $t("index.credentials.description")
-              }}</UiCardDescription>
-            </div>
-          </div>
-        </UiCardHeader>
-
-        <UiCardContent>
-          <form @submit.prevent="saveSettings" class="space-y-5">
-            <div>
-              <label
-                for="apiKey"
-                class="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2"
-                >{{ $t("index.credentials.apiKey") }}</label
-              >
-              <UiInput
-                type="password"
-                id="apiKey"
-                v-model="apiKey"
-                :placeholder="$t('index.credentials.apiKeyPlaceholder')"
-              />
-              <p class="mt-1.5 text-xs text-neutral-500 leading-normal">
-                {{ $t("index.credentials.apiKeyHelp") }}
-                <a
-                  href="https://steamcommunity.com/dev/apikey"
-                  target="_blank"
-                  class="text-cyan-400 hover:underline transition-colors font-medium"
-                  >Steam Dev API Key</a
-                >.
-              </p>
-            </div>
-
-            <div>
-              <label
-                for="steamId"
-                class="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2"
-                >{{ $t("index.credentials.steamId") }}</label
-              >
-              <UiInput
-                type="text"
-                id="steamId"
-                v-model="steamId"
-                :placeholder="$t('index.credentials.steamIdPlaceholder')"
-              />
-              <p class="mt-1.5 text-xs text-neutral-500 leading-normal">
-                {{ $t("index.credentials.steamIdHelp") }}
-              </p>
-            </div>
-
-            <!-- Display Language inside Config Modal -->
-            <div>
-              <label
-                for="steamLanguage"
-                class="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2"
-                >{{ $t("index.credentials.displayLanguage") }}</label
-              >
-              <UiSelect :model-value="locale" @update:model-value="handleLangChange">
-                <UiSelectTrigger>
-                  <UiSelectValue :placeholder="$t('index.credentials.displayLanguage')" />
-                </UiSelectTrigger>
-                <UiSelectContent>
-                  <UiSelectItem value="uk">Українська (Ukrainian)</UiSelectItem>
-                  <UiSelectItem value="en">English</UiSelectItem>
-                  <UiSelectItem value="ru">Русский (Russian)</UiSelectItem>
-                </UiSelectContent>
-              </UiSelect>
-            </div>
-
-            <!-- Server Config Info -->
-            <div
-              v-if="loadedFromEnv"
-              class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-start gap-2.5"
-            >
-              <CheckCircle2Icon class="w-4 h-4 mt-0.5 shrink-0" />
-              <div>
-                <span class="font-bold">{{ $t("index.credentials.activeConfig") }}</span>
-                {{ $t("index.credentials.activeConfigHelp") }}
-              </div>
-            </div>
-
-            <!-- Import/Export Settings Feedback -->
-            <transition name="slide-fade">
-              <div
-                v-if="settingsFeedback"
-                class="p-3 rounded-xl text-xs flex items-center gap-2.5 font-semibold"
-                :class="
-                  settingsFeedbackType === 'success'
-                    ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
-                    : 'bg-rose-500/10 border border-rose-500/20 text-rose-400'
-                "
-              >
-                <CheckCircle2Icon
-                  v-if="settingsFeedbackType === 'success'"
-                  class="w-4 h-4 shrink-0"
-                />
-                <AlertCircleIcon v-else class="w-4 h-4 shrink-0" />
-                {{ settingsFeedback }}
-              </div>
-            </transition>
-
-            <div class="flex items-center gap-3 pt-2">
-              <UiButton type="submit" :disabled="isLoading" class="flex-1">
-                <RotateCwIcon v-if="isLoading" class="w-4 h-4 mr-2 animate-spin" />
-                <span>{{ isLoading ? $t("common.loading") : $t("index.saveLoadBtn") }}</span>
-              </UiButton>
-
-              <UiButton
-                v-if="hasSavedCredentials"
-                type="button"
-                variant="destructive"
-                @click="clearSettings"
-              >
-                {{ $t("common.reset") }}
-              </UiButton>
-            </div>
-
-            <!-- Import / Export row -->
-            <div class="flex items-center gap-3 pt-1">
-              <!-- Export Button -->
-              <UiButton
-                type="button"
-                variant="outline"
-                class="flex-1 text-xs"
-                @click="exportSettings"
-              >
-                <UploadIcon class="w-4 h-4 mr-2" />
-                {{ $t("index.credentials.exportSettings") }}
-              </UiButton>
-
-              <!-- Import Button -->
-              <UiButton
-                type="button"
-                variant="outline"
-                class="flex-1 text-xs"
-                @click="triggerImport"
-              >
-                <DownloadIcon class="w-4 h-4 mr-2" />
-                {{ $t("index.credentials.importSettings") }}
-              </UiButton>
-
-              <!-- Hidden file input for import -->
-              <input
-                ref="importFileInput"
-                type="file"
-                accept=".json,application/json"
-                class="hidden"
-                @change="handleImportFile"
-              />
-            </div>
-          </form>
-        </UiCardContent>
-      </UiCard>
-    </section>
+    <CommonSettingsDialog
+      v-model:open="showSettings"
+      v-model:apiKey="apiKey"
+      v-model:steamId="steamId"
+      :is-loading="isLoading"
+      :loaded-from-env="loadedFromEnv"
+      :has-saved-credentials="hasSavedCredentials"
+      @save="saveSettings"
+      @clear="clearSettings"
+      @import="handleImport"
+    />
 
     <!-- Main Controls and Grid -->
-    <section v-if="!showSettings" class="space-y-6 animate-fade-in">
+    <section v-if="games.length > 0" class="space-y-6 animate-fade-in">
       <!-- Controls: Search & Sort Tabs -->
       <div
         class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-card border border-border"
@@ -1349,11 +1198,9 @@ function copyTextToClipboard(text: string) {
   }
 }
 
-// Settings feedback state
 const settingsFeedback = ref("");
 const settingsFeedbackType = ref<"success" | "error">("success");
 let feedbackTimer: ReturnType<typeof setTimeout> | null = null;
-const importFileInput = ref<HTMLInputElement | null>(null);
 
 function showFeedback(message: string, type: "success" | "error" = "success") {
   if (feedbackTimer) {
@@ -1698,81 +1545,12 @@ async function clearSettings() {
   showSettings.value = true;
 }
 
-function exportSettings() {
-  const settings = {
-    exportedAt: new Date().toISOString(),
-    steam_api_key: localStorage.getItem("steam_api_key") || "",
-    steam_game_categories: (() => {
-      try {
-        return JSON.parse(localStorage.getItem("steam_game_categories") || "{}");
-      } catch {
-        return {};
-      }
-    })(),
-    steam_id: localStorage.getItem("steam_id") || "",
-    steam_language: localStorage.getItem("steam_language") || "uk",
-    version: 1,
-  };
-  const blob = new Blob([JSON.stringify(settings, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `steam-dashboard-settings-${new Date().toISOString().slice(0, 10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  showFeedback(t("index.credentials.exportSuccess"), "success");
-}
-
-function triggerImport() {
-  importFileInput.value?.click();
-}
-
-function handleImportFile(event: Event) {
-  const file = (event.target as HTMLInputElement).files?.[0];
-  if (!file) {
-    return;
+function handleImport(data: any) {
+  if (data.steam_game_categories && typeof data.steam_game_categories === "object") {
+    manualCategories.value = data.steam_game_categories;
   }
-
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    try {
-      const raw = e.target?.result as string;
-      const data = JSON.parse(raw);
-
-      // Validate the structure
-      if (typeof data !== "object" || data === null) {
-        throw new Error("Not an object");
-      }
-
-      if (data.steam_api_key !== undefined) {
-        localStorage.setItem("steam_api_key", String(data.steam_api_key));
-        apiKey.value = String(data.steam_api_key);
-      }
-      if (data.steam_id !== undefined) {
-        localStorage.setItem("steam_id", String(data.steam_id));
-        steamId.value = String(data.steam_id);
-      }
-      if (data.steam_language !== undefined) {
-        localStorage.setItem("steam_language", String(data.steam_language));
-        await setLocale(String(data.steam_language) as any);
-      }
-      if (data.steam_game_categories && typeof data.steam_game_categories === "object") {
-        localStorage.setItem("steam_game_categories", JSON.stringify(data.steam_game_categories));
-        manualCategories.value = data.steam_game_categories;
-      }
-
-      showFeedback(t("index.credentials.importSuccess"), "success");
-      // Reload the library after a short delay
-      setTimeout(() => fetchGames(), 1000);
-    } catch {
-      showFeedback(t("index.credentials.importError"), "error");
-    }
-  };
-  reader.onerror = () => showFeedback(t("index.credentials.importFileError"), "error");
-  reader.readAsText(file);
-
-  // Reset input so same file can be re-imported
-  (event.target as HTMLInputElement).value = "";
+  // Reload the library after a short delay
+  setTimeout(() => fetchGames(), 1000);
 }
 
 // Format numbers nicely (e.g. 1,234.5)

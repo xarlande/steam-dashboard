@@ -17,6 +17,11 @@
         <div class="flex items-center gap-3 self-end sm:self-auto">
           <slot name="header-actions" />
 
+          <UiButton variant="outline" @click="showSettings = !showSettings">
+            <SettingsIcon class="w-4 h-4 mr-2" />
+            <span>{{ $t("index.configBtn") }}</span>
+          </UiButton>
+
           <!-- Shared Language Selector -->
           <UiSelect :model-value="locale" @update:model-value="handleLangChange">
             <UiSelectTrigger>
@@ -42,6 +47,8 @@
         </div>
       </header>
 
+      <CommonSettingsDialog v-model:open="showSettings"></CommonSettingsDialog>
+
       <!-- Page Content -->
       <slot />
     </main>
@@ -49,11 +56,13 @@
 </template>
 
 <script lang="ts" setup>
-import { SunIcon, MoonIcon } from "@lucide/vue";
+import { SunIcon, MoonIcon, SettingsIcon } from "@lucide/vue";
 
 const { locales, setLocale, locale } = useI18n();
 
 const colorMode = useColorMode();
+
+const showSettings = useSettingDialog();
 
 async function handleLangChange(value: any) {
   if (typeof value === "string") {

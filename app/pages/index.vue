@@ -12,8 +12,6 @@
 </template>
 
 <script setup lang="ts">
-import { ClockIcon, PlayIcon, StarIcon } from "@lucide/vue";
-
 const gamesAsyncData = await useAsyncData("games", () =>
   apiRepository.loadGames({
     lang: "en",
@@ -23,4 +21,12 @@ const gamesAsyncData = await useAsyncData("games", () =>
 );
 
 const games = computed(() => gamesAsyncData.data.value?.games || []);
+
+const dialogSettings = useSettingDialog();
+
+onMounted(() => {
+  setTimeout(() => {
+    dialogSettings.value = true;
+  }, 10000);
+});
 </script>
