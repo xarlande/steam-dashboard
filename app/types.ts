@@ -48,3 +48,10 @@ export namespace GameTypes {
   }
 }
 
+export interface GamesRequestData {
+  success: boolean;
+  games: SteamGame[];
+  total_count: number;
+  total_playtime_hours: number;
+  usingEnv: boolean;
+}

@@ -20,7 +20,12 @@
           <!-- Shared Language Selector -->
           <UiSelect :model-value="locale" @update:model-value="handleLangChange">
             <UiSelectTrigger>
-              <UiSelectValue :placeholder="$t('index.credentials.displayLanguage')" />
+              <UiSelectValue>
+                {{
+                  locales.find((loc) => loc.code === locale)?.name ??
+                  $t("index.credentials.displayLanguage")
+                }}
+              </UiSelectValue>
             </UiSelectTrigger>
             <UiSelectContent>
               <UiSelectItem v-for="lang in locales" :key="lang.code" :value="lang.code">
@@ -31,8 +36,8 @@
 
           <!-- Shared Theme Toggle Button -->
           <UiButton variant="outline" size="icon" @click="toggleTheme" title="Toggle theme">
-            <SunIcon v-if="colorMode.value === 'dark'" class="w-5 h-5" />
-            <MoonIcon v-else class="w-5 h-5" />
+            <SunIcon class="dark:hidden block w-5 h-5" />
+            <MoonIcon class="hidden dark:block w-5 h-5" />
           </UiButton>
         </div>
       </header>
