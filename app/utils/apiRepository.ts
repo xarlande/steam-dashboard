@@ -1,4 +1,4 @@
-import type { SteamApiResponse } from "~/types";
+import type { SteamApiResponse, GameAchievementsResponse } from "~/types";
 
 export default {
   async loadGames(query: { lang: string; steamId: string; apiKey: string }) {
@@ -7,7 +7,7 @@ export default {
     });
   },
   async loadAchievements(query: { lang: string; steamId: string; apiKey: string; appid: string }) {
-    return await $fetch("/api/steam/achievements", {
+    return await $fetch<GameAchievementsResponse>("/api/steam/achievements", {
       query,
     });
   },

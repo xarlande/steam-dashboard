@@ -284,7 +284,7 @@ definePageMeta({
 
 const { locale, t } = useI18n();
 
-const { games, isLoading, error, loadCredentials, fetchGames } = useGameLibrary();
+const { games, isLoading, error, fetchGames } = useGameLibrary();
 
 // Watch locale changes to automatically refetch games
 watch(locale, () => {
@@ -371,8 +371,6 @@ function getGameCategory(game: SteamGame): GameTypes.Category {
 }
 
 onMounted(() => {
-  loadCredentials();
-
   if (import.meta.client) {
     const savedCats = localStorage.getItem("steam_game_categories");
     if (savedCats) {

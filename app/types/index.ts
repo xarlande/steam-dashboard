@@ -55,3 +55,5 @@ export interface GamesRequestData {
   total_playtime_hours: number;
   usingEnv: boolean;
 }
+
+export * from "./gamesReportAchievements";

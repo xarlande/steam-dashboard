@@ -4,8 +4,8 @@ export function useGameLibrary() {
   const { locale } = useI18n();
 
   // Core state
-  const apiKey = ref("");
-  const steamId = ref("");
+  const apiKey = useSteamApiKey();
+  const steamId = useSteamId();
   const games = ref<SteamGame[]>([]);
   const totalHours = ref(0);
   const totalCount = ref(0);
@@ -14,11 +14,6 @@ export function useGameLibrary() {
   const loadedFromEnv = ref(false);
 
   // ── Helpers ──────────────────────────────────────────
-
-  function loadCredentials() {
-    apiKey.value = localStorage.getItem("steam_api_key") || "";
-    steamId.value = localStorage.getItem("steam_id") || "";
-  }
 
   const hasSavedCredentials = computed(() => {
     if (import.meta.client) {
@@ -103,7 +98,6 @@ export function useGameLibrary() {
     loadedFromEnv,
 
     // Credentials helpers
-    loadCredentials,
     hasSavedCredentials,
 
     // Library

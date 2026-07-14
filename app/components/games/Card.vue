@@ -1,9 +1,8 @@
 <template>
-  <NuxtLinkLocale
-    :to="`/game/${game.appid}`"
-    class="block h-full group"
-  >
-    <UiCard class="flex flex-col h-full overflow-hidden hover:border-cyan-500/50 transition-colors duration-200">
+  <NuxtLinkLocale :to="`/game/${game.appid}`" class="block h-full group">
+    <UiCard
+      class="flex flex-col h-full overflow-hidden hover:border-cyan-500/50 transition-colors duration-200"
+    >
       <!-- Game Capsule Banner -->
       <div class="relative aspect-[460/215] overflow-hidden bg-muted shrink-0">
         <img
@@ -49,7 +48,8 @@
               {{ $t("index.recent") }}
             </span>
             <span class="text-xs font-bold text-cyan-400 mt-0.5">
-              +{{ Math.round((game.playtime_2weeks / 60) * 10) / 10 }} {{ $t("common.hoursSuffix") }}
+              +{{ Math.round((game.playtime_2weeks / 60) * 10) / 10 }}
+              {{ $t("common.hoursSuffix") }}
             </span>
           </div>
         </div>
@@ -78,4 +78,3 @@ function formatHours(hours: number): string {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 }).format(hours);
 }
 </script>
-
