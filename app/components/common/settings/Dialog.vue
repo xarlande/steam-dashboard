@@ -15,7 +15,7 @@
         </div>
       </UiDialogHeader>
 
-      <form @submit.prevent="handleSave" class="space-y-5 mt-2">
+      <div class="space-y-5 mt-2">
         <!-- API Key Input -->
         <div>
           <UiLabel
@@ -62,16 +62,6 @@
         </div>
 
         <!-- Server Config Info -->
-        <div
-          v-if="loadedFromEnv"
-          class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-start gap-2.5"
-        >
-          <CheckCircle2Icon class="w-4 h-4 mt-0.5 shrink-0" />
-          <div>
-            <span class="font-bold">{{ $t("index.credentials.activeConfig") }}</span>
-            {{ $t("index.credentials.activeConfigHelp") }}
-          </div>
-        </div>
 
         <!-- Feedback message -->
         <transition name="slide-fade">
@@ -92,19 +82,10 @@
 
         <!-- Save / Reset actions -->
         <div class="flex items-center gap-3 pt-2">
-          <UiButton type="submit" :disabled="isLoading" class="flex-1">
-            <RotateCwIcon v-if="isLoading" class="w-4 h-4 mr-2 animate-spin" />
-            <span>{{ isLoading ? $t("common.loading") : $t("index.saveLoadBtn") }}</span>
-          </UiButton>
-
-          <UiButton
-            v-if="hasSavedCredentials"
-            type="button"
-            variant="destructive"
-            @click="handleClear"
-          >
+          <UiButton type="button" variant="destructive" @click="handleClear">
             {{ $t("common.reset") }}
           </UiButton>
+          <UiButton type="button" variant="outline" @click="handleSave"> Save</UiButton>
         </div>
 
         <!-- Import / Export row -->
@@ -130,7 +111,7 @@
             @change="handleImportFile"
           />
         </div>
-      </form>
+      </div>
     </UiDialogContent>
   </UiDialog>
 </template>
@@ -148,20 +129,6 @@ import {
 } from "@lucide/vue";
 
 const isOpen = defineModel<boolean>("open");
-const apiKey = defineModel<string>("apiKey", { default: "" });
-const steamId = defineModel<string>("steamId", { default: "" });
-
-const props = defineProps<{
-  isLoading?: boolean;
-  loadedFromEnv?: boolean;
-  hasSavedCredentials?: boolean;
-}>();
-
-const emit = defineEmits<{
-  (e: "save"): void;
-  (e: "clear"): void;
-  (e: "import", data: any): void;
-}>();
 
 const { t } = useI18n();
 
@@ -178,8 +145,8 @@ watch(
   isOpen,
   (newVal) => {
     if (newVal) {
-      localApiKey.value = apiKey.value || cookieApiKey.value || "";
-      localSteamId.value = steamId.value || cookieSteamId.value || "";
+      localApiKey.value = cookieApiKey.value || "";
+      localSteamId.value = cookieSteamId.value || "";
     }
   },
   { immediate: true },
@@ -189,7 +156,7 @@ watch(
 const feedbackMessage = ref("");
 const feedbackType = ref<"success" | "error">("success");
 let feedbackTimer: ReturnType<typeof setTimeout> | null = null;
-const importFileInput = ref<HTMLInputElement | null>(null);
+const importFileInputRef = useTemplateRef("importFileInput");
 
 function showFeedback(message: string, type: "success" | "error" = "success") {
   if (feedbackTimer) {
@@ -203,26 +170,8 @@ function showFeedback(message: string, type: "success" | "error" = "success") {
 }
 
 function handleSave() {
-  if (!localApiKey.value.trim() || !localSteamId.value.trim()) {
-    if (!props.loadedFromEnv) {
-      showFeedback(t("index.credentials.validationError"), "error");
-      return;
-    }
-  }
-
-  // Update parent models
-  apiKey.value = localApiKey.value.trim();
-  steamId.value = localSteamId.value.trim();
-
-  // Update cookies using user-specified cookie helpers
   cookieApiKey.value = localApiKey.value.trim();
   cookieSteamId.value = localSteamId.value.trim();
-
-  // Update localStorage (as useGameLibrary uses it)
-  localStorage.setItem("steam_api_key", localApiKey.value.trim());
-  localStorage.setItem("steam_id", localSteamId.value.trim());
-
-  emit("save");
   isOpen.value = false;
 }
 
@@ -230,17 +179,9 @@ function handleClear() {
   localApiKey.value = "";
   localSteamId.value = "";
 
-  apiKey.value = "";
-  steamId.value = "";
-
-  // Clear cookies using cookie helpers
   cookieApiKey.value = "";
   cookieSteamId.value = "";
 
-  localStorage.removeItem("steam_api_key");
-  localStorage.removeItem("steam_id");
-
-  emit("clear");
   isOpen.value = false;
 }
 
@@ -276,7 +217,7 @@ function handleExport() {
 }
 
 function triggerImport() {
-  importFileInput.value?.click();
+  importFileInputRef.value?.click();
 }
 
 function handleImportFile(event: Event) {
@@ -300,22 +241,18 @@ function handleImportFile(event: Event) {
         localStorage.setItem("steam_api_key", val);
         cookieApiKey.value = val;
         localApiKey.value = val;
-        apiKey.value = val;
       }
       if (data.steam_id !== undefined) {
         const val = String(data.steam_id);
         localStorage.setItem("steam_id", val);
         cookieSteamId.value = val;
         localSteamId.value = val;
-        steamId.value = val;
       }
       if (data.steam_game_categories && typeof data.steam_game_categories === "object") {
         localStorage.setItem("steam_game_categories", JSON.stringify(data.steam_game_categories));
       }
 
       showFeedback(t("index.credentials.importSuccess"), "success");
-
-      emit("import", data);
     } catch {
       showFeedback(t("index.credentials.importError"), "error");
     }

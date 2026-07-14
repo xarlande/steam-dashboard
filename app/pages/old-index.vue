@@ -1,66 +1,7 @@
 <template>
-  <NuxtLayout>
     <!-- Left slot of layout header -->
-    <template #header-left>
-      <div class="p-2.5 rounded-xl bg-card border border-border shadow-xs">
-        <!-- Gamepad Icon -->
-        <Gamepad2Icon class="w-8 h-8 text-cyan-400" />
-      </div>
-      <div>
-        <h1
-          class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r dark:from-neutral-50 dark:via-neutral-100 dark:to-neutral-400 from-neutral-900 via-neutral-800 to-neutral-600"
-        >
-          {{ $t("index.title") }}
-        </h1>
-        <p class="text-xs sm:text-sm text-muted-foreground font-medium">
-          {{ $t("index.subtitle") }}
-        </p>
-      </div>
-    </template>
 
     <!-- Right slot of layout header (action buttons) -->
-    <template #header-actions>
-      <!-- Refresh Button -->
-      <UiButton
-        v-if="games.length > 0"
-        variant="outline"
-        size="icon"
-        @click="fetchGames"
-        :disabled="isLoading"
-        class="group"
-        title="Refresh library"
-      >
-        <RotateCwIcon
-          class="w-5 h-5 transition-transform duration-75 group-hover:rotate-180"
-          :class="{ 'animate-spin': isLoading }"
-        />
-      </UiButton>
-
-      <!-- Analytics Button -->
-      <UiButton v-if="games.length > 0" variant="outline" as-child>
-        <NuxtLinkLocale to="/analytics" class="flex items-center gap-2">
-          <BarChart2Icon class="w-4 h-4 text-violet-400" />
-          <span>{{ $t("index.analyticsBtn") }}</span>
-        </NuxtLinkLocale>
-      </UiButton>
-
-      <!-- Copy Report Button -->
-      <UiButton
-        v-if="games.length > 0"
-        variant="outline"
-        @click="openCopyModal"
-        class="flex items-center gap-2"
-      >
-        <CopyIcon class="w-4 h-4 text-cyan-400" />
-        <span>{{ $t("exportReport.btn") }}</span>
-      </UiButton>
-
-      <!-- Settings Config Button -->
-      <UiButton variant="outline" @click="showSettings = true">
-        <SettingsIcon class="w-4 h-4 mr-2" />
-        <span>{{ $t("index.configBtn") }}</span>
-      </UiButton>
-    </template>
 
     <!-- Global Stats Summary (Show only when games loaded) -->
     <section
@@ -915,7 +856,6 @@
         </div>
       </div>
     </transition>
-  </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
