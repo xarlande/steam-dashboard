@@ -12,5 +12,6 @@
   },
   "env": {
     "builtin": true
-  }
+  },
+  "ignorePatterns": ["app/components/ui"]
 }

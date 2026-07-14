@@ -46,5 +46,27 @@ export namespace GameTypes {
     Story = "story",
     Session = "session",
   }
+
+  export enum SortKey {
+    LastPlayed = "lastPlayed",
+    PlaytimeDesc = "playtimeDesc",
+    PlaytimeAsc = "playtimeAsc",
+    Name = "name",
+  }
+
+  export enum AchievementFilter {
+    All = "all",
+    Unlocked = "unlocked",
+    Locked = "locked",
+  }
 }
 
+export interface GamesRequestData {
+  success: boolean;
+  games: SteamGame[];
+  total_count: number;
+  total_playtime_hours: number;
+  usingEnv: boolean;
+}
+
+export * from "./gamesReportAchievements";
