@@ -1,5 +1,7 @@
 export default function () {
-  return useCookie("steam_id", {
+  return useCookie<string>("steam_id", {
     default: () => "",
+    encode: (val) => val,
+    decode: (val) => val ?? "",
   });
 }
