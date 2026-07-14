@@ -76,11 +76,14 @@
       <!-- Page Content -->
       <slot />
     </main>
+    <Toaster position="top-right" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { SunIcon, MoonIcon, SettingsIcon, ArrowLeftIcon, Gamepad2Icon } from "@lucide/vue";
+import "vue-sonner/style.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const { locales, setLocale, locale } = useI18n();
 const route = useRoute();

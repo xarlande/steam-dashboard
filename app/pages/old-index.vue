@@ -1465,11 +1465,6 @@ async function clearSettings() {
   localStorage.removeItem("steam_api_key");
   localStorage.removeItem("steam_id");
   localStorage.removeItem("steam_language");
-  games.value = [];
-  totalHours.value = 0;
-  totalCount.value = 0;
-  loadedFromEnv.value = false;
-  error.value = "";
   showSettings.value = true;
 }
 

@@ -74,14 +74,19 @@
               </div>
 
               <!-- Option checkbox before generating -->
-              <div class="flex items-center gap-2 mb-2 bg-neutral-900/40 px-4 py-2.5 rounded-xl border border-border/50">
+              <div
+                class="flex items-center gap-2 mb-2 bg-neutral-900/40 px-4 py-2.5 rounded-xl border border-border/50"
+              >
                 <input
                   type="checkbox"
                   id="include-achievements-empty"
                   v-model="includeAchievements"
                   class="rounded border-neutral-700 bg-neutral-950 text-cyan-500 focus:ring-cyan-500/50 w-4 h-4 cursor-pointer"
                 />
-                <label for="include-achievements-empty" class="text-xs font-semibold text-muted-foreground cursor-pointer select-none">
+                <label
+                  for="include-achievements-empty"
+                  class="text-xs font-semibold text-muted-foreground cursor-pointer select-none"
+                >
                   {{ $t("exportReport.optIncludeAchievements") }}
                 </label>
               </div>
@@ -94,14 +99,19 @@
             <!-- Report Text Area -->
             <div v-else class="space-y-3">
               <!-- Option checkbox active -->
-              <div class="flex items-center gap-2 bg-neutral-900/40 px-4 py-2.5 rounded-xl border border-border/50">
+              <div
+                class="flex items-center gap-2 bg-neutral-900/40 px-4 py-2.5 rounded-xl border border-border/50"
+              >
                 <input
                   type="checkbox"
                   id="include-achievements-active"
                   v-model="includeAchievements"
                   class="rounded border-neutral-700 bg-neutral-950 text-cyan-500 focus:ring-cyan-500/50 w-4 h-4 cursor-pointer"
                 />
-                <label for="include-achievements-active" class="text-xs font-semibold text-muted-foreground cursor-pointer select-none">
+                <label
+                  for="include-achievements-active"
+                  class="text-xs font-semibold text-muted-foreground cursor-pointer select-none"
+                >
                   {{ $t("exportReport.optIncludeAchievements") }}
                 </label>
               </div>
@@ -140,9 +150,6 @@
               <CopyIcon class="w-4 h-4" />
               <span>{{ $t("exportReport.copyBtn") }}</span>
             </UiButton>
-            <span v-if="copiedSuccessfully" class="text-xs text-emerald-400 font-medium mr-2">
-              ✓ {{ $t("exportReport.copied") }}
-            </span>
             <UiButton variant="secondary" @click="open = false" size="sm" class="text-xs">
               {{ $t("common.close") }}
             </UiButton>
@@ -157,6 +164,7 @@
 import { ref, computed, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { Loader2Icon, FileTextIcon, CopyIcon, XIcon } from "@lucide/vue";
+import { toast } from "vue-sonner";
 import type { SteamGame, GamesReportAchievementsTypes } from "~/types";
 
 const props = defineProps<{
@@ -181,7 +189,6 @@ const copyProgress = ref(0);
 const copyTotal = ref(0);
 const copyCurrentGameName = ref("");
 const copyReportText = ref("");
-const copiedSuccessfully = ref(false);
 const includeAchievements = ref(true);
 
 watch(includeAchievements, () => {
@@ -303,10 +310,7 @@ function copyTextToClipboard(text: string) {
     navigator.clipboard
       .writeText(text)
       .then(() => {
-        copiedSuccessfully.value = true;
-        setTimeout(() => {
-          copiedSuccessfully.value = false;
-        }, 3000);
+        toast.success(t("exportReport.copied"));
       })
       .catch((err) => {
         console.error("Failed to copy report to clipboard:", err);

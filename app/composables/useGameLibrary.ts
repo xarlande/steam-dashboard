@@ -1,89 +1,41 @@
-import type { SteamGame, SteamApiResponse } from "@/types";
+import { refDebounced } from "@vueuse/core";
 
 export function useGameLibrary() {
   const { locale } = useI18n();
-
-  // Core state
   const apiKey = useSteamApiKey();
   const steamId = useSteamId();
-  const games = ref<SteamGame[]>([]);
-  const totalHours = ref(0);
-  const totalCount = ref(0);
-  const isLoading = ref(false);
-  const error = ref("");
-  const loadedFromEnv = ref(false);
 
-  // ── Helpers ──────────────────────────────────────────
+  const credentials = computed(() => ({
+    apiKey: apiKey.value.trim(),
+    steamId: steamId.value.trim(),
+  }));
 
-  const hasSavedCredentials = computed(() => {
-    if (import.meta.client) {
-      return (
-        Boolean(localStorage.getItem("steam_api_key")) && Boolean(localStorage.getItem("steam_id"))
-      );
-    }
-    return false;
-  });
+  const debouncedCredentials = refDebounced(credentials, 1000);
 
-  // ── Fetch games ──────────────────────────────────────
+  const gamesAsyncData = useAsyncData(
+    "games",
+    () => {
+      return apiRepository.loadGames({
+        lang: locale.value,
+        apiKey: debouncedCredentials.value.apiKey,
+        steamId: debouncedCredentials.value.steamId,
+      });
+    },
+    { watch: [debouncedCredentials] },
+  );
 
-  async function fetchGames() {
-    isLoading.value = true;
-    error.value = "";
+  const games = computed(() => gamesAsyncData.data.value?.games || []);
+  const isLoading = computed(() => gamesAsyncData.status.value === "pending");
+  const error = computed(
+    () => gamesAsyncData.error.value?.message || gamesAsyncData.data.value?.error || "",
+  );
 
-    try {
-      const params = new URLSearchParams();
-      if (apiKey.value.trim()) {
-        params.append("apiKey", apiKey.value.trim());
-      }
-      if (steamId.value.trim()) {
-        params.append("steamId", steamId.value.trim());
-      }
-      params.append("lang", locale.value);
+  const totalHours = computed(() => gamesAsyncData.data.value?.total_playtime_hours || 0);
+  const totalCount = computed(() => gamesAsyncData.data.value?.total_count || 0);
+  const loadedFromEnv = computed(() => Boolean(gamesAsyncData.data.value?.usingEnv));
 
-      const response = await $fetch<SteamApiResponse>(`/api/steam/games?${params.toString()}`);
-
-      if (response.success && response.games) {
-        games.value = response.games;
-        totalHours.value = response.total_playtime_hours || 0;
-        totalCount.value = response.total_count || 0;
-        loadedFromEnv.value = Boolean(response.usingEnv);
-
-        // Save valid local keys to storage
-        if (apiKey.value.trim() && steamId.value.trim()) {
-          localStorage.setItem("steam_api_key", apiKey.value.trim());
-          localStorage.setItem("steam_id", steamId.value.trim());
-        }
-        localStorage.setItem("steam_language", locale.value);
-      } else {
-        error.value = response.error || "Failed to fetch games";
-      }
-    } catch (error: any) {
-      console.error("Error fetching library:", error);
-      error.value =
-        error.data?.error ||
-        error.data?.message ||
-        error.message ||
-        "An unexpected error occurred.";
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  // ── Settings helpers ────────────────────────────────
-
-  function saveSettings() {
-    error.value = "";
-    if (
-      !loadedFromEnv.value &&
-      !hasSavedCredentials.value &&
-      (!apiKey.value.trim() || !steamId.value.trim())
-    ) {
-      error.value = "Please provide both a Steam API Key and a Steam 64 ID.";
-      return false;
-    }
-    localStorage.setItem("steam_language", locale.value);
-    fetchGames();
-    return true;
+  function fetchGames() {
+    gamesAsyncData.refresh();
   }
 
   return {
@@ -97,13 +49,10 @@ export function useGameLibrary() {
     error,
     loadedFromEnv,
 
-    // Credentials helpers
-    hasSavedCredentials,
-
     // Library
     fetchGames,
 
-    // Settings
-    saveSettings,
+    // Suspense helper for SSR/page navigation blocking
+    suspense: () => gamesAsyncData,
   };
 }

@@ -186,10 +186,8 @@ function handleClear() {
 }
 
 function handleExport() {
-  const currentApiKey =
-    localApiKey.value.trim() || cookieApiKey.value || localStorage.getItem("steam_api_key") || "";
-  const currentSteamId =
-    localSteamId.value.trim() || cookieSteamId.value || localStorage.getItem("steam_id") || "";
+  const currentApiKey = localApiKey.value.trim() || cookieApiKey.value || "";
+  const currentSteamId = localSteamId.value.trim() || cookieSteamId.value || "";
 
   const settings = {
     exportedAt: new Date().toISOString(),
@@ -238,18 +236,13 @@ function handleImportFile(event: Event) {
 
       if (data.steam_api_key !== undefined) {
         const val = String(data.steam_api_key);
-        localStorage.setItem("steam_api_key", val);
         cookieApiKey.value = val;
         localApiKey.value = val;
       }
       if (data.steam_id !== undefined) {
         const val = String(data.steam_id);
-        localStorage.setItem("steam_id", val);
         cookieSteamId.value = val;
         localSteamId.value = val;
-      }
-      if (data.steam_game_categories && typeof data.steam_game_categories === "object") {
-        localStorage.setItem("steam_game_categories", JSON.stringify(data.steam_game_categories));
       }
 
       showFeedback(t("index.credentials.importSuccess"), "success");

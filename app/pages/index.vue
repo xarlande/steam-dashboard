@@ -20,38 +20,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { useI18n } from "vue-i18n";
+import { ref } from "vue";
 
-const apiKey = useSteamApiKey();
-const steamId = useSteamId();
-const { locale } = useI18n();
-
-const credentials = computed(() => ({
-  apiKey: apiKey.value.trim(),
-  steamId: steamId.value.trim(),
-}));
-
-const debouncedCredentials = refDebounced(credentials, 1000);
-
-const gamesAsyncData = await useAsyncData(
-  "games",
-  () => {
-    return apiRepository.loadGames({
-      lang: locale.value,
-      apiKey: debouncedCredentials.value.apiKey,
-      steamId: debouncedCredentials.value.steamId,
-    });
-  },
-  { watch: [debouncedCredentials] },
-);
-
-const games = computed(() => gamesAsyncData.data.value?.games || []);
-const isLoading = computed(() => gamesAsyncData.status.value === "pending");
-
-function fetchGames() {
-  gamesAsyncData.refresh();
-}
+const { games, isLoading, suspense, fetchGames } = useGameLibrary();
+await suspense();
 
 const showCopyModal = ref(false);
 function openCopyModal() {
