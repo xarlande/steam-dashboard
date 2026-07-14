@@ -23,7 +23,7 @@
     <!-- Games Grid (Loaded State) -->
     <div
       v-if="filteredAndSortedGames.length > 0"
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+      class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
     >
       <GamesCard v-for="game in filteredAndSortedGames" :key="game.appid" :game="game"></GamesCard>
     </div>
@@ -42,6 +42,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
 import { toast } from "vue-sonner";
+
 import { GameTypes, type SteamGame } from "@/types";
 
 const { games, isLoading, error, suspense, fetchGames } = useGameLibrary();
@@ -61,7 +62,6 @@ watch(
 // Filtering & Sorting
 const searchQuery = ref("");
 const sortBy = ref<GameTypes.SortKey>(GameTypes.SortKey.LastPlayed);
-
 
 const filteredAndSortedGames = computed(() => {
   let list = [...games.value];

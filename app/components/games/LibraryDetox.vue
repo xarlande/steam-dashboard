@@ -1,38 +1,38 @@
 <template>
-  <section v-if="games.length > 0" class="mb-8 animate-fade-in">
+  <section v-if="games.length > 0" class="animate-fade-in mb-8">
     <UiCard
       :class="detoxCardClass"
-      class="overflow-hidden bg-card/45 backdrop-blur-md transition-all duration-500 border border-border/50"
+      class="bg-card/45 border-border/50 overflow-hidden border backdrop-blur-md transition-all duration-500"
     >
       <UiCardContent class="p-6">
         <!-- Header Row -->
         <div
-          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border/60"
+          class="border-border/60 flex flex-col gap-4 border-b pb-4 sm:flex-row sm:items-center sm:justify-between"
         >
           <div class="flex items-center gap-3">
             <div
-              class="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shrink-0"
+              class="shrink-0 rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-2.5 text-cyan-400"
             >
-              <ShieldIcon class="w-6 h-6" />
+              <ShieldIcon class="h-6 w-6" />
             </div>
             <div>
-              <h2 class="text-lg sm:text-xl font-bold tracking-tight text-foreground">
+              <h2 class="text-foreground text-lg font-bold tracking-tight sm:text-xl">
                 {{ $t("detox.title") }}
               </h2>
-              <p class="text-xs text-muted-foreground font-medium mt-0.5">
+              <p class="text-muted-foreground mt-0.5 text-xs font-medium">
                 {{ $t("detox.description") }}
               </p>
             </div>
           </div>
 
           <!-- Status Badge -->
-          <div class="self-start sm:self-auto flex items-center gap-2">
-            <span class="text-xs text-muted-foreground font-semibold uppercase tracking-wider"
+          <div class="flex items-center gap-2 self-start sm:self-auto">
+            <span class="text-muted-foreground text-xs font-semibold tracking-wider uppercase"
               >{{ $t("detox.statusLabel") }}:</span
             >
             <UiBadge
               :class="hygieneBadgeClass"
-              class="text-xs py-1 px-3 font-bold border rounded-lg transition-all duration-300"
+              class="rounded-lg border px-3 py-1 text-xs font-bold transition-all duration-300"
             >
               {{ $t("detox.states." + hygieneStatus + ".title") }}
             </UiBadge>
@@ -40,15 +40,15 @@
         </div>
 
         <!-- Content Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+        <div class="grid grid-cols-1 gap-6 pt-6 md:grid-cols-3">
           <!-- Left Column: Advice Box and Progress Scale -->
-          <div class="md:col-span-2 flex flex-col justify-between gap-6">
+          <div class="flex flex-col justify-between gap-6 md:col-span-2">
             <!-- Recommendations/Hygienic advice -->
             <div
-              class="p-4 sm:p-5 rounded-2xl border flex items-start gap-4 transition-all duration-300"
+              class="flex items-start gap-4 rounded-2xl border p-4 transition-all duration-300 sm:p-5"
               :class="adviceBoxClass"
             >
-              <span class="text-3xl shrink-0 select-none">
+              <span class="shrink-0 text-3xl select-none">
                 <span v-if="hygieneStatus === 'critical'">🚨</span>
                 <span v-else-if="hygieneStatus === 'poor'">⚠️</span>
                 <span v-else-if="hygieneStatus === 'balanced'">⚖️</span>
@@ -57,7 +57,7 @@
               </span>
               <div>
                 <h4
-                  class="font-extrabold text-sm tracking-tight mb-1 uppercase tracking-wide opacity-90"
+                  class="mb-1 text-sm font-extrabold tracking-tight tracking-wide uppercase opacity-90"
                 >
                   {{ $t("detox.tipsTitle") }}
                 </h4>
@@ -72,7 +72,7 @@
                 >
                   <UiButton
                     size="sm"
-                    class="bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs shadow-lg shadow-rose-900/10 transition-all duration-300 active:scale-95 border-0 flex items-center gap-1.5"
+                    class="flex items-center gap-1.5 border-0 bg-rose-600 text-xs font-extrabold text-white shadow-lg shadow-rose-900/10 transition-all duration-300 hover:bg-rose-500 active:scale-95"
                     @click="startRoulette"
                   >
                     <span>🔮</span>
@@ -85,29 +85,29 @@
             <!-- Progress Bar / Scale -->
             <div class="space-y-3.5">
               <div
-                class="flex items-center justify-between text-xs font-semibold text-muted-foreground"
+                class="text-muted-foreground flex items-center justify-between text-xs font-semibold"
               >
                 <span class="flex items-center gap-1.5"
-                  ><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> 🎮
+                  ><span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span> 🎮
                   {{ $t("detox.sessionLabel") }}</span
                 >
                 <span class="text-foreground text-sm font-black"
                   >{{ storyPercentage }}% {{ $t("detox.storyRatio") }}</span
                 >
                 <span class="flex items-center gap-1.5"
-                  ><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span> 🎭
+                  ><span class="h-2.5 w-2.5 rounded-full bg-cyan-400"></span> 🎭
                   {{ $t("detox.storyLabel") }}</span
                 >
               </div>
 
               <UiProgress
                 :model-value="storyPercentage"
-                class="h-3.5 bg-neutral-200 dark:bg-neutral-800/80 rounded-full overflow-hidden"
+                class="h-3.5 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-800/80"
                 :class="'progress-' + hygieneStatus"
               />
 
               <div
-                class="flex items-center justify-between text-[10px] text-muted-foreground/80 font-bold uppercase tracking-wider"
+                class="text-muted-foreground/80 flex items-center justify-between text-[10px] font-bold tracking-wider uppercase"
               >
                 <span>100% {{ $t("detox.sessionLabel") }}</span>
                 <span>50/50 Balance</span>
@@ -118,28 +118,28 @@
 
           <!-- Right Column: Recent Playtime Summary & Toggle -->
           <div
-            class="p-5 rounded-2xl bg-card/30 border border-border/80 flex flex-col justify-between gap-6"
+            class="bg-card/30 border-border/80 flex flex-col justify-between gap-6 rounded-2xl border p-5"
           >
             <div class="space-y-4">
-              <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+              <h3 class="text-muted-foreground text-xs font-bold tracking-widest uppercase">
                 {{ $t("detox.recentPlaytime") }}
               </h3>
 
               <div class="space-y-3">
                 <!-- Total Recent Time -->
-                <div class="flex justify-between items-baseline pb-2.5 border-b border-border/60">
-                  <span class="text-sm text-muted-foreground font-semibold">Total</span>
-                  <span class="text-2xl font-black text-foreground"
+                <div class="border-border/60 flex items-baseline justify-between border-b pb-2.5">
+                  <span class="text-muted-foreground text-sm font-semibold">Total</span>
+                  <span class="text-foreground text-2xl font-black"
                     >{{ formatHours(recentTotalHours) }}
-                    <span class="text-xs font-semibold text-muted-foreground">{{
+                    <span class="text-muted-foreground text-xs font-semibold">{{
                       $t("common.hoursSuffix")
                     }}</span></span
                   >
                 </div>
 
                 <!-- Story Hours -->
-                <div class="flex justify-between items-center">
-                  <span class="text-xs font-semibold text-muted-foreground">{{
+                <div class="flex items-center justify-between">
+                  <span class="text-muted-foreground text-xs font-semibold">{{
                     $t("detox.storyLabel")
                   }}</span>
                   <span class="text-sm font-bold text-cyan-400"
@@ -148,8 +148,8 @@
                 </div>
 
                 <!-- Session Hours -->
-                <div class="flex justify-between items-center">
-                  <span class="text-xs font-semibold text-muted-foreground">{{
+                <div class="flex items-center justify-between">
+                  <span class="text-muted-foreground text-xs font-semibold">{{
                     $t("detox.sessionLabel")
                   }}</span>
                   <span class="text-sm font-bold text-rose-500"
@@ -164,10 +164,10 @@
               v-if="recentlyPlayedGames.length > 0"
               variant="outline"
               size="sm"
-              class="w-full text-xs font-semibold hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+              class="w-full text-xs font-semibold transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
               @click="showCategorizer = !showCategorizer"
             >
-              <SettingsIcon class="w-4 h-4 mr-2" />
+              <SettingsIcon class="mr-2 h-4 w-4" />
               <span>{{
                 showCategorizer ? $t("detox.hideCategorizer") : $t("detox.showCategorizer")
               }}</span>
@@ -179,37 +179,37 @@
         <transition name="slide-fade">
           <div
             v-if="showCategorizer && recentlyPlayedGames.length > 0"
-            class="mt-6 pt-6 border-t border-border/60"
+            class="border-border/60 mt-6 border-t pt-6"
           >
             <div class="mb-4">
-              <h3 class="text-sm font-bold text-foreground">{{ $t("detox.customizeHeader") }}</h3>
-              <p class="text-xs text-muted-foreground font-medium mt-0.5">
+              <h3 class="text-foreground text-sm font-bold">{{ $t("detox.customizeHeader") }}</h3>
+              <p class="text-muted-foreground mt-0.5 text-xs font-medium">
                 {{ $t("detox.customizeDesc") }}
               </p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               <div
                 v-for="game in recentlyPlayedGames"
                 :key="'cat-' + game.appid"
-                class="flex items-center justify-between p-3 rounded-2xl border border-border bg-card/30 hover:bg-card/50 transition-all"
+                class="border-border bg-card/30 hover:bg-card/50 flex items-center justify-between rounded-2xl border p-3 transition-all"
               >
-                <div class="flex items-center gap-3 min-w-0 flex-1 pr-2">
+                <div class="flex min-w-0 flex-1 items-center gap-3 pr-2">
                   <!-- Small game banner -->
                   <img
                     :src="game.header_img"
                     :alt="game.name"
-                    class="w-12 h-6.5 rounded-md object-cover border border-border/40 shrink-0"
+                    class="border-border/40 h-6.5 w-12 shrink-0 rounded-md border object-cover"
                     @error="handleImageError"
                   />
 
                   <div class="min-w-0">
-                    <h4 class="text-xs font-bold text-foreground truncate" :title="game.name">
+                    <h4 class="text-foreground truncate text-xs font-bold" :title="game.name">
                       {{ game.name }}
                     </h4>
                     <p
                       v-if="game.playtime_2weeks"
-                      class="text-[10px] text-muted-foreground/90 font-semibold mt-0.5"
+                      class="text-muted-foreground/90 mt-0.5 text-[10px] font-semibold"
                     >
                       {{ Math.round((game.playtime_2weeks / 60) * 10) / 10 }}
                       {{ $t("common.hoursSuffix") }}
@@ -221,11 +221,11 @@
                 <UiButton
                   variant="outline"
                   size="icon"
-                  class="h-8 w-8 rounded-xl shrink-0 transition-transform active:scale-95"
+                  class="h-8 w-8 shrink-0 rounded-xl transition-transform active:scale-95"
                   :class="
                     getGameCategory(game) === 'story'
-                      ? 'text-cyan-400 bg-cyan-500/5 border-cyan-500/20 hover:text-cyan-300'
-                      : 'text-rose-500 bg-rose-500/5 border-rose-500/20 hover:text-rose-400'
+                      ? 'border-cyan-500/20 bg-cyan-500/5 text-cyan-400 hover:text-cyan-300'
+                      : 'border-rose-500/20 bg-rose-500/5 text-rose-500 hover:text-rose-400'
                   "
                   :title="
                     getGameCategory(game) === 'story'
@@ -250,53 +250,53 @@
   <!-- Roulette Modal -->
   <div
     v-if="showRouletteModal"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-all duration-300 animate-fade-in"
+    class="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md transition-all duration-300"
   >
     <div
-      class="relative w-full max-w-md bg-card border border-border/80 rounded-3xl p-6 shadow-2xl flex flex-col items-center text-center overflow-hidden"
+      class="bg-card border-border/80 relative flex w-full max-w-md flex-col items-center overflow-hidden rounded-3xl border p-6 text-center shadow-2xl"
     >
       <!-- Decorative background glow -->
       <div
-        class="absolute -top-12 -left-12 w-48 h-48 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none"
+        class="pointer-events-none absolute -top-12 -left-12 h-48 w-48 rounded-full bg-cyan-500/10 blur-3xl"
       ></div>
       <div
-        class="absolute -bottom-12 -right-12 w-48 h-48 rounded-full bg-violet-500/10 blur-3xl pointer-events-none"
+        class="pointer-events-none absolute -right-12 -bottom-12 h-48 w-48 rounded-full bg-violet-500/10 blur-3xl"
       ></div>
 
       <!-- Close button -->
       <button
         @click="showRouletteModal = false"
-        class="absolute top-4 right-4 p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-neutral-800 transition-colors cursor-pointer"
+        class="text-muted-foreground hover:text-foreground absolute top-4 right-4 cursor-pointer rounded-full p-2 transition-colors hover:bg-neutral-800"
         title="Close"
       >
-        <XIcon class="w-5 h-5" />
+        <XIcon class="h-5 w-5" />
       </button>
 
       <!-- Modal Title -->
       <h3
-        class="text-xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400 mb-6 flex items-center gap-2"
+        class="mb-6 flex items-center gap-2 bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-xl font-extrabold tracking-tight text-transparent"
       >
         <span>🎡</span> {{ $t("roulette.title") }}
       </h3>
 
       <!-- The Roulette Reel -->
       <div
-        class="relative h-32 w-full overflow-hidden border border-cyan-500/30 rounded-2xl bg-neutral-950/70 shadow-[inset_0_0_24px_rgba(6,182,212,0.15)] mb-6 flex items-center justify-center"
+        class="relative mb-6 flex h-32 w-full items-center justify-center overflow-hidden rounded-2xl border border-cyan-500/30 bg-neutral-950/70 shadow-[inset_0_0_24px_rgba(6,182,212,0.15)]"
       >
-        <div class="absolute left-0 right-0 top-0" :style="reelStyle">
+        <div class="absolute top-0 right-0 left-0" :style="reelStyle">
           <div
             v-for="(game, index) in reelGames"
             :key="index"
-            class="h-32 flex flex-col items-center justify-center px-4"
+            class="flex h-32 flex-col items-center justify-center px-4"
           >
             <img
               :src="game.header_img"
               :alt="game.name"
-              class="w-32 h-15 rounded-lg object-cover border border-border shadow-md"
+              class="border-border h-15 w-32 rounded-lg border object-cover shadow-md"
               @error="handleImageError"
             />
             <span
-              class="text-sm font-black text-foreground truncate max-w-[260px] mt-2 tracking-tight"
+              class="text-foreground mt-2 max-w-[260px] truncate text-sm font-black tracking-tight"
               >{{ game.name }}</span
             >
           </div>
@@ -304,12 +304,12 @@
 
         <!-- Viewport Overlay line markers -->
         <div
-          class="absolute inset-x-0 inset-y-10 border-y border-cyan-500/20 bg-cyan-500/5 pointer-events-none"
+          class="pointer-events-none absolute inset-x-0 inset-y-10 border-y border-cyan-500/20 bg-cyan-500/5"
         ></div>
 
         <!-- Side shadow overlays to make it look 3D cylindrical -->
         <div
-          class="absolute inset-0 bg-gradient-to-b from-neutral-950/60 via-transparent to-neutral-950/60 pointer-events-none"
+          class="pointer-events-none absolute inset-0 bg-gradient-to-b from-neutral-950/60 via-transparent to-neutral-950/60"
         ></div>
       </div>
 
@@ -317,29 +317,29 @@
       <div class="w-full space-y-5">
         <div v-if="isSpinning" class="space-y-3">
           <p
-            class="text-xs font-semibold text-muted-foreground uppercase tracking-widest animate-pulse"
+            class="text-muted-foreground animate-pulse text-xs font-semibold tracking-widest uppercase"
           >
             {{ $t("roulette.spinning") }}
           </p>
           <div class="flex justify-center gap-1.5">
-            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-bounce"></span>
+            <span class="h-2.5 w-2.5 animate-bounce rounded-full bg-cyan-400"></span>
             <span
-              class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:0.2s]"
+              class="h-2.5 w-2.5 animate-bounce rounded-full bg-cyan-400 [animation-delay:0.2s]"
             ></span>
             <span
-              class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:0.4s]"
+              class="h-2.5 w-2.5 animate-bounce rounded-full bg-cyan-400 [animation-delay:0.4s]"
             ></span>
           </div>
         </div>
 
         <div v-else-if="finalSelectedGame" class="animate-fade-in space-y-5">
-          <div class="p-4.5 rounded-2xl bg-cyan-500/5 border border-cyan-500/20 text-sm">
-            <span class="text-2xl mb-2 block select-none">✨</span>
-            <p class="font-bold text-cyan-400 mb-2 leading-snug">{{ $t("roulette.landing") }}</p>
-            <h4 class="text-lg font-black text-foreground tracking-tight">
-               {{ finalSelectedGame.name }}
+          <div class="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-4.5 text-sm">
+            <span class="mb-2 block text-2xl select-none">✨</span>
+            <p class="mb-2 leading-snug font-bold text-cyan-400">{{ $t("roulette.landing") }}</p>
+            <h4 class="text-foreground text-lg font-black tracking-tight">
+              {{ finalSelectedGame.name }}
             </h4>
-            <p class="text-xs text-muted-foreground font-semibold mt-1">
+            <p class="text-muted-foreground mt-1 text-xs font-semibold">
               {{
                 $t("roulette.playtime", { hours: formatHours(finalSelectedGame.playtime_hours) })
               }}
@@ -347,15 +347,15 @@
           </div>
 
           <!-- Action buttons -->
-          <div class="flex flex-col gap-2.5 w-full">
+          <div class="flex w-full flex-col gap-2.5">
             <UiButton as-child class="w-full py-5 font-bold shadow-lg shadow-cyan-900/10">
               <a :href="'steam://run/' + finalSelectedGame.appid">
-                <PlayIcon class="w-4.5 h-4.5 fill-current mr-2" />
+                <PlayIcon class="mr-2 h-4.5 w-4.5 fill-current" />
                 <span>{{ $t("roulette.launch") }}</span>
               </a>
             </UiButton>
 
-            <div class="grid grid-cols-2 gap-2.5 w-full">
+            <div class="grid w-full grid-cols-2 gap-2.5">
               <UiButton as-child variant="outline" size="sm" class="font-semibold">
                 <NuxtLinkLocale :to="'/game/' + finalSelectedGame.appid">
                   🏆 {{ $t("roulette.achievements") }}

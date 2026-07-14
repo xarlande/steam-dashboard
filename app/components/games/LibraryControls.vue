@@ -1,34 +1,36 @@
 <template>
   <div
-    class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card/45 p-4 rounded-2xl border border-border/50"
+    class="bg-card/45 border-border/50 flex flex-col justify-between gap-4 rounded-2xl border p-4 md:flex-row md:items-center"
   >
     <!-- Search input -->
-    <div class="relative flex-1 max-w-md">
+    <div class="relative max-w-md flex-1">
       <span
-        class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground z-10"
+        class="text-muted-foreground pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-3"
       >
-        <SearchIcon class="w-4 h-4" />
+        <SearchIcon class="h-4 w-4" />
       </span>
       <UiInput
         type="text"
         v-model="searchQuery"
         :placeholder="$t('index.searchPlaceholder')"
-        class="w-full pl-9 pr-8"
+        class="w-full pr-8 pl-9"
       />
       <UiButton
         v-if="searchQuery"
         variant="ghost"
         size="icon"
         @click="searchQuery = ''"
-        class="absolute right-0 top-0 bottom-0"
+        class="absolute top-0 right-0 bottom-0"
       >
-        <XIcon class="w-4 h-4" />
+        <XIcon class="h-4 w-4" />
       </UiButton>
     </div>
 
     <!-- Sorting Tabs -->
-    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 shrink-0">
-      <span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-2 shrink-0">
+    <div class="no-scrollbar flex shrink-0 items-center gap-2 overflow-x-auto py-0.5">
+      <span
+        class="text-muted-foreground mr-2 shrink-0 text-xs font-semibold tracking-wider uppercase"
+      >
         {{ $t("index.sortBy") }}
       </span>
       <UiTabs v-model="sortBy" class="w-auto">

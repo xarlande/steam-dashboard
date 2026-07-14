@@ -83,7 +83,9 @@ export const useGameCategories = () => {
     const game = games.find((g) => g.appid === appid);
     const current =
       manualCategories.value[appid] ||
-      (isDefaultSessionGame(game?.name || "") ? GameTypes.Category.Session : GameTypes.Category.Story);
+      (isDefaultSessionGame(game?.name || "")
+        ? GameTypes.Category.Session
+        : GameTypes.Category.Story);
     const next =
       current === GameTypes.Category.Story ? GameTypes.Category.Session : GameTypes.Category.Story;
     manualCategories.value[appid] = next;

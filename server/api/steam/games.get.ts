@@ -78,8 +78,7 @@ export default defineEventHandler(async (event) => {
       games,
       total_count: games.length,
       total_playtime_hours: totalPlaytimeHours,
-      usingEnv:
-        !getCookie(event, "steam_id") && !!process.env.STEAM_ID,
+      usingEnv: !getCookie(event, "steam_id") && !!process.env.STEAM_ID,
     };
   } catch (error: any) {
     const sanitized = sanitizeError(error);

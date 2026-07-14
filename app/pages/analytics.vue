@@ -1,19 +1,19 @@
 <template>
   <!-- Page Title -->
-  <section class="mb-8 animate-fade-in">
+  <section class="animate-fade-in mb-8">
     <div class="flex items-center gap-3">
       <div
-        class="p-2.5 rounded-xl bg-violet-500/10 text-violet-400 border border-violet-500/20 shrink-0"
+        class="shrink-0 rounded-xl border border-violet-500/20 bg-violet-500/10 p-2.5 text-violet-400"
       >
-        <BarChart2Icon class="w-8 h-8" />
+        <BarChart2Icon class="h-8 w-8" />
       </div>
       <div>
         <h1
-          class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r dark:from-neutral-50 dark:via-neutral-100 dark:to-neutral-400 from-neutral-900 via-neutral-800 to-neutral-600"
+          class="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-600 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent sm:text-3xl dark:from-neutral-50 dark:via-neutral-100 dark:to-neutral-400"
         >
           {{ $t("analytics.title") }}
         </h1>
-        <p class="text-xs sm:text-sm text-muted-foreground font-medium">
+        <p class="text-muted-foreground text-xs font-medium sm:text-sm">
           {{ $t("analytics.description") }}
         </p>
       </div>
@@ -22,20 +22,20 @@
 
   <!-- Loader State -->
   <section v-if="isLoading" class="space-y-6">
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
-      <UiCard class="md:col-span-2 h-80 animate-pulse bg-muted/40" />
-      <UiCard class="md:col-span-3 h-80 animate-pulse bg-muted/40" />
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-5">
+      <UiCard class="bg-muted/40 h-80 animate-pulse md:col-span-2" />
+      <UiCard class="bg-muted/40 h-80 animate-pulse md:col-span-3" />
     </div>
   </section>
 
   <!-- Error State -->
-  <section v-else-if="error" class="max-w-2xl mx-auto py-8">
+  <section v-else-if="error" class="mx-auto max-w-2xl py-8">
     <div
-      class="p-6 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive-foreground text-sm flex items-start gap-4 shadow-lg"
+      class="bg-destructive/10 border-destructive/20 text-destructive-foreground flex items-start gap-4 rounded-lg border p-6 text-sm shadow-lg"
     >
-      <AlertCircleIcon class="w-6 h-6 text-destructive shrink-0 mt-0.5" />
+      <AlertCircleIcon class="text-destructive mt-0.5 h-6 w-6 shrink-0" />
       <div class="flex-1">
-        <h3 class="font-extrabold text-base text-destructive mb-1">Failed to Load Analytics</h3>
+        <h3 class="text-destructive mb-1 text-base font-extrabold">Failed to Load Analytics</h3>
         <p class="leading-relaxed">{{ error }}</p>
         <div class="mt-4 flex items-center gap-3">
           <UiButton variant="outline" as-child>
@@ -48,25 +48,25 @@
   </section>
 
   <!-- Loaded Analytics State -->
-  <section v-else class="space-y-8 animate-fade-in">
-    <UiCard class="overflow-hidden bg-gradient-to-br from-card to-card/50">
+  <section v-else class="animate-fade-in space-y-8">
+    <UiCard class="from-card to-card/50 overflow-hidden bg-gradient-to-br">
       <UiCardContent class="p-6">
         <!-- Period Selector Row -->
-        <div class="flex items-center justify-between pb-4 border-b border-border/60">
-          <h2 class="text-sm font-bold text-muted-foreground uppercase tracking-widest">
+        <div class="border-border/60 flex items-center justify-between border-b pb-4">
+          <h2 class="text-muted-foreground text-sm font-bold tracking-widest uppercase">
             {{ $t("analytics.title") }}
           </h2>
 
           <!-- Period Toggle Switch -->
           <div
-            class="flex items-center bg-muted/65 p-1 rounded-xl border border-border/65 shadow-inner"
+            class="bg-muted/65 border-border/65 flex items-center rounded-xl border p-1 shadow-inner"
           >
             <button
               @click="analyticsPeriod = 'recent'"
-              class="text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
+              class="rounded-lg px-3 py-1.5 text-xs font-bold transition-all"
               :class="
                 analyticsPeriod === 'recent'
-                  ? 'bg-card text-foreground shadow-xs border border-border/30'
+                  ? 'bg-card text-foreground border-border/30 border shadow-xs'
                   : 'text-muted-foreground hover:text-foreground'
               "
             >
@@ -74,10 +74,10 @@
             </button>
             <button
               @click="analyticsPeriod = 'allTime'"
-              class="text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
+              class="rounded-lg px-3 py-1.5 text-xs font-bold transition-all"
               :class="
                 analyticsPeriod === 'allTime'
-                  ? 'bg-card text-foreground shadow-xs border border-border/30'
+                  ? 'bg-card text-foreground border-border/30 border shadow-xs'
                   : 'text-muted-foreground hover:text-foreground'
               "
             >
@@ -87,20 +87,20 @@
         </div>
 
         <!-- Content Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-8 pt-6">
+        <div class="grid grid-cols-1 gap-8 pt-6 md:grid-cols-5">
           <!-- Left Column (Donut Chart) - Takes 2 cols of 5 -->
           <div
-            class="md:col-span-2 flex flex-col items-center justify-center p-5 rounded-2xl bg-card/25 border border-border/60 relative"
+            class="bg-card/25 border-border/60 relative flex flex-col items-center justify-center rounded-2xl border p-5 md:col-span-2"
           >
             <h3
-              class="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-6 self-start"
+              class="text-muted-foreground mb-6 self-start text-xs font-bold tracking-widest uppercase"
             >
               {{ $t("analytics.balanceTitle") }}
             </h3>
 
             <!-- SVG Donut Chart container -->
-            <div class="relative w-44 h-44 flex items-center justify-center select-none">
-              <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+            <div class="relative flex h-44 w-44 items-center justify-center select-none">
+              <svg class="h-full w-full -rotate-90 transform" viewBox="0 0 100 100">
                 <!-- Base background circle (if hours = 0) -->
                 <circle
                   cx="50"
@@ -109,7 +109,7 @@
                   stroke="currentColor"
                   stroke-width="10"
                   fill="transparent"
-                  class="text-neutral-100 dark:text-neutral-850"
+                  class="dark:text-neutral-850 text-neutral-100"
                 />
 
                 <!-- Story Segment -->
@@ -123,7 +123,7 @@
                   fill="transparent"
                   :stroke-dasharray="donutStoryDash"
                   stroke-dashoffset="0"
-                  class="transition-all duration-1000 ease-out donut-segment"
+                  class="donut-segment transition-all duration-1000 ease-out"
                 />
 
                 <!-- Session Segment -->
@@ -137,35 +137,35 @@
                   fill="transparent"
                   :stroke-dasharray="donutSessionDash"
                   :stroke-dashoffset="donutSessionOffset"
-                  class="transition-all duration-1000 ease-out donut-segment"
+                  class="donut-segment transition-all duration-1000 ease-out"
                 />
               </svg>
 
               <!-- Center Text Overlay -->
               <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <span class="text-2xl font-black tracking-tight text-foreground"
+                <span class="text-foreground text-2xl font-black tracking-tight"
                   >{{ activeStoryPercent }}%</span
                 >
                 <span
-                  class="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mt-0.5"
+                  class="text-muted-foreground mt-0.5 text-[9px] font-bold tracking-wider uppercase"
                   >🎭 Story</span
                 >
               </div>
             </div>
 
             <!-- Legend details -->
-            <div class="w-full mt-6 space-y-2.5 pt-4 border-t border-border/60">
+            <div class="border-border/60 mt-6 w-full space-y-2.5 border-t pt-4">
               <div
                 v-if="activeTotalHours === 0"
-                class="text-center text-xs text-muted-foreground py-2 font-medium"
+                class="text-muted-foreground py-2 text-center text-xs font-medium"
               >
                 {{ $t("analytics.legendNoData") }}
               </div>
               <template v-else>
                 <!-- Story Legend -->
                 <div class="flex items-center justify-between text-xs">
-                  <div class="flex items-center gap-2 font-semibold text-foreground/90">
-                    <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                  <div class="text-foreground/90 flex items-center gap-2 font-semibold">
+                    <span class="h-2.5 w-2.5 rounded-full bg-cyan-400"></span>
                     <span>{{ $t("analytics.legendStory") }}</span>
                   </div>
                   <span class="font-extrabold text-cyan-400">
@@ -180,8 +180,8 @@
 
                 <!-- Session Legend -->
                 <div class="flex items-center justify-between text-xs">
-                  <div class="flex items-center gap-2 font-semibold text-foreground/90">
-                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                  <div class="text-foreground/90 flex items-center gap-2 font-semibold">
+                    <span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span>
                     <span>{{ $t("analytics.legendSession") }}</span>
                   </div>
                   <span class="font-extrabold text-rose-400">
@@ -199,55 +199,55 @@
 
           <!-- Right Column (Top 5 Games) - Takes 3 cols of 5 -->
           <div
-            class="md:col-span-3 flex flex-col justify-between p-5 rounded-2xl bg-card/25 border border-border/60"
+            class="bg-card/25 border-border/60 flex flex-col justify-between rounded-2xl border p-5 md:col-span-3"
           >
-            <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-5">
+            <h3 class="text-muted-foreground mb-5 text-xs font-bold tracking-widest uppercase">
               {{ $t("analytics.topGamesTitle") }}
             </h3>
 
             <div
               v-if="topFiveGames.length === 0"
-              class="flex-1 flex items-center justify-center text-xs text-muted-foreground py-10 font-medium"
+              class="text-muted-foreground flex flex-1 items-center justify-center py-10 text-xs font-medium"
             >
               {{ $t("analytics.legendNoData") }}
             </div>
-            <div v-else class="space-y-4.5 flex-1 flex flex-col justify-center">
+            <div v-else class="flex flex-1 flex-col justify-center space-y-4.5">
               <div
                 v-for="(game, index) in topFiveGames"
                 :key="'top-' + game.appid"
-                class="flex items-center gap-3.5 group/bar"
+                class="group/bar flex items-center gap-3.5"
               >
                 <!-- Rank Indicator -->
                 <span
-                  class="text-xs font-black text-muted-foreground/60 w-3.5 select-none text-center"
+                  class="text-muted-foreground/60 w-3.5 text-center text-xs font-black select-none"
                 >
                   {{ index + 1 }}
                 </span>
 
                 <!-- Game Image banner -->
                 <div
-                  class="relative w-12 h-6 rounded-md overflow-hidden bg-muted border border-border/40 shrink-0 shadow-xs"
+                  class="bg-muted border-border/40 relative h-6 w-12 shrink-0 overflow-hidden rounded-md border shadow-xs"
                 >
                   <img
                     :src="game.header_img"
                     :alt="game.name"
-                    class="w-full h-full object-cover transition-transform group-hover/bar:scale-105"
+                    class="h-full w-full object-cover transition-transform group-hover/bar:scale-105"
                     @error="handleImageError"
                   />
                 </div>
 
                 <!-- Bar & details -->
-                <div class="flex-1 min-w-0 space-y-1">
-                  <div class="flex items-center justify-between text-xs gap-2">
+                <div class="min-w-0 flex-1 space-y-1">
+                  <div class="flex items-center justify-between gap-2 text-xs">
                     <h4
-                      class="font-bold text-foreground truncate group-hover/bar:text-violet-400 transition-colors"
+                      class="text-foreground truncate font-bold transition-colors group-hover/bar:text-violet-400"
                       :title="game.name"
                     >
                       {{ game.name }}
                     </h4>
-                    <span class="font-black text-foreground shrink-0 pl-2">
+                    <span class="text-foreground shrink-0 pl-2 font-black">
                       {{ formatHours(game.display_hours) }}
-                      <span class="text-[10px] text-muted-foreground font-semibold">{{
+                      <span class="text-muted-foreground text-[10px] font-semibold">{{
                         $t("common.hoursSuffix")
                       }}</span>
                     </span>
@@ -255,7 +255,7 @@
 
                   <!-- Progress bar track -->
                   <div
-                    class="h-2 rounded-full bg-neutral-200 dark:bg-neutral-800/80 overflow-hidden shadow-inner flex"
+                    class="flex h-2 overflow-hidden rounded-full bg-neutral-200 shadow-inner dark:bg-neutral-800/80"
                   >
                     <div
                       class="h-full rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 opacity-90 transition-all duration-1000 ease-out"

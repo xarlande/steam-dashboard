@@ -1,10 +1,10 @@
 <template>
   <!-- Loading State (Hero Details) -->
   <section v-if="isLoading" class="mb-8">
-    <UiCard class="bg-neutral-900 border border-neutral-800/60 p-6 sm:p-8 animate-pulse">
-      <div class="flex flex-col md:flex-row gap-6 items-center">
-        <UiSkeleton class="w-full md:w-[220px] aspect-[460/215] rounded-xl" />
-        <div class="flex-1 space-y-4 w-full">
+    <UiCard class="animate-pulse border border-neutral-800/60 bg-neutral-900 p-6 sm:p-8">
+      <div class="flex flex-col items-center gap-6 md:flex-row">
+        <UiSkeleton class="aspect-[460/215] w-full rounded-xl md:w-[220px]" />
+        <div class="w-full flex-1 space-y-4">
           <UiSkeleton class="h-8 w-1/2 rounded-md" />
           <UiSkeleton class="h-4 w-1/4 rounded-md" />
           <UiSkeleton class="h-4 w-3/4 rounded-md pt-4" />
@@ -14,18 +14,18 @@
   </section>
 
   <!-- Loaded State: Hero Game Info -->
-  <section v-else-if="!error" class="mb-8 animate-fade-in">
+  <section v-else-if="!error" class="animate-fade-in mb-8">
     <UiCard>
-      <UiCardContent class="flex flex-col md:flex-row gap-6 md:items-center justify-between">
+      <UiCardContent class="flex flex-col justify-between gap-6 md:flex-row md:items-center">
         <!-- Banner & Name -->
-        <div class="flex flex-col sm:flex-row gap-5 items-center text-center sm:text-left">
+        <div class="flex flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
           <div
-            class="relative w-[220px] aspect-[460/215] rounded-xl overflow-hidden shadow-md border border-neutral-850 shrink-0"
+            class="border-neutral-850 relative aspect-[460/215] w-[220px] shrink-0 overflow-hidden rounded-xl border shadow-md"
           >
             <img
               :src="headerImgUrl"
               :alt="gameName"
-              class="w-full h-full object-cover"
+              class="h-full w-full object-cover"
               @error="handleImageError"
             />
           </div>
@@ -33,15 +33,15 @@
           <div class="space-y-2">
             <UiBadge variant="secondary"> App ID: {{ appid }} </UiBadge>
             <h2
-              class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground leading-tight"
+              class="text-foreground text-2xl leading-tight font-extrabold tracking-tight sm:text-3xl"
             >
               {{ gameName }}
             </h2>
             <div
-              class="flex flex-wrap justify-center sm:justify-start items-center gap-4 pt-1 text-sm text-muted-foreground font-medium"
+              class="text-muted-foreground flex flex-wrap items-center justify-center gap-4 pt-1 text-sm font-medium sm:justify-start"
             >
               <div class="flex items-center gap-1.5">
-                <ClockIcon class="w-4 h-4 text-muted-foreground" />
+                <ClockIcon class="text-muted-foreground h-4 w-4" />
                 <span
                   >{{ $t("game.completionProgress") }}:
                   <span class="text-foreground font-semibold">{{ unlockedCount }}</span> /
@@ -54,72 +54,72 @@
 
         <!-- Achievements Progress (shadcn Progress) -->
         <div
-          class="flex flex-col items-center justify-center shrink-0 p-4 rounded-xl bg-muted/40 border border-border min-w-[150px]"
+          class="bg-muted/40 border-border flex min-w-[150px] shrink-0 flex-col items-center justify-center rounded-xl border p-4"
         >
-          <span class="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">{{
+          <span class="text-muted-foreground text-[10px] font-bold tracking-widest uppercase">{{
             $t("game.unlockedLabel")
           }}</span>
           <span
-            class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-indigo-400 mt-1 tracking-tight"
+            class="mt-1 bg-gradient-to-br from-cyan-400 to-indigo-400 bg-clip-text text-3xl font-black tracking-tight text-transparent"
           >
             {{ unlockedPercent }}%
           </span>
-          <UiProgress :model-value="unlockedPercent" class="w-full mt-3" />
+          <UiProgress :model-value="unlockedPercent" class="mt-3 w-full" />
         </div>
       </UiCardContent>
     </UiCard>
   </section>
 
   <!-- Easy Targets / The Next Achievements -->
-  <section v-if="!isLoading && !error && nextAchievements.length > 0" class="mb-8 animate-fade-in">
+  <section v-if="!isLoading && !error && nextAchievements.length > 0" class="animate-fade-in mb-8">
     <UiCard class="border-cyan-500/20 bg-gradient-to-r from-cyan-950/10 to-transparent shadow-xs">
       <UiCardContent class="p-6">
-        <div class="flex items-center gap-2.5 mb-4">
+        <div class="mb-4 flex items-center gap-2.5">
           <span class="text-xl">🎯</span>
           <div>
-            <h3 class="text-base font-bold text-foreground leading-snug">
+            <h3 class="text-foreground text-base leading-snug font-bold">
               {{ $t("game.nextTitle") }}
             </h3>
-            <p class="text-xs text-muted-foreground mt-0.5">{{ $t("game.nextDesc") }}</p>
+            <p class="text-muted-foreground mt-0.5 text-xs">{{ $t("game.nextDesc") }}</p>
           </div>
         </div>
 
         <!-- List of 3 next targets -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div
             v-for="ach in nextAchievements"
             :key="'next-' + ach.apiname"
-            class="flex items-center gap-3.5 p-3.5 rounded-2xl border border-border bg-card/30 hover:bg-card/60 transition-all group"
+            class="border-border bg-card/30 hover:bg-card/60 group flex items-center gap-3.5 rounded-2xl border p-3.5 transition-all"
           >
             <!-- Gray Icon, becomes colored on hover -->
             <div
-              class="relative w-12 h-12 rounded-xl overflow-hidden bg-muted border border-border/60 shrink-0"
+              class="bg-muted border-border/60 relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border"
             >
               <!-- Gray icon by default, hidden on hover -->
               <img
                 :src="ach.icongray"
                 :alt="ach.name"
-                class="w-full h-full object-cover group-hover:hidden transition-transform"
+                class="h-full w-full object-cover transition-transform group-hover:hidden"
                 @error="handleIconError"
               />
               <!-- Colored icon shown on hover -->
               <img
                 :src="ach.icon"
                 :alt="ach.name"
-                class="w-full h-full object-cover hidden group-hover:block transition-transform"
+                class="hidden h-full w-full object-cover transition-transform group-hover:block"
                 @error="handleIconError"
               />
             </div>
 
             <div class="min-w-0 flex-1">
               <h4
-                class="text-xs font-bold text-foreground truncate group-hover:text-cyan-400 transition-colors"
+                class="text-foreground truncate text-xs font-bold transition-colors group-hover:text-cyan-400"
                 :title="ach.name"
               >
                 {{ ach.name }}
               </h4>
               <p
-                class="text-[10px] text-muted-foreground line-clamp-1 mt-0.5"
+                class="text-muted-foreground mt-0.5 line-clamp-1 text-[10px]"
                 :title="ach.description"
               >
                 {{ ach.description || "No description" }}
@@ -128,7 +128,7 @@
               <!-- Unlock Rate Badge -->
               <div class="mt-2 flex items-center gap-1">
                 <UiBadge
-                  class="text-[9px] font-black bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/10 border-cyan-500/20 py-0.5 px-1.5 rounded-md"
+                  class="rounded-md border-cyan-500/20 bg-cyan-500/10 px-1.5 py-0.5 text-[9px] font-black text-cyan-400 hover:bg-cyan-500/10"
                 >
                   {{ ach.global_percent }}% {{ $t("game.globalUnlocked") }}
                 </UiBadge>
@@ -143,18 +143,18 @@
   <!-- If 100% Completed, show congratulations -->
   <section
     v-else-if="!isLoading && !error && achievements.length > 0 && nextAchievements.length === 0"
-    class="mb-8 animate-fade-in"
+    class="animate-fade-in mb-8"
   >
     <UiCard
       class="border-emerald-500/20 bg-gradient-to-r from-emerald-950/10 to-transparent shadow-xs"
     >
-      <UiCardContent class="p-6 flex items-center gap-4">
+      <UiCardContent class="flex items-center gap-4 p-6">
         <span class="text-3xl select-none">🏆</span>
         <div>
-          <h3 class="text-base font-extrabold text-emerald-400 leading-snug">
+          <h3 class="text-base leading-snug font-extrabold text-emerald-400">
             {{ $t("game.congratsTitle") }}
           </h3>
-          <p class="text-xs text-muted-foreground mt-0.5 font-medium">
+          <p class="text-muted-foreground mt-0.5 text-xs font-medium">
             {{ $t("game.congratsDesc") }}
           </p>
         </div>
@@ -163,39 +163,39 @@
   </section>
 
   <!-- Main Content Block -->
-  <section v-if="!isLoading && !error" class="space-y-6 animate-fade-in">
+  <section v-if="!isLoading && !error" class="animate-fade-in space-y-6">
     <!-- Filter Controls (Search + Tabs) -->
     <div
-      class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-card border border-border"
+      class="bg-card border-border flex flex-col justify-between gap-4 rounded-2xl border p-4 md:flex-row md:items-center"
     >
       <!-- Search in Achievements -->
-      <div class="relative flex-1 max-w-md">
+      <div class="relative max-w-md flex-1">
         <span
-          class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground z-10"
+          class="text-muted-foreground pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-3"
         >
-          <SearchIcon class="w-4.5 h-4.5" />
+          <SearchIcon class="h-4.5 w-4.5" />
         </span>
         <UiInput
           type="text"
           v-model="searchQuery"
           :placeholder="$t('game.searchPlaceholder')"
-          class="w-full pl-9 pr-8"
+          class="w-full pr-8 pl-9"
         />
         <UiButton
           v-if="searchQuery"
           variant="ghost"
           size="icon"
           @click="searchQuery = ''"
-          class="absolute right-0 top-0 bottom-0"
+          class="absolute top-0 right-0 bottom-0"
         >
-          <XIcon class="w-4 h-4" />
+          <XIcon class="h-4 w-4" />
         </UiButton>
       </div>
 
       <!-- Tabs: All, Unlocked, Locked (shadcn tabs) -->
-      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+      <div class="no-scrollbar flex items-center gap-2 overflow-x-auto py-0.5">
         <span
-          class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-2 shrink-0"
+          class="text-muted-foreground mr-2 shrink-0 text-xs font-semibold tracking-wider uppercase"
           >{{ $t("game.filterLabel") }}</span
         >
         <UiTabs v-model="filterBy" class="w-auto">
@@ -215,9 +215,9 @@
     </div>
 
     <!-- Skeleton Grid while loading -->
-    <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <UiCard v-for="i in 6" :key="i" class="p-4 flex gap-4 items-center">
-        <UiSkeleton class="w-14 h-14 rounded-xl shrink-0" />
+    <div v-if="isLoading" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <UiCard v-for="i in 6" :key="i" class="flex items-center gap-4 p-4">
+        <UiSkeleton class="h-14 w-14 shrink-0 rounded-xl" />
         <div class="flex-1 space-y-2">
           <UiSkeleton class="h-4.5 w-1/3 rounded-md" />
           <UiSkeleton class="h-3 w-3/4 rounded-md" />
@@ -226,32 +226,32 @@
     </div>
 
     <!-- Achievements Grid -->
-    <div v-else-if="filteredAchievements.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div v-else-if="filteredAchievements.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2">
       <!-- Achievement Card (shadcn Card) -->
       <UiCard
         v-for="ach in filteredAchievements"
         :key="ach.apiname"
-        class="group flex gap-4 ach-card hover:-translate-y-0.5 p-4"
+        class="group ach-card flex gap-4 p-4 hover:-translate-y-0.5"
         :class="ach.achieved ? '' : 'opacity-60 transition-opacity hover:opacity-90'"
       >
         <!-- Icon -->
         <div
-          class="relative w-14 h-14 rounded-xl overflow-hidden bg-muted border border-border shrink-0"
+          class="bg-muted border-border relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border"
         >
           <img
             :src="ach.achieved ? ach.icon : ach.icongray"
             :alt="ach.name"
             loading="lazy"
-            class="w-full h-full object-cover ach-card-img group-hover:scale-[1.04]"
+            class="ach-card-img h-full w-full object-cover group-hover:scale-[1.04]"
             @error="handleIconError"
           />
         </div>
 
         <!-- Text details -->
-        <div class="flex flex-col justify-center min-w-0 flex-1 pr-2">
+        <div class="flex min-w-0 flex-1 flex-col justify-center pr-2">
           <div class="flex items-start justify-between gap-2">
             <h4
-              class="font-bold text-sm sm:text-base group-hover:text-cyan-500 dark:group-hover:text-cyan-300 transition-colors truncate"
+              class="truncate text-sm font-bold transition-colors group-hover:text-cyan-500 sm:text-base dark:group-hover:text-cyan-300"
             >
               {{ ach.name }}
             </h4>
@@ -263,16 +263,16 @@
           </div>
 
           <!-- Description -->
-          <p class="text-xs text-muted-foreground line-clamp-2 mt-1 leading-normal pr-4">
+          <p class="text-muted-foreground mt-1 line-clamp-2 pr-4 text-xs leading-normal">
             {{ ach.description || "No description provided." }}
           </p>
 
           <!-- Unlock relative time -->
           <p
             v-if="ach.achieved"
-            class="text-[10px] text-muted-foreground mt-1.5 font-medium flex items-center gap-1"
+            class="text-muted-foreground mt-1.5 flex items-center gap-1 text-[10px] font-medium"
           >
-            <CheckIcon class="w-3 h-3 text-muted-foreground/80" />
+            <CheckIcon class="text-muted-foreground/80 h-3 w-3" />
             <span>{{ $t("game.unlockedAt", { time: ach.unlocktime_relative }) }}</span>
           </p>
         </div>
@@ -280,15 +280,15 @@
     </div>
 
     <!-- Empty Grid/Search -->
-    <UiCard v-else class="max-w-md mx-auto text-center">
+    <UiCard v-else class="mx-auto max-w-md text-center">
       <UiCardContent>
         <div
-          class="w-16 h-16 rounded-2xl bg-card border border-border flex items-center justify-center mx-auto text-muted-foreground mb-4"
+          class="bg-card border-border text-muted-foreground mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border"
         >
-          <AlertCircleIcon class="w-8 h-8" />
+          <AlertCircleIcon class="h-8 w-8" />
         </div>
-        <h3 class="font-bold text-base">{{ $t("game.noAchievements") }}</h3>
-        <p class="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
+        <h3 class="text-base font-bold">{{ $t("game.noAchievements") }}</h3>
+        <p class="text-muted-foreground mx-auto mt-1 max-w-xs text-xs">
           {{ $t("game.noAchievementsDesc") }}
         </p>
       </UiCardContent>
@@ -296,13 +296,13 @@
   </section>
 
   <!-- Global Error Alert / Back Action -->
-  <section v-if="error" class="max-w-2xl mx-auto py-8">
+  <section v-if="error" class="mx-auto max-w-2xl py-8">
     <div
-      class="p-6 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive-foreground text-sm flex items-start gap-4 shadow-lg"
+      class="bg-destructive/10 border-destructive/20 text-destructive-foreground flex items-start gap-4 rounded-lg border p-6 text-sm shadow-lg"
     >
-      <AlertCircleIcon class="w-6 h-6 text-destructive shrink-0 mt-0.5" />
+      <AlertCircleIcon class="text-destructive mt-0.5 h-6 w-6 shrink-0" />
       <div class="flex-1">
-        <h3 class="font-extrabold text-base text-destructive mb-1">
+        <h3 class="text-destructive mb-1 text-base font-extrabold">
           {{ $t("game.failedLoad") }}
         </h3>
         <p class="leading-relaxed">{{ error }}</p>

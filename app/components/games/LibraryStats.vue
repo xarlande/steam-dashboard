@@ -1,58 +1,58 @@
 <template>
   <section
     v-if="games.length > 0"
-    class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8 animate-fade-in"
+    class="animate-fade-in mb-8 grid grid-cols-1 gap-5 sm:grid-cols-3"
   >
     <!-- Stat Card 1: Total Games -->
-    <UiCard class="relative overflow-hidden bg-card/45 border-border/50">
+    <UiCard class="bg-card/45 border-border/50 relative overflow-hidden">
       <UiCardContent class="p-6">
-        <div class="absolute -right-4 -bottom-4 opacity-10 text-cyan-400">
-          <Gamepad2Icon class="w-24 h-24" />
+        <div class="absolute -right-4 -bottom-4 text-cyan-400 opacity-10">
+          <Gamepad2Icon class="h-24 w-24" />
         </div>
-        <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <p class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
           {{ $t("index.stats.totalGames") }}
         </p>
-        <p class="text-3xl font-extrabold mt-2 tracking-tight">{{ totalCount }}</p>
-        <p class="text-xs text-muted-foreground/85 mt-1">
+        <p class="mt-2 text-3xl font-extrabold tracking-tight">{{ totalCount }}</p>
+        <p class="text-muted-foreground/85 mt-1 text-xs">
           {{ $t("index.stats.totalGamesDesc") }}
         </p>
       </UiCardContent>
     </UiCard>
 
     <!-- Stat Card 2: Total Time -->
-    <UiCard class="relative overflow-hidden bg-card/45 border-border/50">
+    <UiCard class="bg-card/45 border-border/50 relative overflow-hidden">
       <UiCardContent class="p-6">
-        <div class="absolute -right-4 -bottom-4 opacity-10 text-violet-400">
-          <ClockIcon class="w-24 h-24" />
+        <div class="absolute -right-4 -bottom-4 text-violet-400 opacity-10">
+          <ClockIcon class="h-24 w-24" />
         </div>
-        <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <p class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
           {{ $t("index.stats.totalPlaytime") }}
         </p>
-        <p class="text-3xl font-extrabold mt-2 tracking-tight">
+        <p class="mt-2 text-3xl font-extrabold tracking-tight">
           {{ formatHours(totalHours) }}
-          <span class="text-sm font-semibold text-muted-foreground">
+          <span class="text-muted-foreground text-sm font-semibold">
             {{ $t("common.hoursSuffix") }}
           </span>
         </p>
-        <p class="text-xs text-muted-foreground/85 mt-1">
+        <p class="text-muted-foreground/85 mt-1 text-xs">
           {{ $t("index.stats.totalPlaytimeDesc") }}
         </p>
       </UiCardContent>
     </UiCard>
 
     <!-- Stat Card 3: Most Played -->
-    <UiCard class="relative overflow-hidden bg-card/45 border-border/50">
+    <UiCard class="bg-card/45 border-border/50 relative overflow-hidden">
       <UiCardContent class="p-6">
-        <div class="absolute -right-4 -bottom-4 opacity-10 text-indigo-400">
-          <StarIcon class="w-24 h-24" />
+        <div class="absolute -right-4 -bottom-4 text-indigo-400 opacity-10">
+          <StarIcon class="h-24 w-24" />
         </div>
-        <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <p class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
           {{ $t("index.stats.mostPlayed") }}
         </p>
-        <p class="text-xl font-extrabold mt-2 truncate pr-16 tracking-tight">
+        <p class="mt-2 truncate pr-16 text-xl font-extrabold tracking-tight">
           {{ mostPlayedGame?.name || $t("index.stats.none") }}
         </p>
-        <p class="text-xs mt-1 font-semibold text-indigo-400">
+        <p class="mt-1 text-xs font-semibold text-indigo-400">
           {{
             mostPlayedGame
               ? formatHours(mostPlayedGame.playtime_hours) + " " + $t("common.hoursSuffix")

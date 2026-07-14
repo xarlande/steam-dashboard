@@ -11,7 +11,7 @@
       title="Refresh library"
     >
       <RotateCwIcon
-        class="w-5 h-5 transition-transform duration-75 group-hover:rotate-180"
+        class="h-5 w-5 transition-transform duration-75 group-hover:rotate-180"
         :class="{ 'animate-spin': isLoading }"
       />
     </UiButton>
@@ -19,7 +19,7 @@
     <!-- Analytics Button -->
     <UiButton v-if="games.length > 0" variant="outline" as-child>
       <NuxtLinkLocale to="/analytics" class="flex items-center gap-2">
-        <BarChart2Icon class="w-4 h-4 text-violet-400" />
+        <BarChart2Icon class="h-4 w-4 text-violet-400" />
         <span>{{ $t("index.analyticsBtn") }}</span>
       </NuxtLinkLocale>
     </UiButton>
@@ -31,7 +31,7 @@
       @click="$emit('export')"
       class="flex items-center gap-2"
     >
-      <CopyIcon class="w-4 h-4 text-cyan-400" />
+      <CopyIcon class="h-4 w-4 text-cyan-400" />
       <span>{{ $t("exportReport.btn") }}</span>
     </UiButton>
   </div>

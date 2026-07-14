@@ -1,40 +1,40 @@
 <template>
-  <NuxtLinkLocale :to="`/game/${game.appid}`" class="block h-full group">
+  <NuxtLinkLocale :to="`/game/${game.appid}`" class="group block h-full">
     <UiCard
-      class="flex flex-col h-full overflow-hidden hover:border-cyan-500/50 transition-colors duration-200"
+      class="flex h-full flex-col overflow-hidden transition-colors duration-200 hover:border-cyan-500/50"
     >
       <!-- Game Capsule Banner -->
-      <div class="relative aspect-[460/215] overflow-hidden bg-muted shrink-0">
+      <div class="bg-muted relative aspect-[460/215] shrink-0 overflow-hidden">
         <img
           :src="game.header_img"
           :alt="game.name"
           loading="lazy"
-          class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
           @error="handleImageError"
         />
       </div>
 
       <!-- Game Details -->
-      <UiCardContent class="flex flex-col flex-1 justify-between p-4 gap-4">
+      <UiCardContent class="flex flex-1 flex-col justify-between gap-4 p-4">
         <div>
           <h3
-            class="font-bold text-sm sm:text-base text-foreground group-hover:text-cyan-500 transition-colors line-clamp-1 tracking-tight"
+            class="text-foreground line-clamp-1 text-sm font-bold tracking-tight transition-colors group-hover:text-cyan-500 sm:text-base"
           >
             {{ game.name }}
           </h3>
 
-          <div class="flex items-center gap-1.5 mt-1.5 text-xs text-muted-foreground font-medium">
+          <div class="text-muted-foreground mt-1.5 flex items-center gap-1.5 text-xs font-medium">
             <span>{{ $t("index.lastLaunched", { time: game.last_played_relative }) }}</span>
           </div>
         </div>
 
         <!-- Playtime Stats -->
-        <div class="flex items-center justify-between pt-3 border-t border-border/60">
+        <div class="border-border/60 flex items-center justify-between border-t pt-3">
           <div class="flex flex-col">
-            <span class="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">
+            <span class="text-muted-foreground text-[10px] font-semibold tracking-wider uppercase">
               {{ $t("index.totalPlaytimeCard") }}
             </span>
-            <span class="text-xs font-bold text-foreground mt-0.5">
+            <span class="text-foreground mt-0.5 text-xs font-bold">
               {{ formatHours(game.playtime_hours) }} {{ $t("common.hoursSuffix") }}
             </span>
           </div>
@@ -44,10 +44,10 @@
             v-if="game.playtime_2weeks && game.playtime_2weeks > 0"
             class="flex flex-col items-end"
           >
-            <span class="text-[10px] text-cyan-500 uppercase tracking-wider font-semibold">
+            <span class="text-[10px] font-semibold tracking-wider text-cyan-500 uppercase">
               {{ $t("index.recent") }}
             </span>
-            <span class="text-xs font-bold text-cyan-400 mt-0.5">
+            <span class="mt-0.5 text-xs font-bold text-cyan-400">
               +{{ Math.round((game.playtime_2weeks / 60) * 10) / 10 }}
               {{ $t("common.hoursSuffix") }}
             </span>

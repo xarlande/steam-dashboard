@@ -2,20 +2,20 @@
   <transition name="fade">
     <div
       v-if="open"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md transition-opacity duration-300"
+      class="bg-background/80 fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md transition-opacity duration-300"
     >
       <div
-        class="relative w-full max-w-2xl max-h-[85vh] flex flex-col rounded-2xl bg-card border border-border/80 shadow-2xl overflow-hidden animate-fade-in"
+        class="bg-card border-border/80 animate-fade-in relative flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border shadow-2xl"
       >
         <!-- Modal Header -->
-        <div class="flex items-center justify-between p-5 border-b border-border/60">
+        <div class="border-border/60 flex items-center justify-between border-b p-5">
           <div class="flex items-center gap-3">
-            <FileTextIcon class="w-5.5 h-5.5 text-cyan-400" />
+            <FileTextIcon class="h-5.5 w-5.5 text-cyan-400" />
             <div>
-              <h3 class="text-base font-bold text-foreground">
+              <h3 class="text-foreground text-base font-bold">
                 {{ $t("exportReport.title") }}
               </h3>
-              <p class="text-xs text-muted-foreground mt-0.5 leading-normal">
+              <p class="text-muted-foreground mt-0.5 text-xs leading-normal">
                 {{ $t("exportReport.desc") }}
               </p>
             </div>
@@ -24,35 +24,35 @@
             variant="ghost"
             size="icon"
             @click="open = false"
-            class="rounded-full w-8 h-8 hover:bg-accent"
+            class="hover:bg-accent h-8 w-8 rounded-full"
           >
-            <XIcon class="w-4 h-4" />
+            <XIcon class="h-4 w-4" />
           </UiButton>
         </div>
 
         <!-- Modal Body (Content) -->
-        <div class="flex-1 overflow-y-auto p-5 space-y-5">
+        <div class="flex-1 space-y-5 overflow-y-auto p-5">
           <!-- Loading Progress Section -->
           <div
             v-if="isCopying"
-            class="py-8 flex flex-col items-center justify-center text-center space-y-4"
+            class="flex flex-col items-center justify-center space-y-4 py-8 text-center"
           >
             <div class="relative flex items-center justify-center">
-              <Loader2Icon class="w-10 h-10 text-cyan-400 animate-spin" />
+              <Loader2Icon class="h-10 w-10 animate-spin text-cyan-400" />
             </div>
             <div class="space-y-1">
-              <p class="font-bold text-sm text-foreground">
+              <p class="text-foreground text-sm font-bold">
                 {{ $t("exportReport.fetchProgress", { current: copyProgress, total: copyTotal }) }}
               </p>
-              <p class="text-xs text-muted-foreground italic max-w-md truncate">
+              <p class="text-muted-foreground max-w-md truncate text-xs italic">
                 {{ $t("exportReport.fetching", { game: copyCurrentGameName }) }}
               </p>
             </div>
 
             <!-- Progress Bar -->
-            <div class="w-full max-w-md bg-muted rounded-full h-2.5 overflow-hidden">
+            <div class="bg-muted h-2.5 w-full max-w-md overflow-hidden rounded-full">
               <div
-                class="bg-cyan-500 h-full transition-all duration-300 ease-out"
+                class="h-full bg-cyan-500 transition-all duration-300 ease-out"
                 :style="{ width: `${(copyProgress / copyTotal) * 100}%` }"
               ></div>
             </div>
@@ -67,25 +67,25 @@
             <!-- Empty state: Click to generate -->
             <div
               v-if="!copyReportText"
-              class="py-12 flex flex-col items-center justify-center text-center space-y-4"
+              class="flex flex-col items-center justify-center space-y-4 py-12 text-center"
             >
-              <div class="p-3 bg-cyan-500/10 text-cyan-400 rounded-full">
-                <FileTextIcon class="w-8 h-8" />
+              <div class="rounded-full bg-cyan-500/10 p-3 text-cyan-400">
+                <FileTextIcon class="h-8 w-8" />
               </div>
 
               <!-- Option checkbox before generating -->
               <div
-                class="flex items-center gap-2 mb-2 bg-neutral-900/40 px-4 py-2.5 rounded-xl border border-border/50"
+                class="border-border/50 mb-2 flex items-center gap-2 rounded-xl border bg-neutral-900/40 px-4 py-2.5"
               >
                 <input
                   type="checkbox"
                   id="include-achievements-empty"
                   v-model="includeAchievements"
-                  class="rounded border-neutral-700 bg-neutral-950 text-cyan-500 focus:ring-cyan-500/50 w-4 h-4 cursor-pointer"
+                  class="h-4 w-4 cursor-pointer rounded border-neutral-700 bg-neutral-950 text-cyan-500 focus:ring-cyan-500/50"
                 />
                 <label
                   for="include-achievements-empty"
-                  class="text-xs font-semibold text-muted-foreground cursor-pointer select-none"
+                  class="text-muted-foreground cursor-pointer text-xs font-semibold select-none"
                 >
                   {{ $t("exportReport.optIncludeAchievements") }}
                 </label>
@@ -100,17 +100,17 @@
             <div v-else class="space-y-3">
               <!-- Option checkbox active -->
               <div
-                class="flex items-center gap-2 bg-neutral-900/40 px-4 py-2.5 rounded-xl border border-border/50"
+                class="border-border/50 flex items-center gap-2 rounded-xl border bg-neutral-900/40 px-4 py-2.5"
               >
                 <input
                   type="checkbox"
                   id="include-achievements-active"
                   v-model="includeAchievements"
-                  class="rounded border-neutral-700 bg-neutral-950 text-cyan-500 focus:ring-cyan-500/50 w-4 h-4 cursor-pointer"
+                  class="h-4 w-4 cursor-pointer rounded border-neutral-700 bg-neutral-950 text-cyan-500 focus:ring-cyan-500/50"
                 />
                 <label
                   for="include-achievements-active"
-                  class="text-xs font-semibold text-muted-foreground cursor-pointer select-none"
+                  class="text-muted-foreground cursor-pointer text-xs font-semibold select-none"
                 >
                   {{ $t("exportReport.optIncludeAchievements") }}
                 </label>
@@ -118,7 +118,7 @@
 
               <textarea
                 readonly
-                class="w-full h-80 p-3.5 rounded-xl border border-border/80 bg-neutral-900 text-neutral-100 font-mono text-xs focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                class="border-border/80 h-80 w-full rounded-xl border bg-neutral-900 p-3.5 font-mono text-xs text-neutral-100 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
                 :value="copyReportText"
                 placeholder="Report will appear here..."
               ></textarea>
@@ -127,8 +127,8 @@
         </div>
 
         <!-- Modal Footer -->
-        <div class="flex items-center justify-between p-4 border-t border-border/60 bg-muted/20">
-          <span class="text-xs text-muted-foreground">
+        <div class="border-border/60 bg-muted/20 flex items-center justify-between border-t p-4">
+          <span class="text-muted-foreground text-xs">
             {{ copyReportText ? $t("exportReport.totalGames", { count: totalCount }) : "" }}
           </span>
           <div class="flex items-center gap-3">
@@ -145,9 +145,9 @@
               v-if="copyReportText && !isCopying"
               @click="copyTextToClipboard(copyReportText)"
               size="sm"
-              class="text-xs flex items-center gap-1.5"
+              class="flex items-center gap-1.5 text-xs"
             >
-              <CopyIcon class="w-4 h-4" />
+              <CopyIcon class="h-4 w-4" />
               <span>{{ $t("exportReport.copyBtn") }}</span>
             </UiButton>
             <UiButton variant="secondary" @click="open = false" size="sm" class="text-xs">
@@ -205,10 +205,7 @@ function cancelExportReport() {
 }
 
 // Helper to fetch achievements for a single game and update achievementsCache
-async function fetchGameAchievements(
-  game: SteamGame,
-  langVal: string,
-) {
+async function fetchGameAchievements(game: SteamGame, langVal: string) {
   if (achievementsCache.value[game.appid]) return;
 
   try {
@@ -259,9 +256,7 @@ async function startExportReport() {
 
     const chunk = props.games.slice(i, i + chunkSize);
     // eslint-disable-next-line no-await-in-loop
-    await Promise.all(
-      chunk.map((game) => fetchGameAchievements(game, langVal)),
-    );
+    await Promise.all(chunk.map((game) => fetchGameAchievements(game, langVal)));
 
     copyProgress.value = Math.min(i + chunkSize, props.games.length);
   }

@@ -1,12 +1,12 @@
 <template>
   <div
-    class="relative min-h-screen bg-background text-foreground transition-colors duration-300 overflow-x-hidden font-sans pb-16 selection:bg-cyan-500/30 selection:text-cyan-200 dark:bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.08),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.06),transparent_50%)] bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.04),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.03),transparent_50%)]"
+    class="bg-background text-foreground relative min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.04),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.03),transparent_50%)] pb-16 font-sans transition-colors duration-300 selection:bg-cyan-500/30 selection:text-cyan-200 dark:bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.08),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.06),transparent_50%)]"
   >
     <!-- Main Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+    <main class="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
       <!-- Shared Header -->
       <header
-        class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-8 mb-8 border-b border-border/60"
+        class="border-border/60 mb-8 flex flex-col gap-4 border-b pb-8 sm:flex-row sm:items-center sm:justify-between"
       >
         <!-- Left Slot (e.g. Title or Back Button) -->
         <div class="flex items-center gap-3">
@@ -14,23 +14,23 @@
           <UiButton variant="outline" as-child class="group" v-if="showBackButton">
             <NuxtLinkLocale to="/" class="flex items-center gap-2">
               <ArrowLeftIcon
-                class="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1"
+                class="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1"
               />
               <span>{{ $t("game.backToLibrary") }}</span>
             </NuxtLinkLocale>
           </UiButton>
           <template v-else>
-            <div class="p-2.5 rounded-xl bg-card border border-border shadow-xs">
+            <div class="bg-card border-border rounded-xl border p-2.5 shadow-xs">
               <!-- Gamepad Icon -->
-              <Gamepad2Icon class="w-8 h-8 text-cyan-400" />
+              <Gamepad2Icon class="h-8 w-8 text-cyan-400" />
             </div>
             <div>
               <h1
-                class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r dark:from-neutral-50 dark:via-neutral-100 dark:to-neutral-400 from-neutral-900 via-neutral-800 to-neutral-600"
+                class="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-600 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent sm:text-3xl dark:from-neutral-50 dark:via-neutral-100 dark:to-neutral-400"
               >
                 {{ $t("index.title") }}
               </h1>
-              <p class="text-xs sm:text-sm text-muted-foreground font-medium">
+              <p class="text-muted-foreground text-xs font-medium sm:text-sm">
                 {{ $t("index.subtitle") }}
               </p>
             </div>
@@ -42,7 +42,7 @@
           <slot name="header-actions" />
 
           <UiButton variant="outline" @click="showSettings = !showSettings">
-            <SettingsIcon class="w-4 h-4 mr-2" />
+            <SettingsIcon class="mr-2 h-4 w-4" />
             <span>{{ $t("index.configBtn") }}</span>
           </UiButton>
 
@@ -65,8 +65,8 @@
 
           <!-- Shared Theme Toggle Button -->
           <UiButton variant="outline" size="icon" @click="toggleTheme" title="Toggle theme">
-            <SunIcon class="dark:hidden block w-5 h-5" />
-            <MoonIcon class="hidden dark:block w-5 h-5" />
+            <SunIcon class="block h-5 w-5 dark:hidden" />
+            <MoonIcon class="hidden h-5 w-5 dark:block" />
           </UiButton>
         </div>
       </header>
