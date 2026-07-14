@@ -8,6 +8,7 @@ function formatHours(hours: number): string {
 function formatCompletedGames(
   completed: GamesReportAchievementsTypes.GameReportAchievements[],
   t: GamesReportAchievementsTypes.TranslationFn,
+  includeAchievements: boolean,
 ): string {
   let text = `==========================================\n`;
   text += `${t("exportReport.completedSection")} [${completed.length}]\n`;
@@ -19,7 +20,7 @@ function formatCompletedGames(
       text += `${idx + 1}. ${r.game.name}\n`;
       text += `   - ${t("exportReport.playtime", { hours: formatHours(r.game.playtime_hours) })}\n`;
       text += `   - ${t("exportReport.achievementsProgress", { unlocked: r.unlockedCount, total: r.totalCount, percent: 100 })}\n`;
-      if (r.achievements.length > 0) {
+      if (includeAchievements && r.achievements.length > 0) {
         text += `   - ${t("exportReport.unlockedAchievementsTitle")}\n`;
         r.achievements.forEach((ach) => {
           text += `     * [✓] ${ach.name} - ${ach.description || ""}\n`;
@@ -34,6 +35,7 @@ function formatCompletedGames(
 function formatUncompletedGames(
   uncompleted: GamesReportAchievementsTypes.GameReportAchievements[],
   t: GamesReportAchievementsTypes.TranslationFn,
+  includeAchievements: boolean,
 ): string {
   let text = `==========================================\n`;
   text += `${t("exportReport.uncompletedSection")} [${uncompleted.length}]\n`;
@@ -46,22 +48,24 @@ function formatUncompletedGames(
       text += `   - ${t("exportReport.playtime", { hours: formatHours(r.game.playtime_hours) })}\n`;
       text += `   - ${t("exportReport.achievementsProgress", { unlocked: r.unlockedCount, total: r.totalCount, percent: r.unlockedPercent })}\n`;
 
-      // Locked achievements list (always include all)
-      const locked = r.achievements.filter((ach) => !ach.achieved);
-      if (locked.length > 0) {
-        text += `   - ${t("exportReport.lockedAchievementsTitle")} (${locked.length}):\n`;
-        locked.forEach((ach) => {
-          text += `     * [ ] ${ach.name} - ${ach.description || ""}\n`;
-        });
-      }
+      if (includeAchievements) {
+        // Locked achievements list (always include all)
+        const locked = r.achievements.filter((ach) => !ach.achieved);
+        if (locked.length > 0) {
+          text += `   - ${t("exportReport.lockedAchievementsTitle")} (${locked.length}):\n`;
+          locked.forEach((ach) => {
+            text += `     * [ ] ${ach.name} - ${ach.description || ""}\n`;
+          });
+        }
 
-      // Unlocked achievements list (always include all)
-      const unlocked = r.achievements.filter((ach) => ach.achieved);
-      if (unlocked.length > 0) {
-        text += `   - ${t("exportReport.unlockedAchievementsTitle")}:\n`;
-        unlocked.forEach((ach) => {
-          text += `     * [✓] ${ach.name} - ${ach.description || ""}\n`;
-        });
+        // Unlocked achievements list (always include all)
+        const unlocked = r.achievements.filter((ach) => ach.achieved);
+        if (unlocked.length > 0) {
+          text += `   - ${t("exportReport.unlockedAchievementsTitle")}:\n`;
+          unlocked.forEach((ach) => {
+            text += `     * [✓] ${ach.name} - ${ach.description || ""}\n`;
+          });
+        }
       }
       text += `\n`;
     });
@@ -91,6 +95,7 @@ export function reportGameAchievementFormatReport({
   totalCount,
   totalHours,
   t,
+  includeAchievements = true,
 }: GamesReportAchievementsTypes.GameReportAchievementsParams): string {
   const sortedResults = [...results].sort(
     (a, b) => b.game.playtime_forever - a.game.playtime_forever,
@@ -109,8 +114,8 @@ export function reportGameAchievementFormatReport({
   text += `${t("exportReport.totalGames", { count: totalCount })}\n`;
   text += `Total Playtime: ${formatHours(totalHours)} ${t("common.hoursSuffix")}\n\n`;
 
-  text += formatCompletedGames(completed, t);
-  text += formatUncompletedGames(uncompleted, t);
+  text += formatCompletedGames(completed, t, includeAchievements);
+  text += formatUncompletedGames(uncompleted, t, includeAchievements);
   text += formatNoAchievementsGames(noAchievements, t);
 
   return text;

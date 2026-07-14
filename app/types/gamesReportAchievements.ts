@@ -26,5 +26,6 @@ export namespace GamesReportAchievementsTypes {
     totalCount: number;
     totalHours: number;
     t: TranslationFn;
+    includeAchievements?: boolean;
   }
 }

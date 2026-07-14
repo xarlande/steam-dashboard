@@ -152,6 +152,7 @@
     "fetching": "Fetching info for {game}...",
     "optIncludeLocked": "Include locked achievements list",
     "optIncludeUnlocked": "Include unlocked achievements list",
+    "optIncludeAchievements": "Include achievements list in the report",
     "optLimitLocked": "Locked achievements limit per game",
     "optLimitHelp": "0 — display all locked achievements",
     "generateBtn": "Generate Report",
