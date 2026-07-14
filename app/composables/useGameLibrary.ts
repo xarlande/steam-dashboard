@@ -2,15 +2,13 @@ import { refDebounced } from "@vueuse/core";
 
 export function useGameLibrary() {
   const { locale } = useI18n();
-  const apiKey = useStateSteamApiKey();
   const steamId = useStateSteamId();
 
   const credentials = computed(() => ({
-    apiKey: apiKey.value.trim(),
     steamId: steamId.value.trim(),
   }));
 
-  const debouncedCredentials = refDebounced(credentials, 1000);
+  const debouncedCredentials = refDebounced(credentials, 3000);
 
   const gamesAsyncData = useAsyncData(
     "games",
@@ -38,7 +36,6 @@ export function useGameLibrary() {
 
   return {
     // State
-    apiKey,
     steamId,
     games,
     totalHours,
@@ -54,4 +51,3 @@ export function useGameLibrary() {
     suspense: () => gamesAsyncData,
   };
 }
-

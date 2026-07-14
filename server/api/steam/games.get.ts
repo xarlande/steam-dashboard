@@ -4,17 +4,24 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event);
 
   // Read from query or environment variables
-  const apiKey = getCookie(event, "steam_api_key") || process.env.STEAM_API_KEY;
-  const steamId = getCookie(event, "steam_id") || process.env.STEAM_ID;
+  const apiKey = process.env.STEAM_API_KEY;
+  const rawSteamId = getCookie(event, "steam_id") || process.env.STEAM_ID;
+  const steamId = parseCookieValue(rawSteamId);
   const rawLang = (query.lang as string) || process.env.STEAM_LANGUAGE || "uk";
 
   const steamLang = mapSteamLocale(rawLang);
 
-  if (!apiKey || !steamId) {
+  if (!apiKey) {
     return {
       success: false,
-      error:
-        "Missing Steam API Key or Steam ID. Please configure them in .env or provide them in settings.",
+      error: "Missing server STEAM_API_KEY. Please set it in your server .env file.",
+    };
+  }
+
+  if (!steamId) {
+    return {
+      success: false,
+      error: "Missing Steam ID. Please enter it in config settings.",
     };
   }
 
@@ -22,8 +29,9 @@ export default defineEventHandler(async (event) => {
     const url = `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${apiKey}&steamid=${steamId}&format=json&include_appinfo=true&include_played_free_games=true&l=${steamLang}`;
 
     const data: any = await $fetch(url).catch((err) => {
-      console.error("Steam API Fetch error:", err);
-      throw new Error(err.message || "Failed to fetch data from Steam API");
+      const sanitized = sanitizeError(err);
+      console.error("Steam API Fetch error:", sanitized);
+      throw new Error(sanitized || "Failed to fetch data from Steam API");
     });
 
     if (!data?.response || !data.response.games) {
@@ -71,13 +79,14 @@ export default defineEventHandler(async (event) => {
       total_count: games.length,
       total_playtime_hours: totalPlaytimeHours,
       usingEnv:
-        !query.apiKey && !query.steamId && !!process.env.STEAM_API_KEY && !!process.env.STEAM_ID,
+        !getCookie(event, "steam_id") && !!process.env.STEAM_ID,
     };
   } catch (error: any) {
-    console.error("Error fetching Steam games:", error);
+    const sanitized = sanitizeError(error);
+    console.error("Error fetching Steam games:", sanitized);
     return {
       success: false,
-      error: error.message || "An error occurred while fetching your Steam games library.",
+      error: sanitized || "An error occurred while fetching your Steam games library.",
     };
   }
 });
