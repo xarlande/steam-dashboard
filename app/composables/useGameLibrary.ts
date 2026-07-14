@@ -2,11 +2,9 @@ import { refDebounced } from "@vueuse/core";
 
 export function useGameLibrary() {
   const { locale } = useI18n();
-  const apiKey = useStateSteamApiKey();
   const steamId = useStateSteamId();
 
   const credentials = computed(() => ({
-    apiKey: apiKey.value.trim(),
     steamId: steamId.value.trim(),
   }));
 
@@ -38,7 +36,6 @@ export function useGameLibrary() {
 
   return {
     // State
-    apiKey,
     steamId,
     games,
     totalHours,

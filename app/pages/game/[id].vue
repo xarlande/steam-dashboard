@@ -341,11 +341,9 @@ const route = useRoute();
 const appid = route.params.id as string;
 const { locale } = useI18n();
 
-const apiKey = useStateSteamApiKey();
 const steamId = useStateSteamId();
 
 const credentials = computed(() => ({
-  apiKey: apiKey.value.trim(),
   steamId: steamId.value.trim(),
 }));
 

@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event);
 
   const appid = query.appid as string;
-  const apiKey = getCookie(event, "steam_api_key") || process.env.STEAM_API_KEY;
+  const apiKey = process.env.STEAM_API_KEY;
   const steamId = getCookie(event, "steam_id") || process.env.STEAM_ID;
   const rawLang = (query.lang as string) || process.env.STEAM_LANGUAGE || "uk";
 
@@ -19,10 +19,17 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  if (!apiKey || !steamId) {
+  if (!apiKey) {
     return {
       success: false,
-      error: "Missing Steam API Key or Steam ID. Please enter them in config settings.",
+      error: "Missing server STEAM_API_KEY. Please set it in your server .env file.",
+    };
+  }
+
+  if (!steamId) {
+    return {
+      success: false,
+      error: "Missing Steam ID. Please enter it in config settings.",
     };
   }
 

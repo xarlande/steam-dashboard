@@ -4,17 +4,23 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event);
 
   // Read from query or environment variables
-  const apiKey = getCookie(event, "steam_api_key") || process.env.STEAM_API_KEY;
+  const apiKey = process.env.STEAM_API_KEY;
   const steamId = getCookie(event, "steam_id") || process.env.STEAM_ID;
   const rawLang = (query.lang as string) || process.env.STEAM_LANGUAGE || "uk";
 
   const steamLang = mapSteamLocale(rawLang);
 
-  if (!apiKey || !steamId) {
+  if (!apiKey) {
     return {
       success: false,
-      error:
-        "Missing Steam API Key or Steam ID. Please configure them in .env or provide them in settings.",
+      error: "Missing server STEAM_API_KEY. Please set it in your server .env file.",
+    };
+  }
+
+  if (!steamId) {
+    return {
+      success: false,
+      error: "Missing Steam ID. Please enter it in config settings.",
     };
   }
 
@@ -71,7 +77,7 @@ export default defineEventHandler(async (event) => {
       total_count: games.length,
       total_playtime_hours: totalPlaytimeHours,
       usingEnv:
-        !query.apiKey && !query.steamId && !!process.env.STEAM_API_KEY && !!process.env.STEAM_ID,
+        !getCookie(event, "steam_id") && !!process.env.STEAM_ID,
     };
   } catch (error: any) {
     console.error("Error fetching Steam games:", error);
