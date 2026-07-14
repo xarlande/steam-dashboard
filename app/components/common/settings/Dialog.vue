@@ -133,8 +133,8 @@ const isOpen = defineModel<boolean>("open");
 const { t } = useI18n();
 
 // Cookie instances
-const cookieApiKey = useSteamApiKey();
-const cookieSteamId = useSteamId();
+const cookieApiKey = useStateSteamApiKey();
+const cookieSteamId = useStateSteamId();
 
 // Local form states
 const localApiKey = ref("");

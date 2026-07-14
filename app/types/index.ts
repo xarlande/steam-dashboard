@@ -46,6 +46,19 @@ export namespace GameTypes {
     Story = "story",
     Session = "session",
   }
+
+  export enum SortKey {
+    LastPlayed = "lastPlayed",
+    PlaytimeDesc = "playtimeDesc",
+    PlaytimeAsc = "playtimeAsc",
+    Name = "name",
+  }
+
+  export enum AchievementFilter {
+    All = "all",
+    Unlocked = "unlocked",
+    Locked = "locked",
+  }
 }
 
 export interface GamesRequestData {

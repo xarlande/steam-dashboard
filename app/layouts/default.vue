@@ -90,7 +90,7 @@ const route = useRoute();
 
 const colorMode = useColorMode();
 
-const showSettings = useSettingDialog();
+const showSettings = useStateSettingsDialogOpen();
 
 async function handleLangChange(value: any) {
   if (typeof value === "string") {

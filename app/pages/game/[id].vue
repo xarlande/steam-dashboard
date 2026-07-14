@@ -200,11 +200,13 @@
         >
         <UiTabs v-model="filterBy" class="w-auto">
           <UiTabsList>
-            <UiTabsTrigger value="all">{{ $t("game.filterAll") }} ({{ totalCount }})</UiTabsTrigger>
-            <UiTabsTrigger value="unlocked"
+            <UiTabsTrigger :value="GameTypes.AchievementFilter.All"
+              >{{ $t("game.filterAll") }} ({{ totalCount }})</UiTabsTrigger
+            >
+            <UiTabsTrigger :value="GameTypes.AchievementFilter.Unlocked"
               >{{ $t("game.filterUnlocked") }} ({{ unlockedCount }})</UiTabsTrigger
             >
-            <UiTabsTrigger value="locked"
+            <UiTabsTrigger :value="GameTypes.AchievementFilter.Locked"
               >{{ $t("game.filterLocked") }} ({{ totalCount - unlockedCount }})</UiTabsTrigger
             >
           </UiTabsList>
@@ -308,7 +310,7 @@
           <UiButton variant="outline" as-child>
             <NuxtLink to="/"> &larr; {{ $t("game.returnBtn") }} </NuxtLink>
           </UiButton>
-          <UiButton variant="outline" @click="loadAchievements">
+          <UiButton variant="outline" @click="refreshAchievements">
             {{ $t("game.retryBtn") }}
           </UiButton>
         </div>
@@ -318,8 +320,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
+import { refDebounced } from "@vueuse/core";
+import { GameTypes } from "@/types";
 import {
   ArrowLeftIcon,
   ClockIcon,
@@ -328,7 +332,6 @@ import {
   CheckIcon,
   AlertCircleIcon,
 } from "@lucide/vue";
-import type { SteamAchievement, GameAchievementsResponse } from "@/types";
 
 definePageMeta({
   showBackButton: true,
@@ -338,18 +341,51 @@ const route = useRoute();
 const appid = route.params.id as string;
 const { locale } = useI18n();
 
-// Game stats
-const gameName = ref("Loading Game...");
-const achievements = ref<SteamAchievement[]>([]);
-const unlockedCount = ref(0);
-const totalCount = ref(0);
-const unlockedPercent = ref(0);
+const apiKey = useStateSteamApiKey();
+const steamId = useStateSteamId();
+
+const credentials = computed(() => ({
+  apiKey: apiKey.value.trim(),
+  steamId: steamId.value.trim(),
+}));
+
+const debouncedCredentials = refDebounced(credentials, 1000);
+
+const achievementsAsyncData = await useAsyncData(
+  `achievements-${appid}`,
+  () => {
+    return apiRepository.loadAchievements({
+      appid,
+      lang: locale.value,
+    });
+  },
+  { watch: [debouncedCredentials] },
+);
+
+// Game stats computed from async data
+const gameName = computed(() => achievementsAsyncData.data.value?.gameName || "Steam Game");
+const achievements = computed(() => achievementsAsyncData.data.value?.achievements || []);
+const totalCount = computed(() => achievementsAsyncData.data.value?.total_count || 0);
+const unlockedCount = computed(() => achievementsAsyncData.data.value?.unlocked_count || 0);
+const unlockedPercent = computed(() => achievementsAsyncData.data.value?.unlocked_percent || 0);
 
 // System states
-const isLoading = ref(true);
-const error = ref("");
+const isLoading = computed(() => achievementsAsyncData.status.value === "pending");
+const error = computed(() => {
+  if (achievementsAsyncData.error.value) {
+    return achievementsAsyncData.error.value.message || "An unexpected error occurred.";
+  }
+  if (achievementsAsyncData.data.value?.success === false) {
+    return achievementsAsyncData.data.value?.error || "Failed to retrieve achievements.";
+  }
+  if (totalCount.value === 0 && achievementsAsyncData.data.value?.success) {
+    return "This game does not support Steam achievements or stats.";
+  }
+  return "";
+});
+
 const searchQuery = ref("");
-const filterBy = ref<"all" | "unlocked" | "locked">("all");
+const filterBy = ref<GameTypes.AchievementFilter>(GameTypes.AchievementFilter.All);
 
 // Next locked achievements sorted by global unlock percentage
 const nextAchievements = computed(() => {
@@ -364,51 +400,8 @@ const headerImgUrl = computed(() => {
   return `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${appid}/header.jpg`;
 });
 
-onMounted(() => {
-  loadAchievements();
-});
-
-async function loadAchievements() {
-  isLoading.value = true;
-  error.value = "";
-
-  // Read credentials and language from localStorage
-  const apiKey = localStorage.getItem("steam_api_key") || "";
-  const steamId = localStorage.getItem("steam_id") || "";
-  const lang = locale.value;
-
-  try {
-    const params = new URLSearchParams();
-    params.append("appid", appid);
-    if (apiKey.trim()) params.append("apiKey", apiKey.trim());
-    if (steamId.trim()) params.append("steamId", steamId.trim());
-    params.append("lang", lang);
-
-    const response = await $fetch<GameAchievementsResponse>(
-      `/api/steam/achievements?${params.toString()}`,
-    );
-
-    if (response.success) {
-      gameName.value = response.gameName || "Steam Game";
-      achievements.value = response.achievements || [];
-      totalCount.value = response.total_count || 0;
-      unlockedCount.value = response.unlocked_count || 0;
-      unlockedPercent.value = response.unlocked_percent || 0;
-
-      // If success but no achievements list at all
-      if (totalCount.value === 0) {
-        error.value = "This game does not support Steam achievements or stats.";
-      }
-    } else {
-      error.value = response.error || "Failed to retrieve achievements.";
-    }
-  } catch (err: any) {
-    console.error("Error fetching achievements page data:", err);
-    error.value =
-      err.data?.error || err.data?.message || err.message || "An unexpected error occurred.";
-  } finally {
-    isLoading.value = false;
-  }
+function refreshAchievements() {
+  achievementsAsyncData.refresh();
 }
 
 function handleImageError(event: Event) {
@@ -431,9 +424,9 @@ const filteredAchievements = computed(() => {
   let list = [...achievements.value];
 
   // Filter by achievement type
-  if (filterBy.value === "unlocked") {
+  if (filterBy.value === GameTypes.AchievementFilter.Unlocked) {
     list = list.filter((a) => a.achieved);
-  } else if (filterBy.value === "locked") {
+  } else if (filterBy.value === GameTypes.AchievementFilter.Locked) {
     list = list.filter((a) => !a.achieved);
   }
 

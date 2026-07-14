@@ -273,7 +273,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import { ArrowLeftIcon, BarChart2Icon, AlertCircleIcon } from "@lucide/vue";
 import { GameTypes } from "@/types";
 import type { SteamGame } from "@/types";
@@ -284,106 +284,10 @@ definePageMeta({
 
 const { locale, t } = useI18n();
 
-const { games, isLoading, error, fetchGames } = useGameLibrary();
+const { games, isLoading, error, fetchGames, suspense } = useGameLibrary();
+await suspense();
 
-// Watch locale changes to automatically refetch games
-watch(locale, () => {
-  fetchGames();
-});
-
-const manualCategories = ref<Record<number, GameTypes.Category>>({});
-
-// Game list categorization constants
-const SESSION_GAME_KEYWORDS = [
-  "counter-strike",
-  "cs:go",
-  "cs2",
-  "dota",
-  "league of legends",
-  "valorant",
-  "apex legends",
-  "pubg",
-  "fortnite",
-  "overwatch",
-  "war thunder",
-  "world of tanks",
-  "world of warships",
-  "team fortress",
-  "rust",
-  "dayz",
-  "rainbow six",
-  "destiny",
-  "warframe",
-  "helldivers",
-  "gta online",
-  "dead by daylight",
-  "rocket league",
-  "fifa",
-  "madden",
-  "nba 2k",
-  "street fighter",
-  "tekken",
-  "mortal kombat",
-  "brawlhalla",
-  "among us",
-  "phasmophobia",
-  "lethal company",
-  "roblox",
-  "minecraft",
-  "payday",
-  "left 4 dead",
-  "killing floor",
-  "deep rock galactic",
-  "hearthstone",
-  "magic: the gathering",
-  "yu-gi-oh",
-  "tft",
-  "teamfight tactics",
-  "diablo",
-  "path of exile",
-  "lost ark",
-  "world of warcraft",
-  "guild wars",
-  "final fantasy xiv",
-  "lineage",
-  "black desert",
-  "heartstone",
-  "call of duty",
-  "battlefield",
-  "apex",
-  "pubg",
-  "deadlock",
-  "brawl stars",
-  "clash",
-];
-
-function isDefaultSessionGame(name: string): boolean {
-  const lowercaseName = name.toLowerCase();
-  return SESSION_GAME_KEYWORDS.some((keyword) => lowercaseName.includes(keyword));
-}
-
-function getGameCategory(game: SteamGame): GameTypes.Category {
-  const manual = manualCategories.value[game.appid];
-  if (manual) {
-    return manual;
-  }
-  return isDefaultSessionGame(game.name) ? GameTypes.Category.Session : GameTypes.Category.Story;
-}
-
-onMounted(() => {
-  if (import.meta.client) {
-    const savedCats = localStorage.getItem("steam_game_categories");
-    if (savedCats) {
-      try {
-        manualCategories.value = JSON.parse(savedCats);
-      } catch (e) {
-        console.error("Error loading manual categories:", e);
-      }
-    }
-  }
-
-  fetchGames();
-});
+const { getGameCategory } = useGameCategories();
 
 // Analytics calculations
 const analyticsPeriod = ref<"recent" | "allTime">("recent");

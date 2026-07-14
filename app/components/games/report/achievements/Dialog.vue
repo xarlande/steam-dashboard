@@ -173,8 +173,6 @@ const props = defineProps<{
 
 const open = defineModel<boolean>("open", { default: false });
 
-const apiKey = useSteamApiKey();
-const steamId = useSteamId();
 const { locale, t } = useI18n();
 
 // Computed states
@@ -209,8 +207,6 @@ function cancelExportReport() {
 // Helper to fetch achievements for a single game and update achievementsCache
 async function fetchGameAchievements(
   game: SteamGame,
-  apiKeyVal: string,
-  steamIdVal: string,
   langVal: string,
 ) {
   if (achievementsCache.value[game.appid]) return;
@@ -219,8 +215,6 @@ async function fetchGameAchievements(
     copyCurrentGameName.value = game.name;
     const response = await apiRepository.loadAchievements({
       appid: String(game.appid),
-      apiKey: apiKeyVal.trim(),
-      steamId: steamIdVal.trim(),
       lang: langVal,
     });
 
@@ -256,8 +250,6 @@ async function startExportReport() {
   copyTotal.value = props.games.length;
   copyReportText.value = "";
 
-  const apiKeyVal = apiKey.value || "";
-  const steamIdVal = steamId.value || "";
   const langVal = locale.value;
 
   const chunkSize = 5; // Fetch in chunks of 5 parallel requests to be friendly to Steam API
@@ -268,7 +260,7 @@ async function startExportReport() {
     const chunk = props.games.slice(i, i + chunkSize);
     // eslint-disable-next-line no-await-in-loop
     await Promise.all(
-      chunk.map((game) => fetchGameAchievements(game, apiKeyVal, steamIdVal, langVal)),
+      chunk.map((game) => fetchGameAchievements(game, langVal)),
     );
 
     copyProgress.value = Math.min(i + chunkSize, props.games.length);

@@ -2,8 +2,8 @@ import { refDebounced } from "@vueuse/core";
 
 export function useGameLibrary() {
   const { locale } = useI18n();
-  const apiKey = useSteamApiKey();
-  const steamId = useSteamId();
+  const apiKey = useStateSteamApiKey();
+  const steamId = useStateSteamId();
 
   const credentials = computed(() => ({
     apiKey: apiKey.value.trim(),
@@ -17,8 +17,6 @@ export function useGameLibrary() {
     () => {
       return apiRepository.loadGames({
         lang: locale.value,
-        apiKey: debouncedCredentials.value.apiKey,
-        steamId: debouncedCredentials.value.steamId,
       });
     },
     { watch: [debouncedCredentials] },
@@ -56,3 +54,4 @@ export function useGameLibrary() {
     suspense: () => gamesAsyncData,
   };
 }
+

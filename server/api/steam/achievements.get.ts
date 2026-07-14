@@ -1,11 +1,11 @@
-import { defineEventHandler, getQuery } from "h3";
+import { defineEventHandler, getQuery, getCookie } from "h3";
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
 
   const appid = query.appid as string;
-  const apiKey = (query.apiKey as string) || process.env.STEAM_API_KEY;
-  const steamId = (query.steamId as string) || process.env.STEAM_ID;
+  const apiKey = getCookie(event, "steam_api_key") || process.env.STEAM_API_KEY;
+  const steamId = getCookie(event, "steam_id") || process.env.STEAM_ID;
   const rawLang = (query.lang as string) || process.env.STEAM_LANGUAGE || "uk";
 
   const steamLang = mapSteamLocale(rawLang);
