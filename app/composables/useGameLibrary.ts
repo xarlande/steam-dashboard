@@ -8,7 +8,7 @@ export function useGameLibrary() {
     steamId: steamId.value.trim(),
   }));
 
-  const debouncedCredentials = refDebounced(credentials, 1000);
+  const debouncedCredentials = refDebounced(credentials, 3000);
 
   const gamesAsyncData = useAsyncData(
     "games",
@@ -51,4 +51,3 @@ export function useGameLibrary() {
     suspense: () => gamesAsyncData,
   };
 }
-

@@ -5,7 +5,8 @@ export default defineEventHandler(async (event) => {
 
   const appid = query.appid as string;
   const apiKey = process.env.STEAM_API_KEY;
-  const steamId = getCookie(event, "steam_id") || process.env.STEAM_ID;
+  const rawSteamId = getCookie(event, "steam_id") || process.env.STEAM_ID;
+  const steamId = parseCookieValue(rawSteamId);
   const rawLang = (query.lang as string) || process.env.STEAM_LANGUAGE || "uk";
 
   const steamLang = mapSteamLocale(rawLang);
@@ -50,8 +51,8 @@ export default defineEventHandler(async (event) => {
 
     // 1. Handle Player Achievements status
     if (playerResult.status === "rejected") {
-      const errMessage = playerResult.reason?.message || "";
-      console.error(`Error fetching player achievements for app ${appid}:`, playerResult.reason);
+      const errMessage = sanitizeError(playerResult.reason);
+      console.error(`Error fetching player achievements for app ${appid}:`, errMessage);
 
       // Look for common Steam API responses embedded in error
       if (errMessage.includes("400") || errMessage.includes("403") || errMessage.includes("500")) {
@@ -123,7 +124,7 @@ export default defineEventHandler(async (event) => {
     } else {
       console.warn(
         `Could not load schema for game ${appid}. Falling back to basic values.`,
-        schemaResult.reason,
+        sanitizeError(schemaResult.reason),
       );
     }
 
@@ -140,7 +141,7 @@ export default defineEventHandler(async (event) => {
     } else {
       console.warn(
         `Could not load global achievement percentages for game ${appid}.`,
-        globalResult.reason,
+        sanitizeError(globalResult.reason),
       );
     }
 
@@ -202,10 +203,11 @@ export default defineEventHandler(async (event) => {
       unlocked_percent: unlockedPercent,
     };
   } catch (error: any) {
-    console.error(`Error processing achievements for game ${appid}:`, error);
+    const sanitized = sanitizeError(error);
+    console.error(`Error processing achievements for game ${appid}:`, sanitized);
     return {
       success: false,
-      error: error.message || "An unexpected error occurred while loading achievements.",
+      error: sanitized || "An unexpected error occurred while loading achievements.",
     };
   }
 });
