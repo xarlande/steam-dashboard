@@ -12,11 +12,7 @@ export function useGameLibrary() {
 
   const gamesAsyncData = useAsyncData(
     "games",
-    () => {
-      return apiRepository.loadGames({
-        lang: locale.value,
-      });
-    },
+    () => apiRepository.loadGames({ lang: locale.value }),
     { watch: [debouncedCredentials] },
   );
 

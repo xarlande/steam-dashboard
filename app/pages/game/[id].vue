@@ -323,7 +323,7 @@
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { refDebounced } from "@vueuse/core";
-import { GameTypes } from "@/types";
+import { GameTypes, type GameAchievementsResponse } from "@/types";
 import {
   ArrowLeftIcon,
   ClockIcon,
@@ -351,12 +351,7 @@ const debouncedCredentials = refDebounced(credentials, 1000);
 
 const achievementsAsyncData = await useAsyncData(
   `achievements-${appid}`,
-  () => {
-    return apiRepository.loadAchievements({
-      appid,
-      lang: locale.value,
-    });
-  },
+  () => apiRepository.loadAchievements({ appid, lang: locale.value }),
   { watch: [debouncedCredentials] },
 );
 
