@@ -23,15 +23,14 @@ export default defineEventHandler(async (event) => {
       error: "Missing Steam ID. Please enter it in config settings.",
     };
   }
-
   try {
-    const url = `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${apiKey}&steamid=${steamId}&format=json&include_appinfo=true&include_played_free_games=true&l=${steamLang}`;
-
-    const data: any = await $fetch(url).catch((err) => {
-      const sanitized = sanitizeError(err);
-      console.error("Steam API Fetch error:", sanitized);
-      throw new Error(sanitized || "Failed to fetch data from Steam API");
-    });
+    const data: any = await steamApiRepository
+      .getOwnedGames(apiKey, steamId, steamLang)
+      .catch((err) => {
+        const sanitized = sanitizeError(err);
+        console.error("Steam API Fetch error:", sanitized);
+        throw new Error(sanitized || "Failed to fetch data from Steam API");
+      });
 
     if (!data?.response || !data.response.games) {
       // Sometimes Steam returns an empty response if the profile is private

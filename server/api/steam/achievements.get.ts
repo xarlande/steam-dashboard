@@ -31,16 +31,12 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  const playerUrl = `https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/?appid=${appid}&key=${apiKey}&steamid=${steamId}&l=${steamLang}`;
-  const schemaUrl = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?appid=${appid}&key=${apiKey}&l=${steamLang}`;
-  const globalUrl = `https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v2/?gameid=${appid}&format=json`;
-
   try {
     // Fetch all three endpoints in parallel using Promise.allSettled for robustness
     const results = await Promise.allSettled([
-      $fetch<any>(playerUrl),
-      $fetch<any>(schemaUrl),
-      $fetch<any>(globalUrl),
+      steamApiRepository.getPlayerAchievements(appid, apiKey, steamId, steamLang),
+      steamApiRepository.getSchemaForGame(appid, apiKey, steamLang),
+      steamApiRepository.getGlobalAchievementPercentages(appid),
     ]);
     const playerResult = results[0] as PromiseSettledResult<any>;
     const schemaResult = results[1] as PromiseSettledResult<any>;
