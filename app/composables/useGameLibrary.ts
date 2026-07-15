@@ -40,7 +40,7 @@ export function useGameLibrary() {
       if (oldStatus === "pending" && status === "error") {
         toast.error(error.value || t("index.refreshError"));
       }
-    }
+    },
   );
 
   return {

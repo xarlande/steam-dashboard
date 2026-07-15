@@ -2,275 +2,275 @@
   <div>
     <!-- Page Title -->
     <section class="animate-fade-in mb-8">
-    <div class="flex items-center gap-3">
-      <div
-        class="shrink-0 rounded-xl border border-violet-500/20 bg-violet-500/10 p-2.5 text-violet-400"
-      >
-        <BarChart2Icon class="h-8 w-8" />
-      </div>
-      <div>
-        <h1
-          class="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-600 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent sm:text-3xl dark:from-neutral-50 dark:via-neutral-100 dark:to-neutral-400"
+      <div class="flex items-center gap-3">
+        <div
+          class="shrink-0 rounded-xl border border-violet-500/20 bg-violet-500/10 p-2.5 text-violet-400"
         >
-          {{ $t("analytics.title") }}
-        </h1>
-        <p class="text-muted-foreground text-xs font-medium sm:text-sm">
-          {{ $t("analytics.description") }}
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Loader State -->
-  <section v-if="isLoading" class="space-y-6">
-    <div class="grid grid-cols-1 gap-8 md:grid-cols-5">
-      <UiCard class="bg-muted/40 h-80 animate-pulse md:col-span-2" />
-      <UiCard class="bg-muted/40 h-80 animate-pulse md:col-span-3" />
-    </div>
-  </section>
-
-  <!-- Error State -->
-  <section v-else-if="error" class="mx-auto max-w-2xl py-8">
-    <div
-      class="bg-destructive/10 border-destructive/20 text-destructive-foreground flex items-start gap-4 rounded-lg border p-6 text-sm shadow-lg"
-    >
-      <AlertCircleIcon class="text-destructive mt-0.5 h-6 w-6 shrink-0" />
-      <div class="flex-1">
-        <h3 class="text-destructive mb-1 text-base font-extrabold">Failed to Load Analytics</h3>
-        <p class="leading-relaxed">{{ error }}</p>
-        <div class="mt-4 flex items-center gap-3">
-          <UiButton variant="outline" as-child>
-            <NuxtLinkLocale to="/"> &larr; Configure Settings </NuxtLinkLocale>
-          </UiButton>
-          <UiButton variant="outline" @click="fetchGames"> Retry </UiButton>
+          <BarChart2Icon class="h-8 w-8" />
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Loaded Analytics State -->
-  <section v-else class="animate-fade-in space-y-8">
-    <UiCard class="from-card to-card/50 overflow-hidden bg-gradient-to-br">
-      <UiCardContent class="p-6">
-        <!-- Period Selector Row -->
-        <div class="border-border/60 flex items-center justify-between border-b pb-4">
-          <h2 class="text-muted-foreground text-sm font-bold tracking-widest uppercase">
+        <div>
+          <h1
+            class="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-600 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent sm:text-3xl dark:from-neutral-50 dark:via-neutral-100 dark:to-neutral-400"
+          >
             {{ $t("analytics.title") }}
-          </h2>
+          </h1>
+          <p class="text-muted-foreground text-xs font-medium sm:text-sm">
+            {{ $t("analytics.description") }}
+          </p>
+        </div>
+      </div>
+    </section>
 
-          <!-- Period Toggle Switch -->
-          <div
-            class="bg-muted/65 border-border/65 flex items-center rounded-xl border p-1 shadow-inner"
-          >
-            <button
-              @click="analyticsPeriod = 'recent'"
-              class="rounded-lg px-3 py-1.5 text-xs font-bold transition-all"
-              :class="
-                analyticsPeriod === 'recent'
-                  ? 'bg-card text-foreground border-border/30 border shadow-xs'
-                  : 'text-muted-foreground hover:text-foreground'
-              "
-            >
-              {{ $t("analytics.toggleRecent") }}
-            </button>
-            <button
-              @click="analyticsPeriod = 'allTime'"
-              class="rounded-lg px-3 py-1.5 text-xs font-bold transition-all"
-              :class="
-                analyticsPeriod === 'allTime'
-                  ? 'bg-card text-foreground border-border/30 border shadow-xs'
-                  : 'text-muted-foreground hover:text-foreground'
-              "
-            >
-              {{ $t("analytics.toggleAllTime") }}
-            </button>
+    <!-- Loader State -->
+    <section v-if="isLoading" class="space-y-6">
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-5">
+        <UiCard class="bg-muted/40 h-80 animate-pulse md:col-span-2" />
+        <UiCard class="bg-muted/40 h-80 animate-pulse md:col-span-3" />
+      </div>
+    </section>
+
+    <!-- Error State -->
+    <section v-else-if="error" class="mx-auto max-w-2xl py-8">
+      <div
+        class="bg-destructive/10 border-destructive/20 text-destructive-foreground flex items-start gap-4 rounded-lg border p-6 text-sm shadow-lg"
+      >
+        <AlertCircleIcon class="text-destructive mt-0.5 h-6 w-6 shrink-0" />
+        <div class="flex-1">
+          <h3 class="text-destructive mb-1 text-base font-extrabold">Failed to Load Analytics</h3>
+          <p class="leading-relaxed">{{ error }}</p>
+          <div class="mt-4 flex items-center gap-3">
+            <UiButton variant="outline" as-child>
+              <NuxtLinkLocale to="/"> &larr; Configure Settings </NuxtLinkLocale>
+            </UiButton>
+            <UiButton variant="outline" @click="fetchGames"> Retry </UiButton>
           </div>
         </div>
+      </div>
+    </section>
 
-        <!-- Content Grid -->
-        <div class="grid grid-cols-1 gap-8 pt-6 md:grid-cols-5">
-          <!-- Left Column (Donut Chart) - Takes 2 cols of 5 -->
-          <div
-            class="bg-card/25 border-border/60 relative flex flex-col items-center justify-center rounded-2xl border p-5 md:col-span-2"
-          >
-            <h3
-              class="text-muted-foreground mb-6 self-start text-xs font-bold tracking-widest uppercase"
+    <!-- Loaded Analytics State -->
+    <section v-else class="animate-fade-in space-y-8">
+      <UiCard class="from-card to-card/50 overflow-hidden bg-gradient-to-br">
+        <UiCardContent class="p-6">
+          <!-- Period Selector Row -->
+          <div class="border-border/60 flex items-center justify-between border-b pb-4">
+            <h2 class="text-muted-foreground text-sm font-bold tracking-widest uppercase">
+              {{ $t("analytics.title") }}
+            </h2>
+
+            <!-- Period Toggle Switch -->
+            <div
+              class="bg-muted/65 border-border/65 flex items-center rounded-xl border p-1 shadow-inner"
             >
-              {{ $t("analytics.balanceTitle") }}
-            </h3>
-
-            <!-- SVG Donut Chart container -->
-            <div class="relative flex h-44 w-44 items-center justify-center select-none">
-              <svg class="h-full w-full -rotate-90 transform" viewBox="0 0 100 100">
-                <!-- Base background circle (if hours = 0) -->
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="40"
-                  stroke="currentColor"
-                  stroke-width="10"
-                  fill="transparent"
-                  class="dark:text-neutral-850 text-neutral-100"
-                />
-
-                <!-- Story Segment -->
-                <circle
-                  v-if="activeTotalHours > 0"
-                  cx="50"
-                  cy="50"
-                  r="40"
-                  stroke="#22d3ee"
-                  stroke-width="10.5"
-                  fill="transparent"
-                  :stroke-dasharray="donutStoryDash"
-                  stroke-dashoffset="0"
-                  class="donut-segment transition-all duration-1000 ease-out"
-                />
-
-                <!-- Session Segment -->
-                <circle
-                  v-if="activeTotalHours > 0 && activeSessionPercent > 0"
-                  cx="50"
-                  cy="50"
-                  r="40"
-                  stroke="#f43f5e"
-                  stroke-width="10.5"
-                  fill="transparent"
-                  :stroke-dasharray="donutSessionDash"
-                  :stroke-dashoffset="donutSessionOffset"
-                  class="donut-segment transition-all duration-1000 ease-out"
-                />
-              </svg>
-
-              <!-- Center Text Overlay -->
-              <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <span class="text-foreground text-2xl font-black tracking-tight"
-                  >{{ activeStoryPercent }}%</span
-                >
-                <span
-                  class="text-muted-foreground mt-0.5 text-[9px] font-bold tracking-wider uppercase"
-                  >🎭 Story</span
-                >
-              </div>
-            </div>
-
-            <!-- Legend details -->
-            <div class="border-border/60 mt-6 w-full space-y-2.5 border-t pt-4">
-              <div
-                v-if="activeTotalHours === 0"
-                class="text-muted-foreground py-2 text-center text-xs font-medium"
+              <button
+                @click="analyticsPeriod = 'recent'"
+                class="rounded-lg px-3 py-1.5 text-xs font-bold transition-all"
+                :class="
+                  analyticsPeriod === 'recent'
+                    ? 'bg-card text-foreground border-border/30 border shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                "
               >
-                {{ $t("analytics.legendNoData") }}
-              </div>
-              <template v-else>
-                <!-- Story Legend -->
-                <div class="flex items-center justify-between text-xs">
-                  <div class="text-foreground/90 flex items-center gap-2 font-semibold">
-                    <span class="h-2.5 w-2.5 rounded-full bg-cyan-400"></span>
-                    <span>{{ $t("analytics.legendStory") }}</span>
-                  </div>
-                  <span class="font-extrabold text-cyan-400">
-                    {{
-                      $t("analytics.legendHours", {
-                        hours: formatHours(activeStoryHours),
-                        percent: activeStoryPercent,
-                      })
-                    }}
-                  </span>
-                </div>
-
-                <!-- Session Legend -->
-                <div class="flex items-center justify-between text-xs">
-                  <div class="text-foreground/90 flex items-center gap-2 font-semibold">
-                    <span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span>
-                    <span>{{ $t("analytics.legendSession") }}</span>
-                  </div>
-                  <span class="font-extrabold text-rose-400">
-                    {{
-                      $t("analytics.legendHours", {
-                        hours: formatHours(activeSessionHours),
-                        percent: activeSessionPercent,
-                      })
-                    }}
-                  </span>
-                </div>
-              </template>
+                {{ $t("analytics.toggleRecent") }}
+              </button>
+              <button
+                @click="analyticsPeriod = 'allTime'"
+                class="rounded-lg px-3 py-1.5 text-xs font-bold transition-all"
+                :class="
+                  analyticsPeriod === 'allTime'
+                    ? 'bg-card text-foreground border-border/30 border shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                "
+              >
+                {{ $t("analytics.toggleAllTime") }}
+              </button>
             </div>
           </div>
 
-          <!-- Right Column (Top 5 Games) - Takes 3 cols of 5 -->
-          <div
-            class="bg-card/25 border-border/60 flex flex-col justify-between rounded-2xl border p-5 md:col-span-3"
-          >
-            <h3 class="text-muted-foreground mb-5 text-xs font-bold tracking-widest uppercase">
-              {{ $t("analytics.topGamesTitle") }}
-            </h3>
-
+          <!-- Content Grid -->
+          <div class="grid grid-cols-1 gap-8 pt-6 md:grid-cols-5">
+            <!-- Left Column (Donut Chart) - Takes 2 cols of 5 -->
             <div
-              v-if="topFiveGames.length === 0"
-              class="text-muted-foreground flex flex-1 items-center justify-center py-10 text-xs font-medium"
+              class="bg-card/25 border-border/60 relative flex flex-col items-center justify-center rounded-2xl border p-5 md:col-span-2"
             >
-              {{ $t("analytics.legendNoData") }}
-            </div>
-            <div v-else class="flex flex-1 flex-col justify-center space-y-4.5">
-              <div
-                v-for="(game, index) in topFiveGames"
-                :key="'top-' + game.appid"
-                class="group/bar flex items-center gap-3.5"
+              <h3
+                class="text-muted-foreground mb-6 self-start text-xs font-bold tracking-widest uppercase"
               >
-                <!-- Rank Indicator -->
-                <span
-                  class="text-muted-foreground/60 w-3.5 text-center text-xs font-black select-none"
-                >
-                  {{ index + 1 }}
-                </span>
+                {{ $t("analytics.balanceTitle") }}
+              </h3>
 
-                <!-- Game Image banner -->
-                <div
-                  class="bg-muted border-border/40 relative h-6 w-12 shrink-0 overflow-hidden rounded-md border shadow-xs"
-                >
-                  <img
-                    :src="game.header_img"
-                    :alt="game.name"
-                    class="h-full w-full object-cover transition-transform group-hover/bar:scale-105"
-                    @error="handleImageError"
+              <!-- SVG Donut Chart container -->
+              <div class="relative flex h-44 w-44 items-center justify-center select-none">
+                <svg class="h-full w-full -rotate-90 transform" viewBox="0 0 100 100">
+                  <!-- Base background circle (if hours = 0) -->
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    stroke="currentColor"
+                    stroke-width="10"
+                    fill="transparent"
+                    class="dark:text-neutral-850 text-neutral-100"
                   />
-                </div>
 
-                <!-- Bar & details -->
-                <div class="min-w-0 flex-1 space-y-1">
-                  <div class="flex items-center justify-between gap-2 text-xs">
-                    <h4
-                      class="text-foreground truncate font-bold transition-colors group-hover/bar:text-violet-400"
-                      :title="game.name"
-                    >
-                      {{ game.name }}
-                    </h4>
-                    <span class="text-foreground shrink-0 pl-2 font-black">
-                      {{ formatHours(game.display_hours) }}
-                      <span class="text-muted-foreground text-[10px] font-semibold">{{
-                        $t("common.hoursSuffix")
-                      }}</span>
+                  <!-- Story Segment -->
+                  <circle
+                    v-if="activeTotalHours > 0"
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    stroke="#22d3ee"
+                    stroke-width="10.5"
+                    fill="transparent"
+                    :stroke-dasharray="donutStoryDash"
+                    stroke-dashoffset="0"
+                    class="donut-segment transition-all duration-1000 ease-out"
+                  />
+
+                  <!-- Session Segment -->
+                  <circle
+                    v-if="activeTotalHours > 0 && activeSessionPercent > 0"
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    stroke="#f43f5e"
+                    stroke-width="10.5"
+                    fill="transparent"
+                    :stroke-dasharray="donutSessionDash"
+                    :stroke-dashoffset="donutSessionOffset"
+                    class="donut-segment transition-all duration-1000 ease-out"
+                  />
+                </svg>
+
+                <!-- Center Text Overlay -->
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                  <span class="text-foreground text-2xl font-black tracking-tight"
+                    >{{ activeStoryPercent }}%</span
+                  >
+                  <span
+                    class="text-muted-foreground mt-0.5 text-[9px] font-bold tracking-wider uppercase"
+                    >🎭 Story</span
+                  >
+                </div>
+              </div>
+
+              <!-- Legend details -->
+              <div class="border-border/60 mt-6 w-full space-y-2.5 border-t pt-4">
+                <div
+                  v-if="activeTotalHours === 0"
+                  class="text-muted-foreground py-2 text-center text-xs font-medium"
+                >
+                  {{ $t("analytics.legendNoData") }}
+                </div>
+                <template v-else>
+                  <!-- Story Legend -->
+                  <div class="flex items-center justify-between text-xs">
+                    <div class="text-foreground/90 flex items-center gap-2 font-semibold">
+                      <span class="h-2.5 w-2.5 rounded-full bg-cyan-400"></span>
+                      <span>{{ $t("analytics.legendStory") }}</span>
+                    </div>
+                    <span class="font-extrabold text-cyan-400">
+                      {{
+                        $t("analytics.legendHours", {
+                          hours: formatHours(activeStoryHours),
+                          percent: activeStoryPercent,
+                        })
+                      }}
                     </span>
                   </div>
 
-                  <!-- Progress bar track -->
-                  <div
-                    class="flex h-2 overflow-hidden rounded-full bg-neutral-200 shadow-inner dark:bg-neutral-800/80"
+                  <!-- Session Legend -->
+                  <div class="flex items-center justify-between text-xs">
+                    <div class="text-foreground/90 flex items-center gap-2 font-semibold">
+                      <span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span>
+                      <span>{{ $t("analytics.legendSession") }}</span>
+                    </div>
+                    <span class="font-extrabold text-rose-400">
+                      {{
+                        $t("analytics.legendHours", {
+                          hours: formatHours(activeSessionHours),
+                          percent: activeSessionPercent,
+                        })
+                      }}
+                    </span>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <!-- Right Column (Top 5 Games) - Takes 3 cols of 5 -->
+            <div
+              class="bg-card/25 border-border/60 flex flex-col justify-between rounded-2xl border p-5 md:col-span-3"
+            >
+              <h3 class="text-muted-foreground mb-5 text-xs font-bold tracking-widest uppercase">
+                {{ $t("analytics.topGamesTitle") }}
+              </h3>
+
+              <div
+                v-if="topFiveGames.length === 0"
+                class="text-muted-foreground flex flex-1 items-center justify-center py-10 text-xs font-medium"
+              >
+                {{ $t("analytics.legendNoData") }}
+              </div>
+              <div v-else class="flex flex-1 flex-col justify-center space-y-4.5">
+                <div
+                  v-for="(game, index) in topFiveGames"
+                  :key="'top-' + game.appid"
+                  class="group/bar flex items-center gap-3.5"
+                >
+                  <!-- Rank Indicator -->
+                  <span
+                    class="text-muted-foreground/60 w-3.5 text-center text-xs font-black select-none"
                   >
+                    {{ index + 1 }}
+                  </span>
+
+                  <!-- Game Image banner -->
+                  <div
+                    class="bg-muted border-border/40 relative h-6 w-12 shrink-0 overflow-hidden rounded-md border shadow-xs"
+                  >
+                    <img
+                      :src="game.header_img"
+                      :alt="game.name"
+                      class="h-full w-full object-cover transition-transform group-hover/bar:scale-105"
+                      @error="handleImageError"
+                    />
+                  </div>
+
+                  <!-- Bar & details -->
+                  <div class="min-w-0 flex-1 space-y-1">
+                    <div class="flex items-center justify-between gap-2 text-xs">
+                      <h4
+                        class="text-foreground truncate font-bold transition-colors group-hover/bar:text-violet-400"
+                        :title="game.name"
+                      >
+                        {{ game.name }}
+                      </h4>
+                      <span class="text-foreground shrink-0 pl-2 font-black">
+                        {{ formatHours(game.display_hours) }}
+                        <span class="text-muted-foreground text-[10px] font-semibold">{{
+                          $t("common.hoursSuffix")
+                        }}</span>
+                      </span>
+                    </div>
+
+                    <!-- Progress bar track -->
                     <div
-                      class="h-full rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 opacity-90 transition-all duration-1000 ease-out"
-                      :style="{ width: `${(game.display_hours / topFiveMaxPlaytime) * 100}%` }"
-                    ></div>
+                      class="flex h-2 overflow-hidden rounded-full bg-neutral-200 shadow-inner dark:bg-neutral-800/80"
+                    >
+                      <div
+                        class="h-full rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 opacity-90 transition-all duration-1000 ease-out"
+                        :style="{ width: `${(game.display_hours / topFiveMaxPlaytime) * 100}%` }"
+                      ></div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </UiCardContent>
-    </UiCard>
-  </section>
+        </UiCardContent>
+      </UiCard>
+    </section>
   </div>
 </template>
 

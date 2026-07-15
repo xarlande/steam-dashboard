@@ -1,6 +1,9 @@
 <template>
   <UiDialog v-model:open="isOpen">
-    <UiDialogContent class="sm:max-w-md flex flex-col items-center p-6 text-center overflow-hidden gap-0" :show-close-button="false">
+    <UiDialogContent
+      class="flex flex-col items-center gap-0 overflow-hidden p-6 text-center sm:max-w-md"
+      :show-close-button="false"
+    >
       <!-- Decorative background glow -->
       <div
         class="pointer-events-none absolute -top-12 -left-12 h-48 w-48 rounded-full bg-cyan-500/10 blur-3xl"
@@ -12,7 +15,7 @@
       <!-- Close button -->
       <button
         @click="isOpen = false"
-        class="text-muted-foreground hover:text-foreground absolute top-4 right-4 cursor-pointer rounded-full p-2 transition-colors hover:bg-muted"
+        class="text-muted-foreground hover:text-foreground hover:bg-muted absolute top-4 right-4 cursor-pointer rounded-full p-2 transition-colors"
         title="Close"
       >
         <XIcon class="h-5 w-5" />

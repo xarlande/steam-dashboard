@@ -20,7 +20,7 @@
         variant="ghost"
         size="icon"
         @click="searchQuery = ''"
-        class="absolute top-0 right-0 bottom-0 text-muted-foreground hover:text-cyan-400 transition-colors"
+        class="text-muted-foreground absolute top-0 right-0 bottom-0 transition-colors hover:text-cyan-400"
       >
         <XIcon class="h-4 w-4" />
       </UiButton>

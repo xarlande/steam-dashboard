@@ -8,7 +8,7 @@
             <UiDialogTitle class="text-lg font-bold">
               {{ $t("index.credentials.title") }}
             </UiDialogTitle>
-            <UiDialogDescription class="mt-0.5 text-xs text-muted-foreground">
+            <UiDialogDescription class="text-muted-foreground mt-0.5 text-xs">
               {{ $t("index.credentials.description") }}
             </UiDialogDescription>
           </div>
@@ -30,7 +30,7 @@
             v-model="localSteamId"
             :placeholder="$t('index.credentials.steamIdPlaceholder')"
           />
-          <p class="mt-1.5 text-[11px] leading-normal text-muted-foreground/80">
+          <p class="text-muted-foreground/80 mt-1.5 text-[11px] leading-normal">
             {{ $t("index.credentials.steamIdHelp") }}
           </p>
         </div>
@@ -60,7 +60,7 @@
         </div>
 
         <!-- Save / Reset actions -->
-        <div class="flex items-center justify-between gap-3 border-t border-border/60 pt-4">
+        <div class="border-border/60 flex items-center justify-between gap-3 border-t pt-4">
           <UiButton variant="ghost" @click="handleClear" size="sm">
             <Trash2Icon class="mr-1.5 h-4 w-4 shrink-0" />
             {{ $t("common.reset") }}
@@ -78,25 +78,14 @@
 
 <script lang="ts" setup>
 import { useTemplateRef } from "vue";
-import {
-  ShieldIcon,
-  UploadIcon,
-  DownloadIcon,
-  Trash2Icon,
-  CheckIcon,
-} from "@lucide/vue";
+import { ShieldIcon, UploadIcon, DownloadIcon, Trash2Icon, CheckIcon } from "@lucide/vue";
 
 const isOpen = defineModel<boolean>("open");
 
 const importFileInputRef = useTemplateRef("importFileInput");
 
-const {
-  localSteamId,
-  saveSettings,
-  clearSettings,
-  exportSettings,
-  importSettingsFile,
-} = useSettings(isOpen);
+const { localSteamId, saveSettings, clearSettings, exportSettings, importSettingsFile } =
+  useSettings(isOpen);
 
 function handleSave() {
   saveSettings();

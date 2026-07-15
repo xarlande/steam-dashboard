@@ -25,14 +25,18 @@
       v-if="isLoading"
       class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
     >
-      <UiCard v-for="i in 8" :key="i" class="bg-card/45 border-border/50 flex h-full flex-col overflow-hidden py-0 gap-0">
+      <UiCard
+        v-for="i in 8"
+        :key="i"
+        class="bg-card/45 border-border/50 flex h-full flex-col gap-0 overflow-hidden py-0"
+      >
         <UiSkeleton class="aspect-[460/215] w-full" />
         <div class="flex-1 space-y-4 p-4">
           <div class="space-y-2">
             <UiSkeleton class="h-4.5 w-2/3 rounded-md" />
             <UiSkeleton class="h-3 w-1/3 rounded-md" />
           </div>
-          <div class="border-border/60 border-t pt-3 flex items-center justify-between">
+          <div class="border-border/60 flex items-center justify-between border-t pt-3">
             <div class="space-y-1.5">
               <UiSkeleton class="h-2.5 w-12 rounded-md" />
               <UiSkeleton class="h-3.5 w-16 rounded-md" />

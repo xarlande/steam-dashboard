@@ -5,7 +5,7 @@ import type { SteamGame, GamesReportAchievementsTypes } from "~/types";
 
 export function useAchievementsExport(
   gamesInput: MaybeRefOrGetter<SteamGame[]>,
-  includeAchievements: Ref<boolean>
+  includeAchievements: Ref<boolean>,
 ) {
   const { locale, t } = useI18n();
 
@@ -22,9 +22,9 @@ export function useAchievementsExport(
   const copyCurrentGameName = ref("");
   const copyReportText = ref("");
 
-  const achievementsCache = ref<Record<number, GamesReportAchievementsTypes.AchievementsCacheEntry>>(
-    {},
-  );
+  const achievementsCache = ref<
+    Record<number, GamesReportAchievementsTypes.AchievementsCacheEntry>
+  >({});
 
   function cancelExportReport() {
     isCopying.value = false;
@@ -91,17 +91,19 @@ export function useAchievementsExport(
   }
 
   function regenerateReport() {
-    const results: GamesReportAchievementsTypes.GameReportAchievements[] = games.value.map((game) => {
-      const cache = achievementsCache.value[game.appid];
-      return {
-        game,
-        hasAchievements: cache ? cache.hasAchievements : false,
-        achievements: cache ? cache.achievements : [],
-        totalCount: cache ? cache.totalCount : 0,
-        unlockedCount: cache ? cache.unlockedCount : 0,
-        unlockedPercent: cache ? cache.unlockedPercent : 0,
-      };
-    });
+    const results: GamesReportAchievementsTypes.GameReportAchievements[] = games.value.map(
+      (game) => {
+        const cache = achievementsCache.value[game.appid];
+        return {
+          game,
+          hasAchievements: cache ? cache.hasAchievements : false,
+          achievements: cache ? cache.achievements : [],
+          totalCount: cache ? cache.totalCount : 0,
+          unlockedCount: cache ? cache.unlockedCount : 0,
+          unlockedPercent: cache ? cache.unlockedPercent : 0,
+        };
+      },
+    );
 
     const text = reportGameAchievementFormatReport({
       results,

@@ -252,10 +252,7 @@
     </UiCard>
 
     <!-- Refactored Roulette Modal Component -->
-    <GamesLibraryDetoxRoulette
-      v-model:open="showRouletteModal"
-      :games="games"
-    />
+    <GamesLibraryDetoxRoulette v-model:open="showRouletteModal" :games="games" />
   </section>
 </template>
 

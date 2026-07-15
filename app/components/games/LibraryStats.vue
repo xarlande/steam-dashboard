@@ -4,9 +4,13 @@
     class="animate-fade-in mb-8 grid grid-cols-1 gap-5 sm:grid-cols-3"
   >
     <!-- Stat Card 1: Total Games -->
-    <UiCard class="bg-card/45 border-border/50 relative overflow-hidden group transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/30 hover:shadow-[0_8px_30px_rgba(6,182,212,0.12)]">
+    <UiCard
+      class="bg-card/45 border-border/50 group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/30 hover:shadow-[0_8px_30px_rgba(6,182,212,0.12)]"
+    >
       <UiCardContent class="p-6">
-        <div class="absolute -right-4 -bottom-4 text-cyan-400 opacity-10 transition-all duration-500 group-hover:scale-110 group-hover:opacity-20">
+        <div
+          class="absolute -right-4 -bottom-4 text-cyan-400 opacity-10 transition-all duration-500 group-hover:scale-110 group-hover:opacity-20"
+        >
           <Gamepad2Icon class="h-24 w-24" />
         </div>
         <p class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
@@ -20,9 +24,13 @@
     </UiCard>
 
     <!-- Stat Card 2: Total Time -->
-    <UiCard class="bg-card/45 border-border/50 relative overflow-hidden group transition-all duration-300 hover:-translate-y-1 hover:border-violet-500/30 hover:shadow-[0_8px_30px_rgba(139,92,246,0.12)]">
+    <UiCard
+      class="bg-card/45 border-border/50 group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-violet-500/30 hover:shadow-[0_8px_30px_rgba(139,92,246,0.12)]"
+    >
       <UiCardContent class="p-6">
-        <div class="absolute -right-4 -bottom-4 text-violet-400 opacity-10 transition-all duration-500 group-hover:scale-110 group-hover:opacity-20">
+        <div
+          class="absolute -right-4 -bottom-4 text-violet-400 opacity-10 transition-all duration-500 group-hover:scale-110 group-hover:opacity-20"
+        >
           <ClockIcon class="h-24 w-24" />
         </div>
         <p class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
@@ -41,9 +49,13 @@
     </UiCard>
 
     <!-- Stat Card 3: Most Played -->
-    <UiCard class="bg-card/45 border-border/50 relative overflow-hidden group transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/30 hover:shadow-[0_8px_30px_rgba(99,102,241,0.12)]">
+    <UiCard
+      class="bg-card/45 border-border/50 group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/30 hover:shadow-[0_8px_30px_rgba(99,102,241,0.12)]"
+    >
       <UiCardContent class="p-6">
-        <div class="absolute -right-4 -bottom-4 text-indigo-400 opacity-10 transition-all duration-500 group-hover:scale-110 group-hover:opacity-20">
+        <div
+          class="absolute -right-4 -bottom-4 text-indigo-400 opacity-10 transition-all duration-500 group-hover:scale-110 group-hover:opacity-20"
+        >
           <StarIcon class="h-24 w-24" />
         </div>
         <p class="text-muted-foreground text-xs font-semibold tracking-wider uppercase">

@@ -2,9 +2,7 @@
   <NuxtLinkLocale
     :to="`/game/${game.appid}`"
     class="group block h-full rounded-xl transition-all duration-300 hover:-translate-y-1.5"
-    :class="
-      category === GameTypes.Category.Story ? 'story-card-hover' : 'session-card-hover'
-    "
+    :class="category === GameTypes.Category.Story ? 'story-card-hover' : 'session-card-hover'"
   >
     <UiCard
       class="bg-card/45 flex h-full flex-col gap-0 overflow-hidden py-0 backdrop-blur-xs transition-all duration-300"
@@ -130,4 +128,3 @@ function formatHours(hours: number): string {
   box-shadow: 0 12px 25px -4px rgba(244, 63, 94, 0.3);
 }
 </style>
-

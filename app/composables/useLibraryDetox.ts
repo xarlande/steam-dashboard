@@ -29,7 +29,9 @@ export function useLibraryDetox(gamesInput: MaybeRefOrGetter<SteamGame[]>) {
   const recentTotalMinutes = computed(() => recentStoryMinutes.value + recentSessionMinutes.value);
 
   const recentStoryHours = computed(() => Math.round((recentStoryMinutes.value / 60) * 10) / 10);
-  const recentSessionHours = computed(() => Math.round((recentSessionMinutes.value / 60) * 10) / 10);
+  const recentSessionHours = computed(
+    () => Math.round((recentSessionMinutes.value / 60) * 10) / 10,
+  );
   const recentTotalHours = computed(() => Math.round((recentTotalMinutes.value / 60) * 10) / 10);
 
   const storyPercentage = computed(() => {

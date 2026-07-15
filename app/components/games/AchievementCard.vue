@@ -1,16 +1,20 @@
 <template>
   <UiCard
-    class="group ach-card flex gap-4 p-4 hover:-translate-y-0.5 transition-all duration-300"
+    class="group ach-card flex gap-4 p-4 transition-all duration-300 hover:-translate-y-0.5"
     :class="
       achievement.achieved
         ? 'hover:border-cyan-500/30 hover:shadow-[0_4px_15px_rgba(34,211,238,0.15)] dark:hover:shadow-[0_4px_20px_rgba(34,211,238,0.1)]'
-        : 'opacity-65 hover:opacity-100 hover:border-neutral-500/30 hover:shadow-[0_4px_15px_rgba(255,255,255,0.06)] dark:hover:shadow-[0_4px_20px_rgba(255,255,255,0.04)]'
+        : 'opacity-65 hover:border-neutral-500/30 hover:opacity-100 hover:shadow-[0_4px_15px_rgba(255,255,255,0.06)] dark:hover:shadow-[0_4px_20px_rgba(255,255,255,0.04)]'
     "
   >
     <!-- Icon -->
     <div
       class="bg-muted border-border relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border transition-all duration-300"
-      :class="achievement.achieved ? 'group-hover:border-cyan-500/30' : 'group-hover:border-neutral-500/30'"
+      :class="
+        achievement.achieved
+          ? 'group-hover:border-cyan-500/30'
+          : 'group-hover:border-neutral-500/30'
+      "
     >
       <template v-if="achievement.achieved">
         <img
@@ -27,7 +31,7 @@
           :src="achievement.icongray"
           :alt="achievement.name"
           loading="lazy"
-          class="ach-card-img absolute inset-0 h-full w-full object-cover transition-all duration-500 group-hover:opacity-0 group-hover:scale-[1.06]"
+          class="ach-card-img absolute inset-0 h-full w-full object-cover transition-all duration-500 group-hover:scale-[1.06] group-hover:opacity-0"
           @error="handleIconError"
         />
         <!-- Colored icon on hover -->
@@ -35,7 +39,7 @@
           :src="achievement.icon"
           :alt="achievement.name"
           loading="lazy"
-          class="ach-card-img absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-[1.06]"
+          class="ach-card-img absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-500 group-hover:scale-[1.06] group-hover:opacity-100"
           @error="handleIconError"
         />
       </template>
@@ -105,4 +109,3 @@ function handleIconError(event: Event) {
     opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 </style>
-

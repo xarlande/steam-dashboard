@@ -1,154 +1,157 @@
 <template>
   <UiDialog v-model:open="open">
-    <UiDialogContent class="sm:max-w-2xl max-h-[85vh] flex flex-col p-0 overflow-hidden gap-0" :show-close-button="false">
-        <!-- Modal Header -->
-        <div class="border-border/60 flex items-center justify-between border-b p-5">
-          <div class="flex items-center gap-3">
-            <FileTextIcon class="h-5.5 w-5.5 text-cyan-400" />
-            <div>
-              <h3 class="text-foreground text-base font-bold">
-                {{ $t("exportReport.title") }}
-              </h3>
-              <p class="text-muted-foreground mt-0.5 text-xs leading-normal">
-                {{ $t("exportReport.desc") }}
-              </p>
-            </div>
+    <UiDialogContent
+      class="flex max-h-[85vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl"
+      :show-close-button="false"
+    >
+      <!-- Modal Header -->
+      <div class="border-border/60 flex items-center justify-between border-b p-5">
+        <div class="flex items-center gap-3">
+          <FileTextIcon class="h-5.5 w-5.5 text-cyan-400" />
+          <div>
+            <h3 class="text-foreground text-base font-bold">
+              {{ $t("exportReport.title") }}
+            </h3>
+            <p class="text-muted-foreground mt-0.5 text-xs leading-normal">
+              {{ $t("exportReport.desc") }}
+            </p>
           </div>
-          <UiButton
-            variant="ghost"
-            size="icon"
-            @click="open = false"
-            class="hover:bg-accent h-8 w-8 rounded-full"
-          >
-            <XIcon class="h-4 w-4" />
+        </div>
+        <UiButton
+          variant="ghost"
+          size="icon"
+          @click="open = false"
+          class="hover:bg-accent h-8 w-8 rounded-full"
+        >
+          <XIcon class="h-4 w-4" />
+        </UiButton>
+      </div>
+
+      <!-- Modal Body (Content) -->
+      <div class="flex-1 space-y-5 overflow-y-auto p-5">
+        <!-- Loading Progress Section -->
+        <div
+          v-if="isCopying"
+          class="flex flex-col items-center justify-center space-y-4 py-8 text-center"
+        >
+          <div class="relative flex items-center justify-center">
+            <Loader2Icon class="h-10 w-10 animate-spin text-cyan-400" />
+          </div>
+          <div class="space-y-1">
+            <p class="text-foreground text-sm font-bold">
+              {{ $t("exportReport.fetchProgress", { current: copyProgress, total: copyTotal }) }}
+            </p>
+            <p class="text-muted-foreground max-w-md truncate text-xs italic">
+              {{ $t("exportReport.fetching", { game: copyCurrentGameName }) }}
+            </p>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="bg-muted h-2.5 w-full max-w-md overflow-hidden rounded-full">
+            <div
+              class="h-full bg-cyan-500 transition-all duration-300 ease-out"
+              :style="{ width: `${(copyProgress / copyTotal) * 100}%` }"
+            ></div>
+          </div>
+
+          <UiButton variant="outline" size="sm" @click="cancelExportReport">
+            {{ $t("exportReport.cancel") }}
           </UiButton>
         </div>
 
-        <!-- Modal Body (Content) -->
-        <div class="flex-1 space-y-5 overflow-y-auto p-5">
-          <!-- Loading Progress Section -->
+        <!-- Report Preview Section -->
+        <div v-else class="space-y-5">
+          <!-- Empty state: Click to generate -->
           <div
-            v-if="isCopying"
-            class="flex flex-col items-center justify-center space-y-4 py-8 text-center"
+            v-if="!copyReportText"
+            class="flex flex-col items-center justify-center space-y-4 py-12 text-center"
           >
-            <div class="relative flex items-center justify-center">
-              <Loader2Icon class="h-10 w-10 animate-spin text-cyan-400" />
-            </div>
-            <div class="space-y-1">
-              <p class="text-foreground text-sm font-bold">
-                {{ $t("exportReport.fetchProgress", { current: copyProgress, total: copyTotal }) }}
-              </p>
-              <p class="text-muted-foreground max-w-md truncate text-xs italic">
-                {{ $t("exportReport.fetching", { game: copyCurrentGameName }) }}
-              </p>
+            <div class="rounded-full bg-cyan-500/10 p-3 text-cyan-400">
+              <FileTextIcon class="h-8 w-8" />
             </div>
 
-            <!-- Progress Bar -->
-            <div class="bg-muted h-2.5 w-full max-w-md overflow-hidden rounded-full">
-              <div
-                class="h-full bg-cyan-500 transition-all duration-300 ease-out"
-                :style="{ width: `${(copyProgress / copyTotal) * 100}%` }"
-              ></div>
-            </div>
-
-            <UiButton variant="outline" size="sm" @click="cancelExportReport">
-              {{ $t("exportReport.cancel") }}
-            </UiButton>
-          </div>
-
-          <!-- Report Preview Section -->
-          <div v-else class="space-y-5">
-            <!-- Empty state: Click to generate -->
+            <!-- Option checkbox before generating -->
             <div
-              v-if="!copyReportText"
-              class="flex flex-col items-center justify-center space-y-4 py-12 text-center"
+              class="border-border/50 bg-muted/30 mb-2 flex items-center gap-2 rounded-xl border px-4 py-2.5"
             >
-              <div class="rounded-full bg-cyan-500/10 p-3 text-cyan-400">
-                <FileTextIcon class="h-8 w-8" />
-              </div>
-
-              <!-- Option checkbox before generating -->
-              <div
-                class="border-border/50 mb-2 flex items-center gap-2 rounded-xl border bg-muted/30 px-4 py-2.5"
+              <input
+                type="checkbox"
+                id="include-achievements-empty"
+                v-model="includeAchievements"
+                class="border-border bg-background focus-visible:ring-offset-background h-4 w-4 cursor-pointer rounded text-cyan-500 focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2"
+              />
+              <label
+                for="include-achievements-empty"
+                class="text-muted-foreground cursor-pointer text-xs font-semibold select-none"
               >
-                <input
-                  type="checkbox"
-                  id="include-achievements-empty"
-                  v-model="includeAchievements"
-                  class="h-4 w-4 cursor-pointer rounded border-border bg-background text-cyan-500 focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                />
-                <label
-                  for="include-achievements-empty"
-                  class="text-muted-foreground cursor-pointer text-xs font-semibold select-none"
-                >
-                  {{ $t("exportReport.optIncludeAchievements") }}
-                </label>
-              </div>
-
-              <UiButton @click="startExportReport">
-                {{ $t("exportReport.generateBtn") }}
-              </UiButton>
+                {{ $t("exportReport.optIncludeAchievements") }}
+              </label>
             </div>
 
-            <!-- Report Text Area -->
-            <div v-else class="space-y-3">
-              <!-- Option checkbox active -->
-              <div
-                class="border-border/50 flex items-center gap-2 rounded-xl border bg-muted/30 px-4 py-2.5"
+            <UiButton @click="startExportReport">
+              {{ $t("exportReport.generateBtn") }}
+            </UiButton>
+          </div>
+
+          <!-- Report Text Area -->
+          <div v-else class="space-y-3">
+            <!-- Option checkbox active -->
+            <div
+              class="border-border/50 bg-muted/30 flex items-center gap-2 rounded-xl border px-4 py-2.5"
+            >
+              <input
+                type="checkbox"
+                id="include-achievements-active"
+                v-model="includeAchievements"
+                class="border-border bg-background focus-visible:ring-offset-background h-4 w-4 cursor-pointer rounded text-cyan-500 focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2"
+              />
+              <label
+                for="include-achievements-active"
+                class="text-muted-foreground cursor-pointer text-xs font-semibold select-none"
               >
-                <input
-                  type="checkbox"
-                  id="include-achievements-active"
-                  v-model="includeAchievements"
-                  class="h-4 w-4 cursor-pointer rounded border-border bg-background text-cyan-500 focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                />
-                <label
-                  for="include-achievements-active"
-                  class="text-muted-foreground cursor-pointer text-xs font-semibold select-none"
-                >
-                  {{ $t("exportReport.optIncludeAchievements") }}
-                </label>
-              </div>
-
-              <textarea
-                readonly
-                class="border-border/60 h-80 w-full rounded-xl border bg-muted/40 p-3.5 font-mono text-xs text-foreground focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background focus:outline-none"
-                :value="copyReportText"
-                placeholder="Report will appear here..."
-              ></textarea>
+                {{ $t("exportReport.optIncludeAchievements") }}
+              </label>
             </div>
-          </div>
-        </div>
 
-        <!-- Modal Footer -->
-        <div class="border-border/60 bg-muted/20 flex items-center justify-between border-t p-4">
-          <span class="text-muted-foreground text-xs">
-            {{ copyReportText ? $t("exportReport.totalGames", { count: totalCount }) : "" }}
-          </span>
-          <div class="flex items-center gap-3">
-            <UiButton
-              v-if="copyReportText && !isCopying"
-              variant="outline"
-              @click="startExportReport"
-              size="sm"
-              class="text-xs"
-            >
-              🔄 {{ $t("roulette.again") }}
-            </UiButton>
-            <UiButton
-              v-if="copyReportText && !isCopying"
-              @click="copyTextToClipboard(copyReportText)"
-              size="sm"
-              class="flex items-center gap-1.5 text-xs"
-            >
-              <CopyIcon class="h-4 w-4" />
-              <span>{{ $t("exportReport.copyBtn") }}</span>
-            </UiButton>
-            <UiButton variant="secondary" @click="open = false" size="sm" class="text-xs">
-              {{ $t("common.close") }}
-            </UiButton>
+            <textarea
+              readonly
+              class="border-border/60 bg-muted/40 text-foreground focus-visible:ring-offset-background h-80 w-full rounded-xl border p-3.5 font-mono text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2"
+              :value="copyReportText"
+              placeholder="Report will appear here..."
+            ></textarea>
           </div>
         </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="border-border/60 bg-muted/20 flex items-center justify-between border-t p-4">
+        <span class="text-muted-foreground text-xs">
+          {{ copyReportText ? $t("exportReport.totalGames", { count: totalCount }) : "" }}
+        </span>
+        <div class="flex items-center gap-3">
+          <UiButton
+            v-if="copyReportText && !isCopying"
+            variant="outline"
+            @click="startExportReport"
+            size="sm"
+            class="text-xs"
+          >
+            🔄 {{ $t("roulette.again") }}
+          </UiButton>
+          <UiButton
+            v-if="copyReportText && !isCopying"
+            @click="copyTextToClipboard(copyReportText)"
+            size="sm"
+            class="flex items-center gap-1.5 text-xs"
+          >
+            <CopyIcon class="h-4 w-4" />
+            <span>{{ $t("exportReport.copyBtn") }}</span>
+          </UiButton>
+          <UiButton variant="secondary" @click="open = false" size="sm" class="text-xs">
+            {{ $t("common.close") }}
+          </UiButton>
+        </div>
+      </div>
     </UiDialogContent>
   </UiDialog>
 </template>

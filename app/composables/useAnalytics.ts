@@ -3,7 +3,7 @@ import { GameTypes, type SteamGame } from "~/types";
 
 export function useAnalytics(
   gamesInput: MaybeRefOrGetter<SteamGame[]>,
-  periodInput: MaybeRefOrGetter<"recent" | "allTime">
+  periodInput: MaybeRefOrGetter<"recent" | "allTime">,
 ) {
   const { getGameCategory } = useGameCategories();
 
@@ -36,13 +36,16 @@ export function useAnalytics(
   });
 
   const recentStoryHours = computed(() => Math.round((recentStoryMinutes.value / 60) * 10) / 10);
-  const recentSessionHours = computed(() => Math.round((recentSessionMinutes.value / 60) * 10) / 10);
+  const recentSessionHours = computed(
+    () => Math.round((recentSessionMinutes.value / 60) * 10) / 10,
+  );
   const recentTotalHours = computed(() => Math.round((recentTotalMinutes.value / 60) * 10) / 10);
 
   // All time computed values
   const allTimeStoryHours = computed(() => {
     const mins = games.value.reduce(
-      (sum, g) => (getGameCategory(g) === GameTypes.Category.Story ? sum + g.playtime_forever : sum),
+      (sum, g) =>
+        getGameCategory(g) === GameTypes.Category.Story ? sum + g.playtime_forever : sum,
       0,
     );
     return Math.round((mins / 60) * 10) / 10;

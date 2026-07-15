@@ -2,213 +2,216 @@
   <div>
     <!-- Loading State (Hero Details) -->
     <section v-if="isLoading" class="mb-8">
-    <UiCard class="animate-pulse border border-neutral-800/60 bg-neutral-900 p-6 sm:p-8">
-      <div class="flex flex-col items-center gap-6 md:flex-row">
-        <UiSkeleton class="aspect-[460/215] w-full rounded-xl md:w-[220px]" />
-        <div class="w-full flex-1 space-y-4">
-          <UiSkeleton class="h-8 w-1/2 rounded-md" />
-          <UiSkeleton class="h-4 w-1/4 rounded-md" />
-          <UiSkeleton class="h-4 w-3/4 rounded-md pt-4" />
-        </div>
-      </div>
-    </UiCard>
-  </section>
-
-  <!-- Loaded State: Hero Game Info -->
-  <section v-else-if="!error" class="animate-fade-in mb-8">
-    <UiCard>
-      <UiCardContent class="flex flex-col justify-between gap-6 md:flex-row md:items-center">
-        <!-- Banner & Name -->
-        <div class="flex flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
-          <div
-            class="border-neutral-850 relative aspect-[460/215] w-[220px] shrink-0 overflow-hidden rounded-xl border shadow-md"
-          >
-            <img
-              :src="headerImgUrl"
-              :alt="gameName"
-              class="h-full w-full object-cover"
-              @error="handleImageError"
-            />
+      <UiCard class="animate-pulse border border-neutral-800/60 bg-neutral-900 p-6 sm:p-8">
+        <div class="flex flex-col items-center gap-6 md:flex-row">
+          <UiSkeleton class="aspect-[460/215] w-full rounded-xl md:w-[220px]" />
+          <div class="w-full flex-1 space-y-4">
+            <UiSkeleton class="h-8 w-1/2 rounded-md" />
+            <UiSkeleton class="h-4 w-1/4 rounded-md" />
+            <UiSkeleton class="h-4 w-3/4 rounded-md pt-4" />
           </div>
+        </div>
+      </UiCard>
+    </section>
 
-          <div class="space-y-2">
-            <UiBadge variant="secondary"> App ID: {{ appid }} </UiBadge>
-            <h2
-              class="text-foreground text-2xl leading-tight font-extrabold tracking-tight sm:text-3xl"
-            >
-              {{ gameName }}
-            </h2>
+    <!-- Loaded State: Hero Game Info -->
+    <section v-else-if="!error" class="animate-fade-in mb-8">
+      <UiCard>
+        <UiCardContent class="flex flex-col justify-between gap-6 md:flex-row md:items-center">
+          <!-- Banner & Name -->
+          <div class="flex flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
             <div
-              class="text-muted-foreground flex flex-wrap items-center justify-center gap-4 pt-1 text-sm font-medium sm:justify-start"
+              class="border-neutral-850 relative aspect-[460/215] w-[220px] shrink-0 overflow-hidden rounded-xl border shadow-md"
             >
-              <div class="flex items-center gap-1.5">
-                <ClockIcon class="text-muted-foreground h-4 w-4" />
-                <span
-                  >{{ $t("game.completionProgress") }}:
-                  <span class="text-foreground font-semibold">{{ unlockedCount }}</span> /
-                  <span class="text-foreground font-semibold">{{ totalCount }}</span></span
-                >
+              <img
+                :src="headerImgUrl"
+                :alt="gameName"
+                class="h-full w-full object-cover"
+                @error="handleImageError"
+              />
+            </div>
+
+            <div class="space-y-2">
+              <UiBadge variant="secondary"> App ID: {{ appid }} </UiBadge>
+              <h2
+                class="text-foreground text-2xl leading-tight font-extrabold tracking-tight sm:text-3xl"
+              >
+                {{ gameName }}
+              </h2>
+              <div
+                class="text-muted-foreground flex flex-wrap items-center justify-center gap-4 pt-1 text-sm font-medium sm:justify-start"
+              >
+                <div class="flex items-center gap-1.5">
+                  <ClockIcon class="text-muted-foreground h-4 w-4" />
+                  <span
+                    >{{ $t("game.completionProgress") }}:
+                    <span class="text-foreground font-semibold">{{ unlockedCount }}</span> /
+                    <span class="text-foreground font-semibold">{{ totalCount }}</span></span
+                  >
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Achievements Progress (shadcn Progress) -->
-        <div
-          class="bg-muted/40 border-border flex min-w-[150px] shrink-0 flex-col items-center justify-center rounded-xl border p-4"
-        >
-          <span class="text-muted-foreground text-[10px] font-bold tracking-widest uppercase">{{
-            $t("game.unlockedLabel")
-          }}</span>
-          <span
-            class="mt-1 bg-gradient-to-br from-cyan-400 to-indigo-400 bg-clip-text text-3xl font-black tracking-tight text-transparent"
+          <!-- Achievements Progress (shadcn Progress) -->
+          <div
+            class="bg-muted/40 border-border flex min-w-[150px] shrink-0 flex-col items-center justify-center rounded-xl border p-4"
           >
-            {{ unlockedPercent }}%
-          </span>
-          <UiProgress :model-value="unlockedPercent" class="mt-3 w-full" />
-        </div>
-      </UiCardContent>
-    </UiCard>
-  </section>
-
-  <!-- Easy Targets / The Next Achievements -->
-  <GamesDetailNextAchievements
-    v-if="!isLoading && !error && nextAchievements.length > 0"
-    :next-achievements="nextAchievements"
-  />
-
-  <!-- If 100% Completed, show congratulations -->
-  <section
-    v-else-if="!isLoading && !error && achievements.length > 0 && nextAchievements.length === 0"
-    class="animate-fade-in mb-8"
-  >
-    <UiCard
-      class="border-emerald-500/20 bg-gradient-to-r from-emerald-950/10 to-transparent shadow-xs"
-    >
-      <UiCardContent class="flex items-center gap-4 p-6">
-        <span class="text-3xl select-none">🏆</span>
-        <div>
-          <h3 class="text-base leading-snug font-extrabold text-emerald-400">
-            {{ $t("game.congratsTitle") }}
-          </h3>
-          <p class="text-muted-foreground mt-0.5 text-xs font-medium">
-            {{ $t("game.congratsDesc") }}
-          </p>
-        </div>
-      </UiCardContent>
-    </UiCard>
-  </section>
-
-  <!-- Main Content Block -->
-  <section v-if="!isLoading && !error" class="animate-fade-in space-y-6">
-    <!-- Filter Controls (Search + Tabs) -->
-    <div
-      class="bg-card border-border flex flex-col justify-between gap-4 rounded-2xl border p-4 md:flex-row md:items-center"
-    >
-      <!-- Search in Achievements -->
-      <div class="relative max-w-md flex-1">
-        <span
-          class="text-muted-foreground pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-3"
-        >
-          <SearchIcon class="h-4.5 w-4.5" />
-        </span>
-        <UiInput
-          type="text"
-          v-model="searchQuery"
-          :placeholder="$t('game.searchPlaceholder')"
-          class="w-full pr-8 pl-9"
-        />
-        <UiButton
-          v-if="searchQuery"
-          variant="ghost"
-          size="icon"
-          @click="searchQuery = ''"
-          class="absolute top-0 right-0 bottom-0"
-        >
-          <XIcon class="h-4 w-4" />
-        </UiButton>
-      </div>
-
-      <!-- Tabs: All, Unlocked, Locked (shadcn tabs) -->
-      <div class="no-scrollbar flex items-center gap-2 overflow-x-auto py-0.5">
-        <span
-          class="text-muted-foreground mr-2 shrink-0 text-xs font-semibold tracking-wider uppercase"
-          >{{ $t("game.filterLabel") }}</span
-        >
-        <UiTabs v-model="filterBy" class="w-auto">
-          <UiTabsList>
-            <UiTabsTrigger :value="GameTypes.AchievementFilter.All"
-              >{{ $t("game.filterAll") }} ({{ totalCount }})</UiTabsTrigger
+            <span class="text-muted-foreground text-[10px] font-bold tracking-widest uppercase">{{
+              $t("game.unlockedLabel")
+            }}</span>
+            <span
+              class="mt-1 bg-gradient-to-br from-cyan-400 to-indigo-400 bg-clip-text text-3xl font-black tracking-tight text-transparent"
             >
-            <UiTabsTrigger :value="GameTypes.AchievementFilter.Unlocked"
-              >{{ $t("game.filterUnlocked") }} ({{ unlockedCount }})</UiTabsTrigger
-            >
-            <UiTabsTrigger :value="GameTypes.AchievementFilter.Locked"
-              >{{ $t("game.filterLocked") }} ({{ totalCount - unlockedCount }})</UiTabsTrigger
-            >
-          </UiTabsList>
-        </UiTabs>
-      </div>
-    </div>
-
-    <!-- Skeleton Grid while loading -->
-    <div v-if="isLoading" class="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <UiCard v-for="i in 6" :key="i" class="flex items-center gap-4 p-4">
-        <UiSkeleton class="h-14 w-14 shrink-0 rounded-xl" />
-        <div class="flex-1 space-y-2">
-          <UiSkeleton class="h-4.5 w-1/3 rounded-md" />
-          <UiSkeleton class="h-3 w-3/4 rounded-md" />
-        </div>
+              {{ unlockedPercent }}%
+            </span>
+            <UiProgress :model-value="unlockedPercent" class="mt-3 w-full" />
+          </div>
+        </UiCardContent>
       </UiCard>
-    </div>
+    </section>
 
-    <!-- Achievements Grid -->
-    <div v-else-if="filteredAchievements.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <GamesAchievementCard
-        v-for="ach in filteredAchievements"
-        :key="ach.apiname"
-        :achievement="ach"
-      />
-    </div>
+    <!-- Easy Targets / The Next Achievements -->
+    <GamesDetailNextAchievements
+      v-if="!isLoading && !error && nextAchievements.length > 0"
+      :next-achievements="nextAchievements"
+    />
 
-    <!-- Empty Grid/Search -->
-    <UiCard v-else class="mx-auto max-w-md text-center">
-      <UiCardContent>
-        <div
-          class="bg-card border-border text-muted-foreground mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border"
-        >
-          <AlertCircleIcon class="h-8 w-8" />
-        </div>
-        <h3 class="text-base font-bold">{{ $t("game.noAchievements") }}</h3>
-        <p class="text-muted-foreground mx-auto mt-1 max-w-xs text-xs">
-          {{ $t("game.noAchievementsDesc") }}
-        </p>
-      </UiCardContent>
-    </UiCard>
-  </section>
-
-  <!-- Global Error Alert / Back Action -->
-  <section v-if="error" class="mx-auto max-w-2xl py-8">
-    <div
-      class="bg-destructive/10 border-destructive/20 text-destructive-foreground flex items-start gap-4 rounded-lg border p-6 text-sm shadow-lg"
+    <!-- If 100% Completed, show congratulations -->
+    <section
+      v-else-if="!isLoading && !error && achievements.length > 0 && nextAchievements.length === 0"
+      class="animate-fade-in mb-8"
     >
-      <AlertCircleIcon class="text-destructive mt-0.5 h-6 w-6 shrink-0" />
-      <div class="flex-1">
-        <h3 class="text-destructive mb-1 text-base font-extrabold">
-          {{ $t("game.failedLoad") }}
-        </h3>
-        <p class="leading-relaxed">{{ error }}</p>
-        <div class="mt-4 flex items-center gap-3">
-          <UiButton variant="outline" as-child>
-            <NuxtLink to="/"> &larr; {{ $t("game.returnBtn") }} </NuxtLink>
+      <UiCard
+        class="border-emerald-500/20 bg-gradient-to-r from-emerald-950/10 to-transparent shadow-xs"
+      >
+        <UiCardContent class="flex items-center gap-4 p-6">
+          <span class="text-3xl select-none">🏆</span>
+          <div>
+            <h3 class="text-base leading-snug font-extrabold text-emerald-400">
+              {{ $t("game.congratsTitle") }}
+            </h3>
+            <p class="text-muted-foreground mt-0.5 text-xs font-medium">
+              {{ $t("game.congratsDesc") }}
+            </p>
+          </div>
+        </UiCardContent>
+      </UiCard>
+    </section>
+
+    <!-- Main Content Block -->
+    <section v-if="!isLoading && !error" class="animate-fade-in space-y-6">
+      <!-- Filter Controls (Search + Tabs) -->
+      <div
+        class="bg-card border-border flex flex-col justify-between gap-4 rounded-2xl border p-4 md:flex-row md:items-center"
+      >
+        <!-- Search in Achievements -->
+        <div class="relative max-w-md flex-1">
+          <span
+            class="text-muted-foreground pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-3"
+          >
+            <SearchIcon class="h-4.5 w-4.5" />
+          </span>
+          <UiInput
+            type="text"
+            v-model="searchQuery"
+            :placeholder="$t('game.searchPlaceholder')"
+            class="w-full pr-8 pl-9"
+          />
+          <UiButton
+            v-if="searchQuery"
+            variant="ghost"
+            size="icon"
+            @click="searchQuery = ''"
+            class="absolute top-0 right-0 bottom-0"
+          >
+            <XIcon class="h-4 w-4" />
           </UiButton>
-          <UiButton variant="outline" @click="refreshAchievements">
-            {{ $t("game.retryBtn") }}
-          </UiButton>
+        </div>
+
+        <!-- Tabs: All, Unlocked, Locked (shadcn tabs) -->
+        <div class="no-scrollbar flex items-center gap-2 overflow-x-auto py-0.5">
+          <span
+            class="text-muted-foreground mr-2 shrink-0 text-xs font-semibold tracking-wider uppercase"
+            >{{ $t("game.filterLabel") }}</span
+          >
+          <UiTabs v-model="filterBy" class="w-auto">
+            <UiTabsList>
+              <UiTabsTrigger :value="GameTypes.AchievementFilter.All"
+                >{{ $t("game.filterAll") }} ({{ totalCount }})</UiTabsTrigger
+              >
+              <UiTabsTrigger :value="GameTypes.AchievementFilter.Unlocked"
+                >{{ $t("game.filterUnlocked") }} ({{ unlockedCount }})</UiTabsTrigger
+              >
+              <UiTabsTrigger :value="GameTypes.AchievementFilter.Locked"
+                >{{ $t("game.filterLocked") }} ({{ totalCount - unlockedCount }})</UiTabsTrigger
+              >
+            </UiTabsList>
+          </UiTabs>
         </div>
       </div>
-    </div>
-  </section>
+
+      <!-- Skeleton Grid while loading -->
+      <div v-if="isLoading" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <UiCard v-for="i in 6" :key="i" class="flex items-center gap-4 p-4">
+          <UiSkeleton class="h-14 w-14 shrink-0 rounded-xl" />
+          <div class="flex-1 space-y-2">
+            <UiSkeleton class="h-4.5 w-1/3 rounded-md" />
+            <UiSkeleton class="h-3 w-3/4 rounded-md" />
+          </div>
+        </UiCard>
+      </div>
+
+      <!-- Achievements Grid -->
+      <div
+        v-else-if="filteredAchievements.length > 0"
+        class="grid grid-cols-1 gap-4 md:grid-cols-2"
+      >
+        <GamesAchievementCard
+          v-for="ach in filteredAchievements"
+          :key="ach.apiname"
+          :achievement="ach"
+        />
+      </div>
+
+      <!-- Empty Grid/Search -->
+      <UiCard v-else class="mx-auto max-w-md text-center">
+        <UiCardContent>
+          <div
+            class="bg-card border-border text-muted-foreground mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border"
+          >
+            <AlertCircleIcon class="h-8 w-8" />
+          </div>
+          <h3 class="text-base font-bold">{{ $t("game.noAchievements") }}</h3>
+          <p class="text-muted-foreground mx-auto mt-1 max-w-xs text-xs">
+            {{ $t("game.noAchievementsDesc") }}
+          </p>
+        </UiCardContent>
+      </UiCard>
+    </section>
+
+    <!-- Global Error Alert / Back Action -->
+    <section v-if="error" class="mx-auto max-w-2xl py-8">
+      <div
+        class="bg-destructive/10 border-destructive/20 text-destructive-foreground flex items-start gap-4 rounded-lg border p-6 text-sm shadow-lg"
+      >
+        <AlertCircleIcon class="text-destructive mt-0.5 h-6 w-6 shrink-0" />
+        <div class="flex-1">
+          <h3 class="text-destructive mb-1 text-base font-extrabold">
+            {{ $t("game.failedLoad") }}
+          </h3>
+          <p class="leading-relaxed">{{ error }}</p>
+          <div class="mt-4 flex items-center gap-3">
+            <UiButton variant="outline" as-child>
+              <NuxtLink to="/"> &larr; {{ $t("game.returnBtn") }} </NuxtLink>
+            </UiButton>
+            <UiButton variant="outline" @click="refreshAchievements">
+              {{ $t("game.retryBtn") }}
+            </UiButton>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -217,12 +220,7 @@ import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { refDebounced } from "@vueuse/core";
 import { GameTypes } from "@/types";
-import {
-  ClockIcon,
-  SearchIcon,
-  XIcon,
-  AlertCircleIcon,
-} from "@lucide/vue";
+import { ClockIcon, SearchIcon, XIcon, AlertCircleIcon } from "@lucide/vue";
 
 definePageMeta({
   showBackButton: true,

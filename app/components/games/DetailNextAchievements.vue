@@ -17,7 +17,7 @@
           <div
             v-for="ach in nextAchievements"
             :key="'next-' + ach.apiname"
-            class="border-border bg-card/30 flex items-center gap-3.5 rounded-2xl border p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-500/30 hover:shadow-[0_4px_15px_rgba(34,211,238,0.12)] group"
+            class="border-border bg-card/30 group flex items-center gap-3.5 rounded-2xl border p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-500/30 hover:shadow-[0_4px_15px_rgba(34,211,238,0.12)]"
           >
             <!-- Gray Icon, becomes colored on hover -->
             <div
@@ -27,14 +27,14 @@
               <img
                 :src="ach.icongray"
                 :alt="ach.name"
-                class="absolute inset-0 h-full w-full object-cover transition-all duration-500 group-hover:opacity-0 group-hover:scale-[1.06]"
+                class="absolute inset-0 h-full w-full object-cover transition-all duration-500 group-hover:scale-[1.06] group-hover:opacity-0"
                 @error="handleIconError"
               />
               <!-- Colored icon shown on hover -->
               <img
                 :src="ach.icon"
                 :alt="ach.name"
-                class="absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-[1.06]"
+                class="absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-500 group-hover:scale-[1.06] group-hover:opacity-100"
                 @error="handleIconError"
               />
             </div>

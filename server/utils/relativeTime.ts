@@ -52,7 +52,11 @@ const locales: Record<"uk" | "ru" | "en", RelativeTimeLocale> = {
 
 export function getRelativeTime(timestamp: number, lang: string): string {
   const l = lang.toLowerCase();
-  const localeKey: "uk" | "ru" | "en" = l.startsWith("uk") ? "uk" : l.startsWith("ru") ? "ru" : "en";
+  const localeKey: "uk" | "ru" | "en" = l.startsWith("uk")
+    ? "uk"
+    : l.startsWith("ru")
+      ? "ru"
+      : "en";
   const loc = locales[localeKey];
 
   if (!timestamp || timestamp === 0) {
