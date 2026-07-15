@@ -1,7 +1,7 @@
 <template>
   <NuxtLinkLocale :to="`/game/${game.appid}`" class="group block h-full">
     <UiCard
-      class="flex h-full flex-col overflow-hidden transition-colors duration-200 hover:border-cyan-500/50"
+      class="flex h-full flex-col overflow-hidden py-0 gap-0 transition-colors duration-200 hover:border-cyan-500/50"
     >
       <!-- Game Capsule Banner -->
       <div class="bg-muted relative aspect-[460/215] shrink-0 overflow-hidden">
