@@ -1,4 +1,6 @@
 import { defineEventHandler, getQuery, getCookie } from "h3";
+import { processSteamGames } from "#shared/steamGames";
+import { mapSteamLocale } from "#shared/steamLocale";
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);

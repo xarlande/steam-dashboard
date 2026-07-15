@@ -1,4 +1,6 @@
 import { defineEventHandler, getQuery, getCookie } from "h3";
+import { mergeAchievements } from "#shared/steamAchievements";
+import { mapSteamLocale } from "#shared/steamLocale";
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);

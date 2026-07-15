@@ -1,3 +1,5 @@
+import { getRelativeTime } from "./relativeTime";
+
 export function processSteamGames(rawGames: any[], rawLang: string) {
   // Process and filter games
   const games = rawGames
