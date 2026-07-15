@@ -27,16 +27,14 @@ export function useGameLibrary() {
   const totalCount = computed(() => gamesAsyncData.data.value?.total_count || 0);
   const loadedFromEnv = computed(() => Boolean(gamesAsyncData.data.value?.usingEnv));
 
-  function fetchGames() {
-    gamesAsyncData.refresh();
+  async function fetchGames() {
+    await gamesAsyncData.refresh();
+    toast.success(t("index.refreshSuccess"));
   }
 
   watch(
     () => gamesAsyncData.status.value,
     (status, oldStatus) => {
-      if (oldStatus === "pending" && status === "success") {
-        toast.success(t("index.refreshSuccess"));
-      }
       if (oldStatus === "pending" && status === "error") {
         toast.error(error.value || t("index.refreshError"));
       }
