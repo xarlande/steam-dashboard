@@ -40,13 +40,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
 import { toast } from "vue-sonner";
 
 import { GameTypes, type SteamGame } from "@/types";
 
 const { games, isLoading, error, suspense, fetchGames } = useGameLibrary();
 await suspense();
+
+const steamId = useStateSteamId();
+const showSettings = useStateSettingsDialogOpen();
+
+onMounted(() => {
+  if (!steamId.value.trim()) {
+    showSettings.value = true;
+  }
+});
 
 // Watch for errors to display using Sonner toast
 watch(
