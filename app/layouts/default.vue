@@ -94,7 +94,6 @@ const showSettings = useStateSettingsDialogOpen();
 
 async function handleLangChange(value: any) {
   if (typeof value === "string") {
-    localStorage.setItem("steam_language", value);
     await setLocale(value as any);
   }
 }

@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   // Read from query or environment variables
   const apiKey = process.env.STEAM_API_KEY;
   const steamId = getCookie(event, "steam_id") || process.env.STEAM_ID;
-  const rawLang = (query.lang as string) || process.env.STEAM_LANGUAGE || "uk";
+  const rawLang = (query.lang as string) || "uk";
 
   const steamLang = mapSteamLocale(rawLang);
 

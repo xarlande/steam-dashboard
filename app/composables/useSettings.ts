@@ -3,7 +3,7 @@ import { useI18n } from "vue-i18n";
 import { toast } from "vue-sonner";
 
 export function useSettings(isOpen: Ref<boolean | undefined>) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   // Cookie instances
   const cookieSteamId = useStateSteamId();
@@ -38,15 +38,9 @@ export function useSettings(isOpen: Ref<boolean | undefined>) {
 
     const settings = {
       exportedAt: new Date().toISOString(),
-      steam_game_categories: (() => {
-        try {
-          return JSON.parse(localStorage.getItem("steam_game_categories") || "{}");
-        } catch {
-          return {};
-        }
-      })(),
+      steam_game_categories: useStateManualCategories().value,
       steam_id: currentSteamId,
-      steam_language: localStorage.getItem("steam_language") || "uk",
+      steam_language: locale.value,
       version: 1,
     };
 
