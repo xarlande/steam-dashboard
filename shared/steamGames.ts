@@ -1,4 +1,5 @@
 import { getRelativeTime } from "./relativeTime";
+import { convertMinutesToHours } from "./playtime";
 
 export function processSteamGames(rawGames: any[], rawLang: string) {
   // Process and filter games
@@ -7,7 +8,7 @@ export function processSteamGames(rawGames: any[], rawLang: string) {
     .map((game) => {
       const appid = game.appid;
       const playtimeMinutes = game.playtime_forever || 0;
-      const playtimeHours = Math.round((playtimeMinutes / 60) * 10) / 10;
+      const playtimeHours = convertMinutesToHours(playtimeMinutes);
 
       return {
         appid,
@@ -27,7 +28,7 @@ export function processSteamGames(rawGames: any[], rawLang: string) {
 
   // Calculate total playtime
   const totalPlaytimeMinutes = games.reduce((acc, game) => acc + game.playtime_forever, 0);
-  const totalPlaytimeHours = Math.round((totalPlaytimeMinutes / 60) * 10) / 10;
+  const totalPlaytimeHours = convertMinutesToHours(totalPlaytimeMinutes);
 
   return {
     games,

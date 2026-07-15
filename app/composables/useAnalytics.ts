@@ -1,5 +1,6 @@
 import { computed, type MaybeRefOrGetter, toValue } from "vue";
 import { GameTypes, type SteamGame } from "~/types";
+import { convertMinutesToHours } from "#shared/playtime";
 
 export function useAnalytics(
   gamesInput: MaybeRefOrGetter<SteamGame[]>,
@@ -10,36 +11,9 @@ export function useAnalytics(
   const games = computed(() => toValue(gamesInput));
   const period = computed(() => toValue(periodInput));
 
-  // Recently played games computed values
-  const recentlyPlayedGames = computed(() => {
-    return games.value.filter((g) => g.playtime_2weeks && g.playtime_2weeks > 0);
-  });
-
-  const recentStoryMinutes = computed(() => {
-    return recentlyPlayedGames.value.reduce(
-      (sum, g) =>
-        getGameCategory(g) === GameTypes.Category.Story ? sum + (g.playtime_2weeks || 0) : sum,
-      0,
-    );
-  });
-
-  const recentSessionMinutes = computed(() => {
-    return recentlyPlayedGames.value.reduce(
-      (sum, g) =>
-        getGameCategory(g) === GameTypes.Category.Session ? sum + (g.playtime_2weeks || 0) : sum,
-      0,
-    );
-  });
-
-  const recentTotalMinutes = computed(() => {
-    return recentStoryMinutes.value + recentSessionMinutes.value;
-  });
-
-  const recentStoryHours = computed(() => Math.round((recentStoryMinutes.value / 60) * 10) / 10);
-  const recentSessionHours = computed(
-    () => Math.round((recentSessionMinutes.value / 60) * 10) / 10,
-  );
-  const recentTotalHours = computed(() => Math.round((recentTotalMinutes.value / 60) * 10) / 10);
+  // Reuse the useLibraryDetox calculations for recent stats
+  const { recentlyPlayedGames, recentStoryHours, recentSessionHours, recentTotalHours } =
+    useLibraryDetox(games);
 
   // All time computed values
   const allTimeStoryHours = computed(() => {
@@ -48,7 +22,7 @@ export function useAnalytics(
         getGameCategory(g) === GameTypes.Category.Story ? sum + g.playtime_forever : sum,
       0,
     );
-    return Math.round((mins / 60) * 10) / 10;
+    return convertMinutesToHours(mins);
   });
 
   const allTimeSessionHours = computed(() => {
@@ -57,7 +31,7 @@ export function useAnalytics(
         getGameCategory(g) === GameTypes.Category.Session ? sum + g.playtime_forever : sum,
       0,
     );
-    return Math.round((mins / 60) * 10) / 10;
+    return convertMinutesToHours(mins);
   });
 
   const allTimeTotalHours = computed(() => {
@@ -115,7 +89,7 @@ export function useAnalytics(
         .slice(0, 5);
 
       return sorted.map((g) => {
-        const recentHours = Math.round(((g.playtime_2weeks || 0) / 60) * 10) / 10;
+        const recentHours = convertMinutesToHours(g.playtime_2weeks || 0);
         return Object.assign({}, g, { display_hours: recentHours });
       });
     } else {
