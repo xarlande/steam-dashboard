@@ -5,7 +5,7 @@
     >
       <SearchIcon class="h-8 w-8" />
     </div>
-    <h3 class="text-lg font-bold text-neutral-200">{{ $t("index.noGames") }}</h3>
+    <h3 class="text-lg font-bold text-foreground">{{ $t("index.noGames") }}</h3>
     <p class="text-muted-foreground text-sm leading-relaxed">
       {{ $t("index.noGamesDesc") }}
     </p>

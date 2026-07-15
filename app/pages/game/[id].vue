@@ -1,6 +1,7 @@
 <template>
-  <!-- Loading State (Hero Details) -->
-  <section v-if="isLoading" class="mb-8">
+  <div>
+    <!-- Loading State (Hero Details) -->
+    <section v-if="isLoading" class="mb-8">
     <UiCard class="animate-pulse border border-neutral-800/60 bg-neutral-900 p-6 sm:p-8">
       <div class="flex flex-col items-center gap-6 md:flex-row">
         <UiSkeleton class="aspect-[460/215] w-full rounded-xl md:w-[220px]" />
@@ -71,74 +72,10 @@
   </section>
 
   <!-- Easy Targets / The Next Achievements -->
-  <section v-if="!isLoading && !error && nextAchievements.length > 0" class="animate-fade-in mb-8">
-    <UiCard class="border-cyan-500/20 bg-gradient-to-r from-cyan-950/10 to-transparent shadow-xs">
-      <UiCardContent class="p-6">
-        <div class="mb-4 flex items-center gap-2.5">
-          <span class="text-xl">🎯</span>
-          <div>
-            <h3 class="text-foreground text-base leading-snug font-bold">
-              {{ $t("game.nextTitle") }}
-            </h3>
-            <p class="text-muted-foreground mt-0.5 text-xs">{{ $t("game.nextDesc") }}</p>
-          </div>
-        </div>
-
-        <!-- List of 3 next targets -->
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div
-            v-for="ach in nextAchievements"
-            :key="'next-' + ach.apiname"
-            class="border-border bg-card/30 hover:bg-card/60 group flex items-center gap-3.5 rounded-2xl border p-3.5 transition-all"
-          >
-            <!-- Gray Icon, becomes colored on hover -->
-            <div
-              class="bg-muted border-border/60 relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border"
-            >
-              <!-- Gray icon by default, hidden on hover -->
-              <img
-                :src="ach.icongray"
-                :alt="ach.name"
-                class="h-full w-full object-cover transition-transform group-hover:hidden"
-                @error="handleIconError"
-              />
-              <!-- Colored icon shown on hover -->
-              <img
-                :src="ach.icon"
-                :alt="ach.name"
-                class="hidden h-full w-full object-cover transition-transform group-hover:block"
-                @error="handleIconError"
-              />
-            </div>
-
-            <div class="min-w-0 flex-1">
-              <h4
-                class="text-foreground truncate text-xs font-bold transition-colors group-hover:text-cyan-400"
-                :title="ach.name"
-              >
-                {{ ach.name }}
-              </h4>
-              <p
-                class="text-muted-foreground mt-0.5 line-clamp-1 text-[10px]"
-                :title="ach.description"
-              >
-                {{ ach.description || "No description" }}
-              </p>
-
-              <!-- Unlock Rate Badge -->
-              <div class="mt-2 flex items-center gap-1">
-                <UiBadge
-                  class="rounded-md border-cyan-500/20 bg-cyan-500/10 px-1.5 py-0.5 text-[9px] font-black text-cyan-400 hover:bg-cyan-500/10"
-                >
-                  {{ ach.global_percent }}% {{ $t("game.globalUnlocked") }}
-                </UiBadge>
-              </div>
-            </div>
-          </div>
-        </div>
-      </UiCardContent>
-    </UiCard>
-  </section>
+  <GamesDetailNextAchievements
+    v-if="!isLoading && !error && nextAchievements.length > 0"
+    :next-achievements="nextAchievements"
+  />
 
   <!-- If 100% Completed, show congratulations -->
   <section
@@ -227,56 +164,11 @@
 
     <!-- Achievements Grid -->
     <div v-else-if="filteredAchievements.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <!-- Achievement Card (shadcn Card) -->
-      <UiCard
+      <GamesAchievementCard
         v-for="ach in filteredAchievements"
         :key="ach.apiname"
-        class="group ach-card flex gap-4 p-4 hover:-translate-y-0.5"
-        :class="ach.achieved ? '' : 'opacity-60 transition-opacity hover:opacity-90'"
-      >
-        <!-- Icon -->
-        <div
-          class="bg-muted border-border relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border"
-        >
-          <img
-            :src="ach.achieved ? ach.icon : ach.icongray"
-            :alt="ach.name"
-            loading="lazy"
-            class="ach-card-img h-full w-full object-cover group-hover:scale-[1.04]"
-            @error="handleIconError"
-          />
-        </div>
-
-        <!-- Text details -->
-        <div class="flex min-w-0 flex-1 flex-col justify-center pr-2">
-          <div class="flex items-start justify-between gap-2">
-            <h4
-              class="truncate text-sm font-bold transition-colors group-hover:text-cyan-500 sm:text-base dark:group-hover:text-cyan-300"
-            >
-              {{ ach.name }}
-            </h4>
-
-            <!-- Unlocked Badge (shadcn badge) -->
-            <UiBadge v-if="ach.achieved">
-              {{ $t("game.unlockedLabel") }}
-            </UiBadge>
-          </div>
-
-          <!-- Description -->
-          <p class="text-muted-foreground mt-1 line-clamp-2 pr-4 text-xs leading-normal">
-            {{ ach.description || "No description provided." }}
-          </p>
-
-          <!-- Unlock relative time -->
-          <p
-            v-if="ach.achieved"
-            class="text-muted-foreground mt-1.5 flex items-center gap-1 text-[10px] font-medium"
-          >
-            <CheckIcon class="text-muted-foreground/80 h-3 w-3" />
-            <span>{{ $t("game.unlockedAt", { time: ach.unlocktime_relative }) }}</span>
-          </p>
-        </div>
-      </UiCard>
+        :achievement="ach"
+      />
     </div>
 
     <!-- Empty Grid/Search -->
@@ -317,19 +209,18 @@
       </div>
     </div>
   </section>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { refDebounced } from "@vueuse/core";
-import { GameTypes, type GameAchievementsResponse } from "@/types";
+import { GameTypes } from "@/types";
 import {
-  ArrowLeftIcon,
   ClockIcon,
   SearchIcon,
   XIcon,
-  CheckIcon,
   AlertCircleIcon,
 } from "@lucide/vue";
 
@@ -405,14 +296,6 @@ function handleImageError(event: Event) {
   }
 }
 
-function handleIconError(event: Event) {
-  const target = event.target as HTMLImageElement;
-  if (target) {
-    target.src =
-      "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/252490/achievements/default.jpg";
-  }
-}
-
 const filteredAchievements = computed(() => {
   let list = [...achievements.value];
 
@@ -443,18 +326,6 @@ const filteredAchievements = computed(() => {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-.ach-card {
-  transition:
-    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    opacity 0.25s ease;
-}
-
-.ach-card-img {
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes fade-in {

@@ -5,6 +5,9 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: false },
+  app: {
+    pageTransition: { name: "page", mode: "out-in" },
+  },
   modules: ["@nuxt/fonts", "shadcn-nuxt", "@nuxtjs/i18n", "@vueuse/nuxt", "@nuxtjs/color-mode"],
   colorMode: {
     classSuffix: "", // додає .dark, а не .dark-mode

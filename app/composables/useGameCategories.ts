@@ -1,7 +1,10 @@
+import { useI18n } from "vue-i18n";
+import { toast } from "vue-sonner";
 import { GameTypes, type SteamGame } from "~/types";
 
 export const useGameCategories = () => {
   const manualCategories = useStateManualCategories();
+  const { t } = useI18n();
 
   const SESSION_GAME_KEYWORDS = [
     "counter-strike",
@@ -89,6 +92,10 @@ export const useGameCategories = () => {
     const next =
       current === GameTypes.Category.Story ? GameTypes.Category.Session : GameTypes.Category.Story;
     manualCategories.value[appid] = next;
+
+    const gameName = game?.name || "Game";
+    const categoryName = next === GameTypes.Category.Story ? "🎭 Story" : "🎮 Session";
+    toast.success(t("detox.categoryChanged", { name: gameName, category: categoryName }));
   };
 
   return {

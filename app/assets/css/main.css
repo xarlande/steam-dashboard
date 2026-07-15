@@ -135,3 +135,34 @@ body {
       "cv05" on;
   }
 }
+
+/* Glassmorphism overlays for Dialogs */
+[data-slot="dialog-overlay"] {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  transition-duration: 300ms !important;
+}
+
+/* Glassmorphism containers for Dialog contents */
+[data-slot="dialog-content"],
+.glass-dialog {
+  background-color: color-mix(in srgb, var(--popover) 85%, transparent) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-color: color-mix(in srgb, var(--border) 60%, transparent) !important;
+}
+
+/* Page transitions */
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}

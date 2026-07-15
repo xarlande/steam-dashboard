@@ -7,6 +7,8 @@
     "retry": "Повторить",
     "reset": "Сбросить",
     "save": "Сохранить",
+    "savedSuccessfully": "Настройки успешно сохранены",
+    "resetSuccessfully": "Настройки сброшены",
     "close": "Закрыть"
   },
   "index": {
@@ -52,6 +54,8 @@
       "importError": "Некорректный файл настроек. Проверьте формат JSON.",
       "importFileError": "Не удалось прочитать файл."
     },
+    "refreshSuccess": "Библиотека успешно обновлена!",
+    "refreshError": "Не удалось обновить библиотеку.",
     "errorLoading": "Ошибка загрузки библиотеки:",
     "configureSettings": "Настроить параметры",
     "playGame": "Играть",
@@ -79,6 +83,7 @@
     "tipsTitle": "Рекомендация",
     "showCategorizer": "Настроить категории",
     "hideCategorizer": "Скрыть настройки",
+    "categoryChanged": "Категория игры {name} изменена на {category}",
     "states": {
       "inactive": {
         "title": "Отличный баланс с реалом",

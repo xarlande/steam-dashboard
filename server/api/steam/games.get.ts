@@ -44,41 +44,17 @@ export default defineEventHandler(async (event) => {
 
     const rawGames = data.response.games as any[];
 
-    // Process and filter games
-    const games = rawGames
-      .filter((game) => game.playtime_forever > 0) // Only games that have been played
-      .map((game) => {
-        const appid = game.appid;
-        const playtimeMinutes = game.playtime_forever || 0;
-        const playtimeHours = Math.round((playtimeMinutes / 60) * 10) / 10;
+    const { games, totalPlaytimeHours } = processSteamGames(rawGames, rawLang);
 
-        return {
-          appid,
-          name: game.name || `App ${appid}`,
-          playtime_forever: playtimeMinutes,
-          playtime_2weeks: game.playtime_2weeks || 0,
-          img_icon_url: game.img_icon_url || "",
-          rtime_last_played: game.rtime_last_played || 0,
-          header_img: `https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${appid}/header.jpg`,
-          playtime_hours: playtimeHours,
-          last_played_relative: getRelativeTime(game.rtime_last_played || 0, rawLang),
-        };
-      });
-
-    // Sort by rtime_last_played in descending order (most recently played first)
-    games.sort((a, b) => b.rtime_last_played - a.rtime_last_played);
-
-    // Calculate total playtime
-    const totalPlaytimeMinutes = games.reduce((acc, game) => acc + game.playtime_forever, 0);
-    const totalPlaytimeHours = Math.round((totalPlaytimeMinutes / 60) * 10) / 10;
-
-    return {
+    const result = {
       success: true,
       games,
       total_count: games.length,
       total_playtime_hours: totalPlaytimeHours,
       usingEnv: !getCookie(event, "steam_id") && !!process.env.STEAM_ID,
     };
+
+    return result;
   } catch (error: any) {
     const sanitized = sanitizeError(error);
     console.error("Error fetching Steam games:", sanitized);

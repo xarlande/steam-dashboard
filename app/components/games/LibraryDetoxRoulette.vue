@@ -1,11 +1,6 @@
 <template>
-  <div
-    v-if="isOpen"
-    class="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md transition-all duration-300"
-  >
-    <div
-      class="bg-card border-border/80 relative flex w-full max-w-md flex-col items-center overflow-hidden rounded-3xl border p-6 text-center shadow-2xl"
-    >
+  <UiDialog v-model:open="isOpen">
+    <UiDialogContent class="sm:max-w-md flex flex-col items-center p-6 text-center overflow-hidden gap-0" :show-close-button="false">
       <!-- Decorative background glow -->
       <div
         class="pointer-events-none absolute -top-12 -left-12 h-48 w-48 rounded-full bg-cyan-500/10 blur-3xl"
@@ -17,7 +12,7 @@
       <!-- Close button -->
       <button
         @click="isOpen = false"
-        class="text-muted-foreground hover:text-foreground absolute top-4 right-4 cursor-pointer rounded-full p-2 transition-colors hover:bg-neutral-800"
+        class="text-muted-foreground hover:text-foreground absolute top-4 right-4 cursor-pointer rounded-full p-2 transition-colors hover:bg-muted"
         title="Close"
       >
         <XIcon class="h-5 w-5" />
@@ -120,8 +115,8 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </UiDialogContent>
+  </UiDialog>
 </template>
 
 <script setup lang="ts">

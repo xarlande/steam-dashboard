@@ -1,6 +1,7 @@
 <template>
-  <!-- Page Title -->
-  <section class="animate-fade-in mb-8">
+  <div>
+    <!-- Page Title -->
+    <section class="animate-fade-in mb-8">
     <div class="flex items-center gap-3">
       <div
         class="shrink-0 rounded-xl border border-violet-500/20 bg-violet-500/10 p-2.5 text-violet-400"
@@ -270,6 +271,7 @@
       </UiCardContent>
     </UiCard>
   </section>
+  </div>
 </template>
 
 <script lang="ts" setup>

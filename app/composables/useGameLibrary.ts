@@ -1,7 +1,8 @@
 import { refDebounced } from "@vueuse/core";
+import { toast } from "vue-sonner";
 
 export function useGameLibrary() {
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
   const steamId = useStateSteamId();
 
   const credentials = computed(() => ({
@@ -29,6 +30,18 @@ export function useGameLibrary() {
   function fetchGames() {
     gamesAsyncData.refresh();
   }
+
+  watch(
+    () => gamesAsyncData.status.value,
+    (status, oldStatus) => {
+      if (oldStatus === "pending" && status === "success") {
+        toast.success(t("index.refreshSuccess"));
+      }
+      if (oldStatus === "pending" && status === "error") {
+        toast.error(error.value || t("index.refreshError"));
+      }
+    }
+  );
 
   return {
     // State

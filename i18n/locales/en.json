@@ -7,6 +7,8 @@
     "retry": "Retry",
     "reset": "Reset",
     "save": "Save",
+    "savedSuccessfully": "Settings saved successfully",
+    "resetSuccessfully": "Settings reset successfully",
     "close": "Close"
   },
   "index": {
@@ -52,6 +54,8 @@
       "importError": "Invalid settings file. Please check the JSON format.",
       "importFileError": "Failed to read the file."
     },
+    "refreshSuccess": "Library updated successfully!",
+    "refreshError": "Failed to update library.",
     "errorLoading": "Error loading library:",
     "configureSettings": "Configure Settings",
     "playGame": "Play Game",
@@ -79,6 +83,7 @@
     "tipsTitle": "Hygiene Tip",
     "showCategorizer": "Customize Categories",
     "hideCategorizer": "Hide Categorizer",
+    "categoryChanged": "Category of {name} changed to {category}",
     "states": {
       "inactive": {
         "title": "Great real-life balance",

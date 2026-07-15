@@ -1,7 +1,18 @@
 <template>
-  <NuxtLinkLocale :to="`/game/${game.appid}`" class="group block h-full">
+  <NuxtLinkLocale
+    :to="`/game/${game.appid}`"
+    class="group block h-full rounded-xl transition-all duration-300 hover:-translate-y-1.5"
+    :class="
+      category === GameTypes.Category.Story ? 'story-card-hover' : 'session-card-hover'
+    "
+  >
     <UiCard
-      class="flex h-full flex-col overflow-hidden py-0 gap-0 transition-colors duration-200 hover:border-cyan-500/50"
+      class="bg-card/45 flex h-full flex-col gap-0 overflow-hidden py-0 backdrop-blur-xs transition-all duration-300"
+      :class="
+        category === GameTypes.Category.Story
+          ? 'group-hover:ring-2 group-hover:ring-cyan-400'
+          : 'group-hover:ring-2 group-hover:ring-rose-500'
+      "
     >
       <!-- Game Capsule Banner -->
       <div class="bg-muted relative aspect-[460/215] shrink-0 overflow-hidden">
@@ -9,16 +20,32 @@
           :src="game.header_img"
           :alt="game.name"
           loading="lazy"
-          class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.06]"
           @error="handleImageError"
         />
+        <!-- Category Badge -->
+        <span
+          class="absolute top-2.5 right-2.5 rounded-md border px-2 py-0.5 text-[9px] font-black tracking-wider uppercase shadow-xs backdrop-blur-md transition-all duration-300"
+          :class="
+            category === GameTypes.Category.Story
+              ? 'border-cyan-500/30 bg-cyan-950/80 text-cyan-400'
+              : 'border-rose-500/30 bg-rose-950/80 text-rose-400'
+          "
+        >
+          {{ category === GameTypes.Category.Story ? "🎭 Story" : "🎮 Session" }}
+        </span>
       </div>
 
       <!-- Game Details -->
       <UiCardContent class="flex flex-1 flex-col justify-between gap-4 p-4">
         <div>
           <h3
-            class="text-foreground line-clamp-1 text-sm font-bold tracking-tight transition-colors group-hover:text-cyan-500 sm:text-base"
+            class="text-foreground line-clamp-1 text-sm font-bold tracking-tight transition-colors sm:text-base"
+            :class="
+              category === GameTypes.Category.Story
+                ? 'group-hover:text-cyan-400'
+                : 'group-hover:text-rose-400'
+            "
           >
             {{ game.name }}
           </h3>
@@ -59,11 +86,14 @@
 </template>
 
 <script lang="ts" setup>
-import type { SteamGame } from "~/types";
+import { GameTypes, type SteamGame } from "~/types";
 
-defineProps<{
+const props = defineProps<{
   game: SteamGame;
 }>();
+
+const { getGameCategory } = useGameCategories();
+const category = computed(() => getGameCategory(props.game));
 
 // TODO: костиль
 function handleImageError(event: Event) {
@@ -78,3 +108,26 @@ function formatHours(hours: number): string {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 }).format(hours);
 }
 </script>
+
+<style scoped>
+.story-card-hover {
+  box-shadow: 0 0 0 transparent;
+}
+.story-card-hover:hover {
+  box-shadow: 0 12px 25px -4px rgba(34, 211, 238, 0.4);
+}
+.dark .story-card-hover:hover {
+  box-shadow: 0 12px 25px -4px rgba(34, 211, 238, 0.3);
+}
+
+.session-card-hover {
+  box-shadow: 0 0 0 transparent;
+}
+.session-card-hover:hover {
+  box-shadow: 0 12px 25px -4px rgba(244, 63, 94, 0.4);
+}
+.dark .session-card-hover:hover {
+  box-shadow: 0 12px 25px -4px rgba(244, 63, 94, 0.3);
+}
+</style>
+

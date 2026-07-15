@@ -1,26 +1,26 @@
 <template>
   <div
-    class="bg-card/45 border-border/50 flex flex-col justify-between gap-4 rounded-2xl border p-4 md:flex-row md:items-center"
+    class="bg-card/45 border-border/50 flex flex-col justify-between gap-4 rounded-2xl border p-4 backdrop-blur-xs md:flex-row md:items-center"
   >
     <!-- Search input -->
     <div class="relative max-w-md flex-1">
-      <span
-        class="text-muted-foreground pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-3"
-      >
-        <SearchIcon class="h-4 w-4" />
-      </span>
       <UiInput
         type="text"
         v-model="searchQuery"
         :placeholder="$t('index.searchPlaceholder')"
-        class="w-full pr-8 pl-9"
+        class="peer w-full pr-8 pl-9 transition-all duration-300 focus-visible:ring-cyan-500/50"
       />
+      <span
+        class="text-muted-foreground absolute inset-y-0 left-0 z-10 flex items-center pl-3 transition-colors duration-300 peer-focus:text-cyan-400"
+      >
+        <SearchIcon class="h-4 w-4" />
+      </span>
       <UiButton
         v-if="searchQuery"
         variant="ghost"
         size="icon"
         @click="searchQuery = ''"
-        class="absolute top-0 right-0 bottom-0"
+        class="absolute top-0 right-0 bottom-0 text-muted-foreground hover:text-cyan-400 transition-colors"
       >
         <XIcon class="h-4 w-4" />
       </UiButton>

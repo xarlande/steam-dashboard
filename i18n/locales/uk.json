@@ -7,6 +7,8 @@
     "retry": "Повторити",
     "reset": "Скинути",
     "save": "Зберегти",
+    "savedSuccessfully": "Налаштування успішно збережено",
+    "resetSuccessfully": "Налаштування скинуто",
     "close": "Закрити"
   },
   "index": {
@@ -52,6 +54,8 @@
       "importError": "Некоректний файл налаштувань. Перевірте формат JSON.",
       "importFileError": "Не вдалося прочитати файл."
     },
+    "refreshSuccess": "Бібліотеку успішно оновлено!",
+    "refreshError": "Не вдалося оновити бібліотеку.",
     "errorLoading": "Помилка завантаження бібліотеки:",
     "configureSettings": "Налаштувати параметри",
     "playGame": "Грати",
@@ -79,6 +83,7 @@
     "tipsTitle": "Рекомендація",
     "showCategorizer": "Налаштувати категорії",
     "hideCategorizer": "Сховати налаштування",
+    "categoryChanged": "Категорію гри {name} змінено на {category}",
     "states": {
       "inactive": {
         "title": "Чудовий баланс з реалом",

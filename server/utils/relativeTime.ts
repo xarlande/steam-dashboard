@@ -1,66 +1,99 @@
+interface RelativeTimeLocale {
+  never: string;
+  justNow: string;
+  minsAgo: (mins: number) => string;
+  hoursAgo: (hours: number) => string;
+  yesterday: string;
+  daysAgo: (days: number) => string;
+  oneMonthAgo: string;
+  monthsAgo: (months: number) => string;
+  oneYearAgo: string;
+  yearsAgo: (years: number) => string;
+}
+
+const locales: Record<"uk" | "ru" | "en", RelativeTimeLocale> = {
+  uk: {
+    never: "Ніколи",
+    justNow: "Щойно",
+    minsAgo: (mins) => `${mins} хв. тому`,
+    hoursAgo: (hours) => `${hours} год. тому`,
+    yesterday: "Вчора",
+    daysAgo: (days) => `${days} дн. тому`,
+    oneMonthAgo: "1 місяць тому",
+    monthsAgo: (months) => `${months} міс. тому`,
+    oneYearAgo: "1 рік тому",
+    yearsAgo: (years) => `${years} р. тому`,
+  },
+  ru: {
+    never: "Никогда",
+    justNow: "Только что",
+    minsAgo: (mins) => `${mins} мин. назад`,
+    hoursAgo: (hours) => `${hours} ч. назад`,
+    yesterday: "Вчера",
+    daysAgo: (days) => `${days} дн. назад`,
+    oneMonthAgo: "1 месяц назад",
+    monthsAgo: (months) => `${months} мес. назад`,
+    oneYearAgo: "1 год назад",
+    yearsAgo: (years) => `${years} г. назад`,
+  },
+  en: {
+    never: "Never",
+    justNow: "Just now",
+    minsAgo: (mins) => `${mins}m ago`,
+    hoursAgo: (hours) => `${hours}h ago`,
+    yesterday: "Yesterday",
+    daysAgo: (days) => `${days}d ago`,
+    oneMonthAgo: "1 month ago",
+    monthsAgo: (months) => `${months} months ago`,
+    oneYearAgo: "1 year ago",
+    yearsAgo: (years) => `${years} years ago`,
+  },
+};
+
 export function getRelativeTime(timestamp: number, lang: string): string {
-  const isUa = lang === "uk" || lang === "ukrainian";
-  const isRu = lang === "ru" || lang === "russian";
+  const l = lang.toLowerCase();
+  const localeKey: "uk" | "ru" | "en" = l.startsWith("uk") ? "uk" : l.startsWith("ru") ? "ru" : "en";
+  const loc = locales[localeKey];
 
   if (!timestamp || timestamp === 0) {
-    if (isUa) return "Ніколи";
-    if (isRu) return "Никогда";
-    return "Never";
+    return loc.never;
   }
   const now = Math.floor(Date.now() / 1000);
   const diff = now - timestamp;
 
   if (diff < 0 || diff < 60) {
-    if (isUa) return "Щойно";
-    if (isRu) return "Только что";
-    return "Just now";
+    return loc.justNow;
   }
 
   const mins = Math.floor(diff / 60);
   if (mins < 60) {
-    if (isUa) return `${mins} хв. тому`;
-    if (isRu) return `${mins} мин. назад`;
-    return `${mins}m ago`;
+    return loc.minsAgo(mins);
   }
 
   const hours = Math.floor(mins / 60);
   if (hours < 24) {
-    if (isUa) return `${hours} год. тому`;
-    if (isRu) return `${hours} ч. назад`;
-    return `${hours}h ago`;
+    return loc.hoursAgo(hours);
   }
 
   const days = Math.floor(hours / 24);
   if (days === 1) {
-    if (isUa) return "Вчора";
-    if (isRu) return "Вчера";
-    return "Yesterday";
+    return loc.yesterday;
   }
   if (days < 30) {
-    if (isUa) return `${days} дн. тому`;
-    if (isRu) return `${days} дн. назад`;
-    return `${days}d ago`;
+    return loc.daysAgo(days);
   }
 
   const months = Math.floor(days / 30);
   if (months === 1) {
-    if (isUa) return "1 місяць тому";
-    if (isRu) return "1 месяц назад";
-    return "1 month ago";
+    return loc.oneMonthAgo;
   }
   if (months < 12) {
-    if (isUa) return `${months} міс. тому`;
-    if (isRu) return `${months} мес. назад`;
-    return `${months} months ago`;
+    return loc.monthsAgo(months);
   }
 
   const years = Math.floor(months / 12);
   if (years === 1) {
-    if (isUa) return "1 рік тому";
-    if (isRu) return "1 год назад";
-    return "1 year ago";
+    return loc.oneYearAgo;
   }
-  if (isUa) return `${years} р. тому`;
-  if (isRu) return `${years} г. назад`;
-  return `${years} years ago`;
+  return loc.yearsAgo(years);
 }

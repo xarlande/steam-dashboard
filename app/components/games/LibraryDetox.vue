@@ -192,7 +192,12 @@
               <div
                 v-for="game in recentlyPlayedGames"
                 :key="'cat-' + game.appid"
-                class="border-border bg-card/30 hover:bg-card/50 flex items-center justify-between rounded-2xl border p-3 transition-all"
+                class="bg-card/30 flex items-center justify-between rounded-2xl border p-3 transition-all duration-300"
+                :class="
+                  getGameCategory(game) === 'story'
+                    ? 'border-border/60 hover:border-cyan-500/35 hover:shadow-[0_2px_10px_rgba(6,182,212,0.06)]'
+                    : 'border-border/60 hover:border-rose-500/35 hover:shadow-[0_2px_10px_rgba(244,63,94,0.06)]'
+                "
               >
                 <div class="flex min-w-0 flex-1 items-center gap-3 pr-2">
                   <!-- Small game banner -->
