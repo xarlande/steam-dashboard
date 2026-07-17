@@ -1,5 +1,6 @@
 import { getRelativeTime } from "./relativeTime";
 import { isUkrainian, isRussian } from "./steamLocale";
+import type { SteamAchievement } from "./types";
 
 interface MergeAchievementsParams {
   playerAchievements: any[];
@@ -13,7 +14,7 @@ export function mergeAchievements({
   schemaAchievements,
   globalPercentages,
   rawLang,
-}: MergeAchievementsParams): any[] {
+}: MergeAchievementsParams): SteamAchievement[] {
   const isUa = isUkrainian(rawLang);
   const isRu = isRussian(rawLang);
 

@@ -1,7 +1,11 @@
 import { getRelativeTime } from "./relativeTime";
 import { convertMinutesToHours } from "./playtime";
+import type { SteamGame } from "./types";
 
-export function processSteamGames(rawGames: any[], rawLang: string) {
+export function processSteamGames(
+  rawGames: any[],
+  rawLang: string,
+): { games: SteamGame[]; totalPlaytimeHours: number } {
   // Process and filter games
   const games = rawGames
     .filter((game) => game.playtime_forever > 0) // Only games that have been played
