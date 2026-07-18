@@ -47,12 +47,10 @@
           </div>
 
           <!-- Progress Bar -->
-          <div class="bg-muted h-2.5 w-full max-w-md overflow-hidden rounded-full">
-            <div
-              class="h-full bg-cyan-500 transition-all duration-300 ease-out"
-              :style="{ width: `${(copyProgress / copyTotal) * 100}%` }"
-            ></div>
-          </div>
+          <UiProgress
+            :model-value="(copyProgress / copyTotal) * 100"
+            class="progress-cyan bg-muted h-2.5 w-full max-w-md overflow-hidden rounded-full"
+          />
 
           <UiButton variant="outline" size="sm" @click="cancelExportReport">
             {{ $t("exportReport.cancel") }}
@@ -72,20 +70,15 @@
 
             <!-- Option checkbox before generating -->
             <div
-              class="border-border/50 bg-muted/30 mb-2 flex items-center gap-2 rounded-xl border px-4 py-2.5"
+              class="border-border/50 bg-muted/30 mb-2 flex items-center gap-2.5 rounded-xl border px-4 py-2.5"
             >
-              <input
-                type="checkbox"
-                id="include-achievements-empty"
-                v-model="includeAchievements"
-                class="border-border bg-background focus-visible:ring-offset-background h-4 w-4 cursor-pointer rounded text-cyan-500 focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2"
-              />
-              <label
+              <UiCheckbox id="include-achievements-empty" v-model="includeAchievements" />
+              <UiLabel
                 for="include-achievements-empty"
                 class="text-muted-foreground cursor-pointer text-xs font-semibold select-none"
               >
                 {{ $t("exportReport.optIncludeAchievements") }}
-              </label>
+              </UiLabel>
             </div>
 
             <UiButton @click="startExportReport">
@@ -97,28 +90,23 @@
           <div v-else class="space-y-3">
             <!-- Option checkbox active -->
             <div
-              class="border-border/50 bg-muted/30 flex items-center gap-2 rounded-xl border px-4 py-2.5"
+              class="border-border/50 bg-muted/30 flex items-center gap-2.5 rounded-xl border px-4 py-2.5"
             >
-              <input
-                type="checkbox"
-                id="include-achievements-active"
-                v-model="includeAchievements"
-                class="border-border bg-background focus-visible:ring-offset-background h-4 w-4 cursor-pointer rounded text-cyan-500 focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2"
-              />
-              <label
+              <UiCheckbox id="include-achievements-active" v-model="includeAchievements" />
+              <UiLabel
                 for="include-achievements-active"
                 class="text-muted-foreground cursor-pointer text-xs font-semibold select-none"
               >
                 {{ $t("exportReport.optIncludeAchievements") }}
-              </label>
+              </UiLabel>
             </div>
 
-            <textarea
+            <UiTextarea
               readonly
-              class="border-border/60 bg-muted/40 text-foreground focus-visible:ring-offset-background h-80 w-full rounded-xl border p-3.5 font-mono text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2"
-              :value="copyReportText"
+              class="border-border/60 bg-muted/40 text-foreground h-80 w-full rounded-xl p-3.5 font-mono text-xs focus-visible:ring-cyan-500/50"
+              :model-value="copyReportText"
               placeholder="Report will appear here..."
-            ></textarea>
+            />
           </div>
         </div>
       </div>
@@ -206,5 +194,9 @@ const {
 
 .animate-fade-in {
   animation: fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.progress-cyan :deep([data-slot="progress-indicator"]) {
+  background-color: var(--color-cyan-500, #06b6d4) !important;
 }
 </style>
