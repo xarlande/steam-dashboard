@@ -192,25 +192,28 @@
 
     <!-- Global Error Alert / Back Action -->
     <section v-if="error" class="mx-auto max-w-2xl py-8">
-      <div
-        class="bg-destructive/10 border-destructive/20 text-destructive-foreground flex items-start gap-4 rounded-lg border p-6 text-sm shadow-lg"
+      <UiAlert
+        variant="destructive"
+        class="border-destructive/20 bg-destructive/10 text-destructive-foreground p-6 shadow-lg"
       >
-        <AlertCircleIcon class="text-destructive mt-0.5 h-6 w-6 shrink-0" />
+        <AlertCircleIcon class="h-5 w-5" />
         <div class="flex-1">
-          <h3 class="text-destructive mb-1 text-base font-extrabold">
+          <UiAlertTitle class="text-destructive mb-1 text-base font-extrabold leading-none">
             {{ $t("game.failedLoad") }}
-          </h3>
-          <p class="leading-relaxed">{{ error }}</p>
-          <div class="mt-4 flex items-center gap-3">
-            <UiButton variant="outline" as-child>
-              <NuxtLink to="/"> &larr; {{ $t("game.returnBtn") }} </NuxtLink>
-            </UiButton>
-            <UiButton variant="outline" @click="refreshAchievements">
-              {{ $t("game.retryBtn") }}
-            </UiButton>
-          </div>
+          </UiAlertTitle>
+          <UiAlertDescription class="leading-relaxed">
+            <p class="mt-1">{{ error }}</p>
+            <div class="mt-4 flex items-center gap-3">
+              <UiButton variant="outline" as-child>
+                <NuxtLink to="/"> &larr; {{ $t("game.returnBtn") }} </NuxtLink>
+              </UiButton>
+              <UiButton variant="outline" @click="refreshAchievements">
+                {{ $t("game.retryBtn") }}
+              </UiButton>
+            </div>
+          </UiAlertDescription>
         </div>
-      </div>
+      </UiAlert>
     </section>
   </div>
 </template>

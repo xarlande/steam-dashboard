@@ -31,21 +31,26 @@
 
     <!-- Error State -->
     <section v-else-if="error" class="mx-auto max-w-2xl py-8">
-      <div
-        class="bg-destructive/10 border-destructive/20 text-destructive-foreground flex items-start gap-4 rounded-lg border p-6 text-sm shadow-lg"
+      <UiAlert
+        variant="destructive"
+        class="border-destructive/20 bg-destructive/10 text-destructive-foreground p-6 shadow-lg"
       >
-        <AlertCircleIcon class="text-destructive mt-0.5 h-6 w-6 shrink-0" />
+        <AlertCircleIcon class="h-5 w-5" />
         <div class="flex-1">
-          <h3 class="text-destructive mb-1 text-base font-extrabold">Failed to Load Analytics</h3>
-          <p class="leading-relaxed">{{ error }}</p>
-          <div class="mt-4 flex items-center gap-3">
-            <UiButton variant="outline" as-child>
-              <NuxtLinkLocale to="/"> &larr; Configure Settings </NuxtLinkLocale>
-            </UiButton>
-            <UiButton variant="outline" @click="fetchGames"> Retry </UiButton>
-          </div>
+          <UiAlertTitle class="text-destructive mb-1 text-base font-extrabold leading-none">
+            Failed to Load Analytics
+          </UiAlertTitle>
+          <UiAlertDescription class="leading-relaxed">
+            <p class="mt-1">{{ error }}</p>
+            <div class="mt-4 flex items-center gap-3">
+              <UiButton variant="outline" as-child>
+                <NuxtLinkLocale to="/"> &larr; Configure Settings </NuxtLinkLocale>
+              </UiButton>
+              <UiButton variant="outline" @click="fetchGames"> Retry </UiButton>
+            </div>
+          </UiAlertDescription>
         </div>
-      </div>
+      </UiAlert>
     </section>
 
     <!-- Loaded Analytics State -->
@@ -59,32 +64,16 @@
             </h2>
 
             <!-- Period Toggle Switch -->
-            <div
-              class="bg-muted/65 border-border/65 flex items-center rounded-xl border p-1 shadow-inner"
-            >
-              <button
-                @click="analyticsPeriod = 'recent'"
-                class="rounded-lg px-3 py-1.5 text-xs font-bold transition-all"
-                :class="
-                  analyticsPeriod === 'recent'
-                    ? 'bg-card text-foreground border-border/30 border shadow-xs'
-                    : 'text-muted-foreground hover:text-foreground'
-                "
-              >
-                {{ $t("analytics.toggleRecent") }}
-              </button>
-              <button
-                @click="analyticsPeriod = 'allTime'"
-                class="rounded-lg px-3 py-1.5 text-xs font-bold transition-all"
-                :class="
-                  analyticsPeriod === 'allTime'
-                    ? 'bg-card text-foreground border-border/30 border shadow-xs'
-                    : 'text-muted-foreground hover:text-foreground'
-                "
-              >
-                {{ $t("analytics.toggleAllTime") }}
-              </button>
-            </div>
+            <UiTabs v-model="analyticsPeriod" class="w-auto">
+              <UiTabsList>
+                <UiTabsTrigger value="recent">
+                  {{ $t("analytics.toggleRecent") }}
+                </UiTabsTrigger>
+                <UiTabsTrigger value="allTime">
+                  {{ $t("analytics.toggleAllTime") }}
+                </UiTabsTrigger>
+              </UiTabsList>
+            </UiTabs>
           </div>
 
           <!-- Content Grid -->
