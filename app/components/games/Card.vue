@@ -22,16 +22,16 @@
           @error="handleImageError"
         />
         <!-- Category Badge -->
-        <span
+        <UiBadge
           class="absolute top-2.5 right-2.5 rounded-md border px-2 py-0.5 text-[9px] font-black tracking-wider uppercase shadow-xs backdrop-blur-md transition-all duration-300"
           :class="
             category === GameTypes.Category.Story
-              ? 'border-cyan-500/30 bg-cyan-950/80 text-cyan-400'
-              : 'border-rose-500/30 bg-rose-950/80 text-rose-400'
+              ? 'border-cyan-500/30 bg-cyan-950/80 text-cyan-400 hover:bg-cyan-950/80'
+              : 'border-rose-500/30 bg-rose-950/80 text-rose-400 hover:bg-rose-950/80'
           "
         >
           {{ category === GameTypes.Category.Story ? "🎭 Story" : "🎮 Session" }}
-        </span>
+        </UiBadge>
       </div>
 
       <!-- Game Details -->
