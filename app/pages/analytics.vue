@@ -37,7 +37,7 @@
       >
         <AlertCircleIcon class="h-5 w-5" />
         <div class="flex-1">
-          <UiAlertTitle class="text-destructive mb-1 text-base font-extrabold leading-none">
+          <UiAlertTitle class="text-destructive mb-1 text-base leading-none font-extrabold">
             Failed to Load Analytics
           </UiAlertTitle>
           <UiAlertDescription class="leading-relaxed">

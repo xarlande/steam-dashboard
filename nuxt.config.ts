@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
-  devtools: { enabled: false },
+  devtools: { enabled: true },
   app: {
     pageTransition: { name: "page", mode: "out-in" },
   },
@@ -29,8 +29,8 @@ export default defineNuxtConfig({
       cookieKey: "i18n_redirected",
     },
   },
-  css: ["./app/assets/css/main.css"],
+  css: ["~/assets/css/main.css"],
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss() as any],
   },
 });
