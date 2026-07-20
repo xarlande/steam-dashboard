@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-background text-foreground relative min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.04),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.03),transparent_50%)] pb-16 font-sans transition-colors duration-300 selection:bg-cyan-500/30 selection:text-cyan-200 dark:bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.08),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.06),transparent_50%)]"
+    class="bg-background text-foreground relative min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.04),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.03),transparent_50%)] pb-16 font-sans transition-colors duration-300 selection:bg-cyan-500/30 selection:text-cyan-900 dark:selection:text-cyan-200 dark:bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.08),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.06),transparent_50%)]"
   >
     <!-- Main Container -->
     <main class="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
@@ -22,7 +22,7 @@
           <template v-else>
             <div class="bg-card border-border rounded-xl border p-2.5 shadow-xs">
               <!-- Gamepad Icon -->
-              <Gamepad2Icon class="h-8 w-8 text-cyan-400" />
+              <Gamepad2Icon class="h-8 w-8 text-cyan-600 dark:text-cyan-400" />
             </div>
             <div>
               <h1

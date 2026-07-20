@@ -2,7 +2,7 @@
   <div>
     <!-- Loading State (Hero Details) -->
     <section v-if="isLoading" class="mb-8">
-      <UiCard class="animate-pulse border border-neutral-800/60 bg-neutral-900 p-6 sm:p-8">
+      <UiCard class="animate-pulse bg-card border-border p-6 sm:p-8">
         <div class="flex flex-col items-center gap-6 md:flex-row">
           <UiSkeleton class="aspect-[460/215] w-full rounded-xl md:w-[220px]" />
           <div class="w-full flex-1 space-y-4">
@@ -21,7 +21,7 @@
           <!-- Banner & Name -->
           <div class="flex flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
             <div
-              class="border-neutral-850 relative aspect-[460/215] w-[220px] shrink-0 overflow-hidden rounded-xl border shadow-md"
+              class="border-border relative aspect-[460/215] w-[220px] shrink-0 overflow-hidden rounded-xl border shadow-md"
             >
               <img
                 :src="headerImgUrl"
@@ -61,7 +61,7 @@
               $t("game.unlockedLabel")
             }}</span>
             <span
-              class="mt-1 bg-gradient-to-br from-cyan-400 to-indigo-400 bg-clip-text text-3xl font-black tracking-tight text-transparent"
+              class="mt-1 bg-gradient-to-br from-cyan-600 to-indigo-600 bg-clip-text text-3xl font-black tracking-tight text-transparent dark:from-cyan-400 dark:to-indigo-400"
             >
               {{ unlockedPercent }}%
             </span>
@@ -83,12 +83,12 @@
       class="animate-fade-in mb-8"
     >
       <UiCard
-        class="border-emerald-500/20 bg-gradient-to-r from-emerald-950/10 to-transparent shadow-xs"
+        class="border-emerald-500/20 bg-gradient-to-r from-emerald-500/10 to-transparent shadow-xs dark:from-emerald-950/20"
       >
         <UiCardContent class="flex items-center gap-4 p-6">
           <span class="text-3xl select-none">🏆</span>
           <div>
-            <h3 class="text-base leading-snug font-extrabold text-emerald-400">
+            <h3 class="text-base leading-snug font-extrabold text-emerald-600 dark:text-emerald-400">
               {{ $t("game.congratsTitle") }}
             </h3>
             <p class="text-muted-foreground mt-0.5 text-xs font-medium">

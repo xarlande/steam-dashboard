@@ -9,7 +9,7 @@
     >
       <UiCardContent class="p-6">
         <div
-          class="absolute -right-4 -bottom-4 text-cyan-400 opacity-10 transition-all duration-500 group-hover:scale-110 group-hover:opacity-20"
+          class="absolute -right-4 -bottom-4 text-cyan-600 opacity-15 transition-all duration-500 group-hover:scale-110 group-hover:opacity-25 dark:text-cyan-400 dark:opacity-10 dark:group-hover:opacity-20"
         >
           <Gamepad2Icon class="h-24 w-24" />
         </div>
@@ -29,7 +29,7 @@
     >
       <UiCardContent class="p-6">
         <div
-          class="absolute -right-4 -bottom-4 text-violet-400 opacity-10 transition-all duration-500 group-hover:scale-110 group-hover:opacity-20"
+          class="absolute -right-4 -bottom-4 text-violet-600 opacity-15 transition-all duration-500 group-hover:scale-110 group-hover:opacity-25 dark:text-violet-400 dark:opacity-10 dark:group-hover:opacity-20"
         >
           <ClockIcon class="h-24 w-24" />
         </div>
@@ -54,7 +54,7 @@
     >
       <UiCardContent class="p-6">
         <div
-          class="absolute -right-4 -bottom-4 text-indigo-400 opacity-10 transition-all duration-500 group-hover:scale-110 group-hover:opacity-20"
+          class="absolute -right-4 -bottom-4 text-indigo-600 opacity-15 transition-all duration-500 group-hover:scale-110 group-hover:opacity-25 dark:text-indigo-400 dark:opacity-10 dark:group-hover:opacity-20"
         >
           <StarIcon class="h-24 w-24" />
         </div>
@@ -64,7 +64,7 @@
         <p class="mt-2 truncate pr-16 text-xl font-extrabold tracking-tight">
           {{ mostPlayedGame?.name || $t("index.stats.none") }}
         </p>
-        <p class="mt-1 text-xs font-semibold text-indigo-400">
+        <p class="mt-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
           {{
             mostPlayedGame
               ? formatHours(mostPlayedGame.playtime_hours) + " " + $t("common.hoursSuffix")

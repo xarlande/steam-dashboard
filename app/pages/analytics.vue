@@ -4,7 +4,7 @@
     <section class="animate-fade-in mb-8">
       <div class="flex items-center gap-3">
         <div
-          class="shrink-0 rounded-xl border border-violet-500/20 bg-violet-500/10 p-2.5 text-violet-400"
+          class="shrink-0 rounded-xl border border-violet-500/20 bg-violet-500/10 p-2.5 text-violet-600 dark:text-violet-400"
         >
           <BarChart2Icon class="h-8 w-8" />
         </div>
@@ -155,10 +155,10 @@
                   <!-- Story Legend -->
                   <div class="flex items-center justify-between text-xs">
                     <div class="text-foreground/90 flex items-center gap-2 font-semibold">
-                      <span class="h-2.5 w-2.5 rounded-full bg-cyan-400"></span>
+                      <span class="h-2.5 w-2.5 rounded-full bg-cyan-500"></span>
                       <span>{{ $t("analytics.legendStory") }}</span>
                     </div>
-                    <span class="font-extrabold text-cyan-400">
+                    <span class="font-extrabold text-cyan-600 dark:text-cyan-400">
                       {{
                         $t("analytics.legendHours", {
                           hours: formatHours(activeStoryHours),
@@ -174,7 +174,7 @@
                       <span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span>
                       <span>{{ $t("analytics.legendSession") }}</span>
                     </div>
-                    <span class="font-extrabold text-rose-400">
+                    <span class="font-extrabold text-rose-600 dark:text-rose-400">
                       {{
                         $t("analytics.legendHours", {
                           hours: formatHours(activeSessionHours),
@@ -230,7 +230,7 @@
                   <div class="min-w-0 flex-1 space-y-1">
                     <div class="flex items-center justify-between gap-2 text-xs">
                       <h4
-                        class="text-foreground truncate font-bold transition-colors group-hover/bar:text-violet-400"
+                        class="text-foreground truncate font-bold transition-colors group-hover/bar:text-violet-600 dark:group-hover/bar:text-violet-400"
                         :title="game.name"
                       >
                         {{ game.name }}
@@ -248,7 +248,7 @@
                       class="flex h-2 overflow-hidden rounded-full bg-neutral-200 shadow-inner dark:bg-neutral-800/80"
                     >
                       <div
-                        class="h-full rounded-full bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 opacity-90 transition-all duration-1000 ease-out"
+                        class="h-full rounded-full bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500 dark:from-violet-500 dark:via-indigo-500 dark:to-cyan-400 opacity-90 transition-all duration-1000 ease-out"
                         :style="{ width: `${(game.display_hours / topFiveMaxPlaytime) * 100}%` }"
                       ></div>
                     </div>

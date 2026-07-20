@@ -11,7 +11,7 @@
         >
           <div class="flex items-center gap-3">
             <div
-              class="shrink-0 rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-2.5 text-cyan-400"
+              class="shrink-0 rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-2.5 text-cyan-600 dark:text-cyan-400"
             >
               <ShieldIcon class="h-6 w-6" />
             </div>
@@ -95,7 +95,7 @@
                   >{{ storyPercentage }}% {{ $t("detox.storyRatio") }}</span
                 >
                 <span class="flex items-center gap-1.5"
-                  ><span class="h-2.5 w-2.5 rounded-full bg-cyan-400"></span> 🎭
+                  ><span class="h-2.5 w-2.5 rounded-full bg-cyan-500"></span> 🎭
                   {{ $t("detox.storyLabel") }}</span
                 >
               </div>
@@ -142,7 +142,7 @@
                   <span class="text-muted-foreground text-xs font-semibold">{{
                     $t("detox.storyLabel")
                   }}</span>
-                  <span class="text-sm font-bold text-cyan-400"
+                  <span class="text-sm font-bold text-cyan-600 dark:text-cyan-400"
                     >{{ formatHours(recentStoryHours) }} {{ $t("common.hoursSuffix") }}</span
                   >
                 </div>
@@ -152,7 +152,7 @@
                   <span class="text-muted-foreground text-xs font-semibold">{{
                     $t("detox.sessionLabel")
                   }}</span>
-                  <span class="text-sm font-bold text-rose-500"
+                  <span class="text-sm font-bold text-rose-600 dark:text-rose-500"
                     >{{ formatHours(recentSessionHours) }} {{ $t("common.hoursSuffix") }}</span
                   >
                 </div>
@@ -229,8 +229,8 @@
                   class="h-8 w-8 shrink-0 rounded-xl transition-transform active:scale-95"
                   :class="
                     getGameCategory(game) === 'story'
-                      ? 'border-cyan-500/20 bg-cyan-500/5 text-cyan-400 hover:text-cyan-300'
-                      : 'border-rose-500/20 bg-rose-500/5 text-rose-500 hover:text-rose-400'
+                      ? 'border-cyan-500/20 bg-cyan-500/5 text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300'
+                      : 'border-rose-500/20 bg-rose-500/5 text-rose-600 dark:text-rose-500 hover:text-rose-700 dark:hover:text-rose-400'
                   "
                   :title="
                     getGameCategory(game) === 'story'

@@ -11,7 +11,7 @@
         class="peer w-full pr-8 pl-9 transition-all duration-300 focus-visible:ring-cyan-500/50"
       />
       <span
-        class="text-muted-foreground absolute inset-y-0 left-0 z-10 flex items-center pl-3 transition-colors duration-300 peer-focus:text-cyan-400"
+        class="text-muted-foreground absolute inset-y-0 left-0 z-10 flex items-center pl-3 transition-colors duration-300 peer-focus:text-cyan-600 dark:peer-focus:text-cyan-400"
       >
         <SearchIcon class="h-4 w-4" />
       </span>
@@ -20,7 +20,7 @@
         variant="ghost"
         size="icon"
         @click="searchQuery = ''"
-        class="text-muted-foreground absolute top-0 right-0 bottom-0 transition-colors hover:text-cyan-400"
+        class="text-muted-foreground absolute top-0 right-0 bottom-0 transition-colors hover:text-cyan-600 dark:hover:text-cyan-400"
       >
         <XIcon class="h-4 w-4" />
       </UiButton>

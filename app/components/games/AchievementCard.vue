@@ -4,7 +4,7 @@
     :class="
       achievement.achieved
         ? 'hover:border-cyan-500/30 hover:shadow-[0_4px_15px_rgba(34,211,238,0.15)] dark:hover:shadow-[0_4px_20px_rgba(34,211,238,0.1)]'
-        : 'opacity-65 hover:border-neutral-500/30 hover:opacity-100 hover:shadow-[0_4px_15px_rgba(255,255,255,0.06)] dark:hover:shadow-[0_4px_20px_rgba(255,255,255,0.04)]'
+        : 'opacity-65 hover:border-neutral-500/30 hover:opacity-100 hover:shadow-md dark:hover:shadow-[0_4px_20px_rgba(255,255,255,0.04)]'
     "
   >
     <!-- Icon -->
@@ -49,7 +49,7 @@
     <div class="flex min-w-0 flex-1 flex-col justify-center pr-2">
       <div class="flex items-start justify-between gap-2">
         <h4
-          class="truncate text-sm font-bold transition-colors group-hover:text-cyan-500 sm:text-base dark:group-hover:text-cyan-300"
+          class="truncate text-sm font-bold transition-colors group-hover:text-cyan-600 sm:text-base dark:group-hover:text-cyan-400"
         >
           {{ achievement.name }}
         </h4>

@@ -26,8 +26,8 @@
           class="absolute top-2.5 right-2.5 rounded-md border px-2 py-0.5 text-[9px] font-black tracking-wider uppercase shadow-xs backdrop-blur-md transition-all duration-300"
           :class="
             category === GameTypes.Category.Story
-              ? 'border-cyan-500/30 bg-cyan-950/80 text-cyan-400 hover:bg-cyan-950/80'
-              : 'border-rose-500/30 bg-rose-950/80 text-rose-400 hover:bg-rose-950/80'
+              ? 'border-cyan-500/30 bg-cyan-950/85 text-cyan-300 hover:bg-cyan-950/85'
+              : 'border-rose-500/30 bg-rose-950/85 text-rose-300 hover:bg-rose-950/85'
           "
         >
           {{ category === GameTypes.Category.Story ? "🎭 Story" : "🎮 Session" }}
@@ -41,8 +41,8 @@
             class="text-foreground line-clamp-1 text-sm font-bold tracking-tight transition-colors sm:text-base"
             :class="
               category === GameTypes.Category.Story
-                ? 'group-hover:text-cyan-400'
-                : 'group-hover:text-rose-400'
+                ? 'group-hover:text-cyan-600 dark:group-hover:text-cyan-400'
+                : 'group-hover:text-rose-600 dark:group-hover:text-rose-400'
             "
           >
             {{ game.name }}
@@ -69,10 +69,10 @@
             v-if="game.playtime_2weeks && game.playtime_2weeks > 0"
             class="flex flex-col items-end"
           >
-            <span class="text-[10px] font-semibold tracking-wider text-cyan-500 uppercase">
+            <span class="text-[10px] font-semibold tracking-wider text-cyan-600 dark:text-cyan-500 uppercase">
               {{ $t("index.recent") }}
             </span>
-            <span class="mt-0.5 text-xs font-bold text-cyan-400">
+            <span class="mt-0.5 text-xs font-bold text-cyan-600 dark:text-cyan-400">
               +{{ Math.round((game.playtime_2weeks / 60) * 10) / 10 }}
               {{ $t("common.hoursSuffix") }}
             </span>

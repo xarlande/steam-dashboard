@@ -3,7 +3,7 @@
     <UiDialogContent class="sm:max-w-lg">
       <UiDialogHeader>
         <div class="flex items-center gap-3">
-          <ShieldIcon class="h-10 w-10 text-cyan-400" />
+          <ShieldIcon class="h-10 w-10 text-cyan-600 dark:text-cyan-400" />
           <div>
             <UiDialogTitle class="text-lg font-bold">
               {{ $t("index.credentials.title") }}

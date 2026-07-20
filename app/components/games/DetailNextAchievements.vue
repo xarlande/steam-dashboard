@@ -1,6 +1,6 @@
 <template>
   <section class="animate-fade-in mb-8">
-    <UiCard class="border-cyan-500/20 bg-gradient-to-r from-cyan-950/10 to-transparent shadow-xs">
+    <UiCard class="border-cyan-500/20 bg-gradient-to-r from-cyan-500/10 to-transparent shadow-xs dark:from-cyan-950/20">
       <UiCardContent class="p-6">
         <div class="mb-4 flex items-center gap-2.5">
           <span class="text-xl">🎯</span>
@@ -41,7 +41,7 @@
 
             <div class="min-w-0 flex-1">
               <h4
-                class="text-foreground truncate text-xs font-bold transition-colors group-hover:text-cyan-400"
+                class="text-foreground truncate text-xs font-bold transition-colors group-hover:text-cyan-600 dark:group-hover:text-cyan-400"
                 :title="ach.name"
               >
                 {{ ach.name }}
@@ -56,7 +56,7 @@
               <!-- Unlock Rate Badge -->
               <div class="mt-2 flex items-center gap-1">
                 <UiBadge
-                  class="rounded-md border-cyan-500/20 bg-cyan-500/10 px-1.5 py-0.5 text-[9px] font-black text-cyan-400 hover:bg-cyan-500/10"
+                  class="rounded-md border-cyan-500/20 bg-cyan-500/10 px-1.5 py-0.5 text-[9px] font-black text-cyan-600 hover:bg-cyan-500/10 dark:text-cyan-400"
                 >
                   {{ ach.global_percent }}% {{ $t("game.globalUnlocked") }}
                 </UiBadge>

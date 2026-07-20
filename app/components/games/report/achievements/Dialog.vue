@@ -7,7 +7,7 @@
       <!-- Modal Header -->
       <div class="border-border/60 flex items-center justify-between border-b p-5">
         <div class="flex items-center gap-3">
-          <FileTextIcon class="h-5.5 w-5.5 text-cyan-400" />
+          <FileTextIcon class="h-5.5 w-5.5 text-cyan-600 dark:text-cyan-400" />
           <div>
             <h3 class="text-foreground text-base font-bold">
               {{ $t("exportReport.title") }}
@@ -35,7 +35,7 @@
           class="flex flex-col items-center justify-center space-y-4 py-8 text-center"
         >
           <div class="relative flex items-center justify-center">
-            <Loader2Icon class="h-10 w-10 animate-spin text-cyan-400" />
+            <Loader2Icon class="h-10 w-10 animate-spin text-cyan-600 dark:text-cyan-400" />
           </div>
           <div class="space-y-1">
             <p class="text-foreground text-sm font-bold">
@@ -64,7 +64,7 @@
             v-if="!copyReportText"
             class="flex flex-col items-center justify-center space-y-4 py-12 text-center"
           >
-            <div class="rounded-full bg-cyan-500/10 p-3 text-cyan-400">
+            <div class="rounded-full bg-cyan-500/10 p-3 text-cyan-600 dark:text-cyan-400">
               <FileTextIcon class="h-8 w-8" />
             </div>
 

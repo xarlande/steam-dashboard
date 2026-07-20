@@ -19,7 +19,7 @@
     <!-- Analytics Button -->
     <UiButton v-if="games.length > 0" variant="outline" as-child>
       <NuxtLinkLocale to="/analytics" class="flex items-center gap-2">
-        <BarChart2Icon class="h-4 w-4 text-violet-400" />
+        <BarChart2Icon class="h-4 w-4 text-violet-600 dark:text-violet-400" />
         <span>{{ $t("index.analyticsBtn") }}</span>
       </NuxtLinkLocale>
     </UiButton>
@@ -31,7 +31,7 @@
       @click="$emit('export')"
       class="flex items-center gap-2"
     >
-      <CopyIcon class="h-4 w-4 text-cyan-400" />
+      <CopyIcon class="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
       <span>{{ $t("exportReport.btn") }}</span>
     </UiButton>
   </div>

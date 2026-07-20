@@ -13,14 +13,14 @@
 
       <!-- Modal Title -->
       <h3
-        class="mb-6 flex items-center gap-2 bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-xl font-extrabold tracking-tight text-transparent"
+        class="mb-6 flex items-center gap-2 bg-gradient-to-r from-cyan-600 to-violet-600 bg-clip-text text-xl font-extrabold tracking-tight text-transparent dark:from-cyan-400 dark:to-violet-400"
       >
         <span>🎡</span> {{ $t("roulette.title") }}
       </h3>
 
       <!-- The Roulette Reel -->
       <div
-        class="relative mb-6 flex h-32 w-full items-center justify-center overflow-hidden rounded-2xl border border-cyan-500/30 bg-neutral-950/70 shadow-[inset_0_0_24px_rgba(6,182,212,0.15)]"
+        class="relative mb-6 flex h-32 w-full items-center justify-center overflow-hidden rounded-2xl border border-cyan-500/30 bg-neutral-100/90 shadow-[inset_0_0_24px_rgba(6,182,212,0.1)] dark:bg-neutral-950/70 dark:shadow-[inset_0_0_24px_rgba(6,182,212,0.15)]"
       >
         <div class="absolute top-0 right-0 left-0" :style="reelStyle">
           <div
@@ -48,7 +48,7 @@
 
         <!-- Side shadow overlays to make it look 3D cylindrical -->
         <div
-          class="pointer-events-none absolute inset-0 bg-gradient-to-b from-neutral-950/60 via-transparent to-neutral-950/60"
+          class="pointer-events-none absolute inset-0 bg-gradient-to-b from-popover/80 via-transparent to-popover/80 dark:from-neutral-950/60 dark:to-neutral-950/60"
         ></div>
       </div>
 
@@ -74,7 +74,7 @@
         <div v-else-if="finalSelectedGame" class="animate-fade-in space-y-5">
           <div class="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-4.5 text-sm">
             <span class="mb-2 block text-2xl select-none">✨</span>
-            <p class="mb-2 leading-snug font-bold text-cyan-400">{{ $t("roulette.landing") }}</p>
+            <p class="mb-2 leading-snug font-bold text-cyan-600 dark:text-cyan-400">{{ $t("roulette.landing") }}</p>
             <h4 class="text-foreground text-lg font-black tracking-tight">
               {{ finalSelectedGame.name }}
             </h4>
