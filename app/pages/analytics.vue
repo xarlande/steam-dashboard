@@ -2,21 +2,36 @@
   <div>
     <!-- Page Title -->
     <section class="animate-fade-in mb-8">
-      <div class="flex items-center gap-3">
-        <div
-          class="shrink-0 rounded-xl border border-violet-500/20 bg-violet-500/10 p-2.5 text-violet-600 dark:text-violet-400"
-        >
-          <BarChart2Icon class="h-8 w-8" />
-        </div>
-        <div>
-          <h1
-            class="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-600 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent sm:text-3xl dark:from-neutral-50 dark:via-neutral-100 dark:to-neutral-400"
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex items-center gap-3">
+          <div
+            class="shrink-0 rounded-xl border border-violet-500/20 bg-violet-500/10 p-2.5 text-violet-600 dark:text-violet-400"
           >
-            {{ $t("analytics.title") }}
-          </h1>
-          <p class="text-muted-foreground text-xs font-medium sm:text-sm">
-            {{ $t("analytics.description") }}
-          </p>
+            <BarChart2Icon class="h-8 w-8" />
+          </div>
+          <div>
+            <h1
+              class="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-600 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent sm:text-3xl dark:from-neutral-50 dark:via-neutral-100 dark:to-neutral-400"
+            >
+              {{ $t("analytics.title") }}
+            </h1>
+            <p class="text-muted-foreground text-xs font-medium sm:text-sm">
+              {{ $t("analytics.description") }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Excluded Games Manager Trigger Button -->
+        <div class="flex items-center gap-3">
+          <UiButton
+            variant="outline"
+            size="sm"
+            class="border-border/80 text-xs font-semibold shadow-xs transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
+            @click="showExclusionsModal = true"
+          >
+            <EyeOffIcon class="mr-2 h-4 w-4 text-violet-500" />
+            <span>{{ $t("analytics.excludedGamesBtn", { count: hiddenCount }) }}</span>
+          </UiButton>
         </div>
       </div>
     </section>
@@ -187,36 +202,71 @@
               </div>
             </div>
 
-            <!-- Right Column (Top 5 Games) - Takes 3 cols of 5 -->
+            <!-- Right Column (Top Games) - Takes 3 cols of 5 -->
             <div
               class="bg-card/25 border-border/60 flex flex-col justify-between rounded-2xl border p-5 md:col-span-3"
             >
-              <h3 class="text-muted-foreground mb-5 text-xs font-bold tracking-widest uppercase">
-                {{ $t("analytics.topGamesTitle") }}
-              </h3>
+              <!-- Section Header with Limit Controls -->
+              <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+                <h3 class="text-muted-foreground text-xs font-bold tracking-widest uppercase">
+                  {{
+                    topLimit === "all"
+                      ? $t("analytics.topGamesTitleAll")
+                      : $t("analytics.topGamesTitleWithLimit", { limit: topLimit })
+                  }}
+                </h3>
 
+                <!-- Games Count Limit Selector -->
+                <div class="flex items-center gap-2">
+                  <span class="text-muted-foreground text-[11px] font-semibold">
+                    {{ $t("analytics.topLimitLabel") }}
+                  </span>
+                  <div class="bg-muted/60 border-border/50 flex items-center gap-0.5 rounded-lg border p-0.5">
+                    <button
+                      v-for="option in limitOptions"
+                      :key="'limit-' + option"
+                      type="button"
+                      class="rounded-md px-2 py-0.5 text-[11px] font-bold transition-all"
+                      :class="
+                        topLimit === option
+                          ? 'bg-background text-foreground shadow-xs'
+                          : 'text-muted-foreground hover:text-foreground'
+                      "
+                      @click="topLimit = option"
+                    >
+                      {{ option === "all" ? $t("analytics.topLimitAll") : option }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Top Games List -->
               <div
-                v-if="topFiveGames.length === 0"
+                v-if="topGames.length === 0"
                 class="text-muted-foreground flex flex-1 items-center justify-center py-10 text-xs font-medium"
               >
                 {{ $t("analytics.legendNoData") }}
               </div>
-              <div v-else class="flex flex-1 flex-col justify-center space-y-4.5">
+              <div
+                v-else
+                class="flex flex-1 flex-col justify-start space-y-4 overflow-y-auto pr-1"
+                :class="topGames.length > 5 ? 'max-h-[520px]' : ''"
+              >
                 <div
-                  v-for="(game, index) in topFiveGames"
+                  v-for="(game, index) in topGames"
                   :key="'top-' + game.appid"
                   class="group/bar flex items-center gap-3.5"
                 >
                   <!-- Rank Indicator -->
                   <span
-                    class="text-muted-foreground/60 w-3.5 text-center text-xs font-black select-none"
+                    class="text-muted-foreground/60 w-4 shrink-0 text-center text-xs font-black select-none"
                   >
                     {{ index + 1 }}
                   </span>
 
                   <!-- Game Image banner -->
                   <div
-                    class="bg-muted border-border/40 relative h-6 w-12 shrink-0 overflow-hidden rounded-md border shadow-xs"
+                    class="bg-muted border-border/40 relative h-7 w-13 shrink-0 overflow-hidden rounded-md border shadow-xs"
                   >
                     <img
                       :src="game.header_img"
@@ -229,18 +279,34 @@
                   <!-- Bar & details -->
                   <div class="min-w-0 flex-1 space-y-1">
                     <div class="flex items-center justify-between gap-2 text-xs">
-                      <h4
-                        class="text-foreground truncate font-bold transition-colors group-hover/bar:text-violet-600 dark:group-hover/bar:text-violet-400"
+                      <NuxtLinkLocale
+                        :to="`/game/${game.appid}`"
+                        class="text-foreground hover:text-violet-600 dark:hover:text-violet-400 truncate font-bold transition-colors"
                         :title="game.name"
                       >
                         {{ game.name }}
-                      </h4>
-                      <span class="text-foreground shrink-0 pl-2 font-black">
-                        {{ formatHours(game.display_hours) }}
-                        <span class="text-muted-foreground text-[10px] font-semibold">{{
-                          $t("common.hoursSuffix")
-                        }}</span>
-                      </span>
+                      </NuxtLinkLocale>
+
+                      <div class="flex items-center gap-2">
+                        <!-- Hours -->
+                        <span class="text-foreground shrink-0 font-black">
+                          {{ formatHours(game.display_hours) }}
+                          <span class="text-muted-foreground text-[10px] font-semibold">{{
+                            $t("common.hoursSuffix")
+                          }}</span>
+                        </span>
+
+                        <!-- Quick Hide Action Button -->
+                        <UiButton
+                          variant="ghost"
+                          size="icon"
+                          class="h-6 w-6 opacity-0 transition-opacity group-hover/bar:opacity-100 hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400"
+                          :title="$t('analytics.hideFromAnalytics')"
+                          @click="toggleGameHidden(game.appid, game.name)"
+                        >
+                          <EyeOffIcon class="h-3.5 w-3.5" />
+                        </UiButton>
+                      </div>
                     </div>
 
                     <!-- Progress bar track -->
@@ -248,8 +314,8 @@
                       class="flex h-2 overflow-hidden rounded-full bg-neutral-200 shadow-inner dark:bg-neutral-800/80"
                     >
                       <div
-                        class="h-full rounded-full bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500 dark:from-violet-500 dark:via-indigo-500 dark:to-cyan-400 opacity-90 transition-all duration-1000 ease-out"
-                        :style="{ width: `${(game.display_hours / topFiveMaxPlaytime) * 100}%` }"
+                        class="h-full rounded-full bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-500 opacity-90 transition-all duration-1000 ease-out dark:from-violet-500 dark:via-indigo-500 dark:to-cyan-400"
+                        :style="{ width: `${(game.display_hours / topMaxPlaytime) * 100}%` }"
                       ></div>
                     </div>
                   </div>
@@ -260,148 +326,148 @@
         </UiCardContent>
       </UiCard>
     </section>
+
+    <!-- Exclusions Management Dialog -->
+    <UiDialog v-model:open="showExclusionsModal">
+      <UiDialogContent class="max-w-xl">
+        <UiDialogHeader>
+          <UiDialogTitle class="flex items-center gap-2 text-lg font-bold">
+            <EyeOffIcon class="h-5 w-5 text-violet-500" />
+            {{ $t("analytics.manageExcludedTitle") }}
+          </UiDialogTitle>
+          <UiDialogDescription class="text-xs">
+            {{ $t("analytics.manageExcludedDesc") }}
+          </UiDialogDescription>
+        </UiDialogHeader>
+
+        <!-- Search Bar -->
+        <div class="relative mt-2">
+          <SearchIcon class="text-muted-foreground absolute left-3 top-2.5 h-4 w-4" />
+          <UiInput
+            v-model="exclusionsSearch"
+            type="text"
+            :placeholder="$t('analytics.searchGamesPlaceholder')"
+            class="pl-9 text-xs"
+          />
+        </div>
+
+        <!-- Excluded / All Games List -->
+        <div class="max-h-[360px] space-y-2 overflow-y-auto py-2 pr-1">
+          <div
+            v-if="filteredGamesForExclusions.length === 0"
+            class="text-muted-foreground py-8 text-center text-xs font-medium"
+          >
+            {{ $t("analytics.noExcludedGames") }}
+          </div>
+
+          <div
+            v-for="game in filteredGamesForExclusions"
+            :key="'excl-' + game.appid"
+            class="bg-muted/30 border-border/60 flex items-center justify-between rounded-xl border p-2.5 transition-colors"
+          >
+            <div class="flex items-center gap-3 min-w-0 flex-1 pr-2">
+              <img
+                :src="game.header_img"
+                :alt="game.name"
+                class="border-border/40 h-7 w-13 shrink-0 rounded-md border object-cover"
+                @error="handleImageError"
+              />
+              <div class="min-w-0">
+                <h4 class="text-foreground truncate text-xs font-bold" :title="game.name">
+                  {{ game.name }}
+                </h4>
+                <p class="text-muted-foreground mt-0.5 text-[10px] font-medium">
+                  {{ formatHours(game.playtime_hours) }} {{ $t("common.hoursSuffix") }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Hide / Unhide Toggle Switch -->
+            <UiButton
+              variant="outline"
+              size="sm"
+              class="h-8 shrink-0 text-xs font-bold transition-all"
+              :class="
+                isGameHidden(game.appid)
+                  ? 'border-rose-500/30 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20'
+                  : 'border-border text-muted-foreground hover:bg-neutral-100 dark:hover:bg-neutral-800'
+              "
+              @click="toggleGameHidden(game.appid, game.name)"
+            >
+              <EyeOffIcon v-if="isGameHidden(game.appid)" class="mr-1.5 h-3.5 w-3.5" />
+              <EyeIcon v-else class="mr-1.5 h-3.5 w-3.5" />
+              <span>
+                {{
+                  isGameHidden(game.appid)
+                    ? $t("analytics.hideFromAnalytics")
+                    : $t("analytics.showInAnalytics")
+                }}
+              </span>
+            </UiButton>
+          </div>
+        </div>
+
+        <UiDialogFooter>
+          <UiButton variant="outline" size="sm" @click="showExclusionsModal = false">
+            {{ $t("common.close") }}
+          </UiButton>
+        </UiDialogFooter>
+      </UiDialogContent>
+    </UiDialog>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from "vue";
-import { ArrowLeftIcon, BarChart2Icon, AlertCircleIcon } from "@lucide/vue";
-import { GameTypes } from "@/types";
-import type { SteamGame } from "@/types";
+import { ref, computed } from "vue";
+import {
+  BarChart2Icon,
+  AlertCircleIcon,
+  EyeOffIcon,
+  EyeIcon,
+  SearchIcon,
+} from "@lucide/vue";
+import type { TopGamesLimit } from "~/composables/useAnalytics";
 
 definePageMeta({
   showBackButton: true,
 });
 
-const { locale, t } = useI18n();
-
 const { games, isLoading, error, fetchGames, suspense } = useGameLibrary();
 await suspense();
 
-const { getGameCategory } = useGameCategories();
+const { isGameHidden, toggleGameHidden, hiddenCount } = useAnalyticsExclusions();
 
-// Analytics calculations
+// Analytics period state
 const analyticsPeriod = ref<"recent" | "allTime">("recent");
 
-// Recently played games computed values
-const recentlyPlayedGames = computed(() => {
-  return games.value.filter((g) => g.playtime_2weeks && g.playtime_2weeks > 0);
-});
+// Analytics top limit state (5, 10, 15, 20, "all")
+const topLimit = ref<TopGamesLimit>(5);
+const limitOptions: TopGamesLimit[] = [5, 10, 15, 20, "all"];
 
-const recentStoryMinutes = computed(() => {
-  return recentlyPlayedGames.value.reduce(
-    (sum, g) =>
-      getGameCategory(g) === GameTypes.Category.Story ? sum + (g.playtime_2weeks || 0) : sum,
-    0,
-  );
-});
+// Analytics composable calculations
+const {
+  activeStoryHours,
+  activeSessionHours,
+  activeTotalHours,
+  activeStoryPercent,
+  activeSessionPercent,
+  donutStoryDash,
+  donutSessionDash,
+  donutSessionOffset,
+  topGames,
+  topMaxPlaytime,
+} = useAnalytics(games, analyticsPeriod, topLimit);
 
-const recentSessionMinutes = computed(() => {
-  return recentlyPlayedGames.value.reduce(
-    (sum, g) =>
-      getGameCategory(g) === GameTypes.Category.Session ? sum + (g.playtime_2weeks || 0) : sum,
-    0,
-  );
-});
+// Exclusions Dialog State
+const showExclusionsModal = ref(false);
+const exclusionsSearch = ref("");
 
-const recentTotalMinutes = computed(() => {
-  return recentStoryMinutes.value + recentSessionMinutes.value;
-});
-
-const recentStoryHours = computed(() => Math.round((recentStoryMinutes.value / 60) * 10) / 10);
-const recentSessionHours = computed(() => Math.round((recentSessionMinutes.value / 60) * 10) / 10);
-const recentTotalHours = computed(() => Math.round((recentTotalMinutes.value / 60) * 10) / 10);
-
-// All time computed values
-const allTimeStoryHours = computed(() => {
-  const mins = games.value.reduce(
-    (sum, g) => (getGameCategory(g) === GameTypes.Category.Story ? sum + g.playtime_forever : sum),
-    0,
-  );
-  return Math.round((mins / 60) * 10) / 10;
-});
-
-const allTimeSessionHours = computed(() => {
-  const mins = games.value.reduce(
-    (sum, g) =>
-      getGameCategory(g) === GameTypes.Category.Session ? sum + g.playtime_forever : sum,
-    0,
-  );
-  return Math.round((mins / 60) * 10) / 10;
-});
-
-const allTimeTotalHours = computed(() => {
-  return Math.round((allTimeStoryHours.value + allTimeSessionHours.value) * 10) / 10;
-});
-
-// Active computed hours & percentage metrics
-const activeStoryHours = computed(() => {
-  return analyticsPeriod.value === "recent" ? recentStoryHours.value : allTimeStoryHours.value;
-});
-
-const activeSessionHours = computed(() => {
-  return analyticsPeriod.value === "recent" ? recentSessionHours.value : allTimeSessionHours.value;
-});
-
-const activeTotalHours = computed(() => {
-  return analyticsPeriod.value === "recent" ? recentTotalHours.value : allTimeTotalHours.value;
-});
-
-const activeStoryPercent = computed(() => {
-  if (activeTotalHours.value === 0) return 0;
-  return Math.round((activeStoryHours.value / activeTotalHours.value) * 100);
-});
-
-const activeSessionPercent = computed(() => {
-  if (activeTotalHours.value === 0) return 0;
-  return 100 - activeStoryPercent.value;
-});
-
-// SVG Donut Calculations
-const donutCircumference = 251.327;
-
-const donutStoryDash = computed(() => {
-  const value = (activeStoryPercent.value / 100) * donutCircumference;
-  return `${value} ${donutCircumference}`;
-});
-
-const donutSessionDash = computed(() => {
-  const value = (activeSessionPercent.value / 100) * donutCircumference;
-  return `${value} ${donutCircumference}`;
-});
-
-const donutSessionOffset = computed(() => {
-  return -((activeStoryPercent.value / 100) * donutCircumference);
-});
-
-// Dynamic Top 5 Games
-const topFiveGames = computed(() => {
-  if (games.value.length === 0) return [];
-
-  if (analyticsPeriod.value === "recent") {
-    const playedRecent = games.value.filter((g) => g.playtime_2weeks && g.playtime_2weeks > 0);
-    const sorted = [...playedRecent]
-      .sort((a, b) => (b.playtime_2weeks || 0) - (a.playtime_2weeks || 0))
-      .slice(0, 5);
-
-    return sorted.map((g) => {
-      const recentHours = Math.round(((g.playtime_2weeks || 0) / 60) * 10) / 10;
-      return Object.assign({}, g, { display_hours: recentHours });
-    });
-  } else {
-    const sorted = [...games.value]
-      .sort((a, b) => b.playtime_forever - a.playtime_forever)
-      .slice(0, 5);
-
-    return sorted.map((g) => {
-      return Object.assign({}, g, { display_hours: g.playtime_hours });
-    });
+const filteredGamesForExclusions = computed(() => {
+  if (!exclusionsSearch.value.trim()) {
+    return games.value;
   }
-});
-
-const topFiveMaxPlaytime = computed(() => {
-  if (topFiveGames.value.length === 0) return 1;
-  return topFiveGames.value[0]?.display_hours || 1;
+  const query = exclusionsSearch.value.toLowerCase().trim();
+  return games.value.filter((g) => g.name.toLowerCase().includes(query));
 });
 
 function formatHours(hours: number): string {
@@ -438,13 +504,5 @@ function handleImageError(event: Event) {
   transition:
     stroke-dasharray 0.8s cubic-bezier(0.16, 1, 0.3, 1),
     stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 }
 </style>

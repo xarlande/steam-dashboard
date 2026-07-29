@@ -39,6 +39,7 @@ export function useSettings(isOpen: Ref<boolean | undefined>) {
     const settings = {
       exportedAt: new Date().toISOString(),
       steam_game_categories: useStateManualCategories().value,
+      steam_hidden_analytics_games: useStateHiddenAnalyticsGames().value,
       steam_id: currentSteamId,
       steam_language: locale.value,
       version: 1,
@@ -69,6 +70,10 @@ export function useSettings(isOpen: Ref<boolean | undefined>) {
           const val = String(data.steam_id);
           cookieSteamId.value = val;
           localSteamId.value = val;
+        }
+
+        if (data.steam_hidden_analytics_games && typeof data.steam_hidden_analytics_games === "object") {
+          useStateHiddenAnalyticsGames().value = data.steam_hidden_analytics_games;
         }
 
         toast.success(t("index.credentials.importSuccess"));

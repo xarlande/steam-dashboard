@@ -32,7 +32,30 @@
             </div>
 
             <div class="space-y-2">
-              <UiBadge variant="secondary"> App ID: {{ appid }} </UiBadge>
+              <div class="flex flex-wrap items-center gap-2">
+                <UiBadge variant="secondary"> App ID: {{ appid }} </UiBadge>
+                <UiButton
+                  variant="outline"
+                  size="sm"
+                  class="h-6 rounded-md px-2.5 text-[11px] font-semibold transition-colors"
+                  :class="
+                    isGameHidden(Number(appid))
+                      ? 'border-rose-500/30 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20'
+                      : 'border-border text-muted-foreground hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                  "
+                  @click="toggleGameHidden(Number(appid), gameName)"
+                >
+                  <EyeOffIcon v-if="isGameHidden(Number(appid))" class="mr-1.5 h-3 w-3 text-rose-500" />
+                  <EyeIcon v-else class="mr-1.5 h-3 w-3" />
+                  <span>
+                    {{
+                      isGameHidden(Number(appid))
+                        ? $t("analytics.hideFromAnalytics")
+                        : $t("analytics.showInAnalytics")
+                    }}
+                  </span>
+                </UiButton>
+              </div>
               <h2
                 class="text-foreground text-2xl leading-tight font-extrabold tracking-tight sm:text-3xl"
               >
@@ -223,7 +246,7 @@ import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { refDebounced } from "@vueuse/core";
 import { GameTypes } from "@/types";
-import { ClockIcon, SearchIcon, XIcon, AlertCircleIcon } from "@lucide/vue";
+import { ClockIcon, SearchIcon, XIcon, AlertCircleIcon, EyeIcon, EyeOffIcon } from "@lucide/vue";
 
 definePageMeta({
   showBackButton: true,
@@ -234,6 +257,7 @@ const appid = route.params.id as string;
 const { locale } = useI18n();
 
 const steamId = useStateSteamId();
+const { isGameHidden, toggleGameHidden } = useAnalyticsExclusions();
 
 const credentials = computed(() => ({
   steamId: steamId.value.trim(),
