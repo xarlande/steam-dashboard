@@ -221,7 +221,9 @@
                   <span class="text-muted-foreground text-[11px] font-semibold">
                     {{ $t("analytics.topLimitLabel") }}
                   </span>
-                  <div class="bg-muted/60 border-border/50 flex items-center gap-0.5 rounded-lg border p-0.5">
+                  <div
+                    class="bg-muted/60 border-border/50 flex items-center gap-0.5 rounded-lg border p-0.5"
+                  >
                     <button
                       v-for="option in limitOptions"
                       :key="'limit-' + option"
@@ -281,7 +283,7 @@
                     <div class="flex items-center justify-between gap-2 text-xs">
                       <NuxtLinkLocale
                         :to="`/game/${game.appid}`"
-                        class="text-foreground hover:text-violet-600 dark:hover:text-violet-400 truncate font-bold transition-colors"
+                        class="text-foreground truncate font-bold transition-colors hover:text-violet-600 dark:hover:text-violet-400"
                         :title="game.name"
                       >
                         {{ game.name }}
@@ -342,7 +344,7 @@
 
         <!-- Search Bar -->
         <div class="relative mt-2">
-          <SearchIcon class="text-muted-foreground absolute left-3 top-2.5 h-4 w-4" />
+          <SearchIcon class="text-muted-foreground absolute top-2.5 left-3 h-4 w-4" />
           <UiInput
             v-model="exclusionsSearch"
             type="text"
@@ -365,7 +367,7 @@
             :key="'excl-' + game.appid"
             class="bg-muted/30 border-border/60 flex items-center justify-between rounded-xl border p-2.5 transition-colors"
           >
-            <div class="flex items-center gap-3 min-w-0 flex-1 pr-2">
+            <div class="flex min-w-0 flex-1 items-center gap-3 pr-2">
               <img
                 :src="game.header_img"
                 :alt="game.name"
@@ -389,7 +391,7 @@
               class="h-8 shrink-0 text-xs font-bold transition-all"
               :class="
                 isGameHidden(game.appid)
-                  ? 'border-rose-500/30 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20'
+                  ? 'border-rose-500/30 bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 dark:text-rose-400'
                   : 'border-border text-muted-foreground hover:bg-neutral-100 dark:hover:bg-neutral-800'
               "
               @click="toggleGameHidden(game.appid, game.name)"
@@ -419,13 +421,7 @@
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
-import {
-  BarChart2Icon,
-  AlertCircleIcon,
-  EyeOffIcon,
-  EyeIcon,
-  SearchIcon,
-} from "@lucide/vue";
+import { BarChart2Icon, AlertCircleIcon, EyeOffIcon, EyeIcon, SearchIcon } from "@lucide/vue";
 import type { TopGamesLimit } from "~/composables/useAnalytics";
 
 definePageMeta({
@@ -463,11 +459,22 @@ const showExclusionsModal = ref(false);
 const exclusionsSearch = ref("");
 
 const filteredGamesForExclusions = computed(() => {
+  const copy = [...games.value];
+  const sort = copy.sort((a, b) => {
+    if (!isGameHidden(a.appid) && isGameHidden(b.appid)) {
+      return 1;
+    }
+    if (isGameHidden(a.appid) && !isGameHidden(b.appid)) {
+      return -1;
+    }
+    return 0;
+  });
+
   if (!exclusionsSearch.value.trim()) {
-    return games.value;
+    return sort;
   }
   const query = exclusionsSearch.value.toLowerCase().trim();
-  return games.value.filter((g) => g.name.toLowerCase().includes(query));
+  return sort.filter((g) => g.name.toLowerCase().includes(query));
 });
 
 function formatHours(hours: number): string {
