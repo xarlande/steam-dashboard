@@ -1,12 +1,12 @@
 <template>
   <div
-    class="bg-background text-foreground relative min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.04),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.03),transparent_50%)] pb-16 font-sans transition-colors duration-300 selection:bg-cyan-500/30 selection:text-cyan-900 dark:bg-[radial-gradient(circle_at_20%_-20%,rgba(6,182,212,0.08),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(139,92,246,0.06),transparent_50%)] dark:selection:text-cyan-200"
+    class="bg-background text-foreground relative min-h-screen pb-16 font-sans transition-colors duration-300 selection:bg-cyan-500/30 selection:text-cyan-900"
   >
     <!-- Main Container -->
-    <main class="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <!-- Shared Header -->
       <header
-        class="border-border/60 mb-8 flex flex-col gap-4 border-b pb-8 sm:flex-row sm:items-center sm:justify-between"
+        class="border-border bg-background/80 sticky top-0 z-50 mb-8 flex flex-col gap-4 border-b px-2 py-8 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between"
       >
         <!-- Left Slot (e.g. Title or Back Button) -->
         <div class="flex items-center gap-3">
@@ -38,7 +38,7 @@
         </div>
 
         <!-- Right Slot (Actions + Shared selectors) -->
-        <div class="flex items-center gap-3 self-end sm:self-auto">
+        <div class="bg-background flex items-center gap-3 self-end sm:self-auto">
           <slot name="header-actions" />
 
           <UiButton variant="outline" @click="showSettings = !showSettings">
