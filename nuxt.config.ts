@@ -23,13 +23,8 @@ export default defineNuxtConfig({
       { code: "ru", name: "RU", file: "ru.json" },
     ],
     defaultLocale: "uk",
-    detectBrowserLanguage: {
-      redirectOn: "root",
-      useCookie: true,
-      cookieKey: "i18n_redirected",
-    },
   },
-  css: ["~/assets/css/main.css"],
+  css: ["~/assets/css/main.css", "vue-sonner/style.css"],
   vite: {
     plugins: [tailwindcss() as any],
     optimizeDeps: {
