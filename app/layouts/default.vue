@@ -2,11 +2,12 @@
   <div
     class="bg-background text-foreground relative min-h-screen pb-16 font-sans transition-colors duration-300 selection:bg-cyan-500/30 selection:text-cyan-900"
   >
-    <!-- Main Container -->
-    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <!-- Shared Header -->
-      <header
-        class="border-border bg-background/80 sticky top-0 z-50 mb-8 flex flex-col gap-4 border-b px-2 py-8 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between"
+    <!-- Shared Header -->
+    <header
+      class="border-border bg-background/80 sticky top-0 z-50 mb-8 border-b backdrop-blur-md"
+    >
+      <div
+        class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8"
       >
         <!-- Left Slot (e.g. Title or Back Button) -->
         <div class="flex items-center gap-3">
@@ -69,9 +70,12 @@
             <MoonIcon class="hidden h-5 w-5 dark:block" />
           </UiButton>
         </div>
-      </header>
+      </div>
+    </header>
 
-      <CommonSettingsDialog v-model:open="showSettings"></CommonSettingsDialog>
+    <!-- Main Container -->
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <CommonSettingsDialog v-model:open="showSettings" />
 
       <!-- Page Content -->
       <slot />
