@@ -20,7 +20,7 @@
 
       <!-- The Roulette Reel -->
       <div
-        class="relative mb-6 flex h-32 w-full items-center justify-center overflow-hidden rounded-2xl border border-cyan-500/30 bg-neutral-100/90 shadow-[inset_0_0_24px_rgba(6,182,212,0.1)] dark:bg-neutral-950/70 dark:shadow-[inset_0_0_24px_rgba(6,182,212,0.15)]"
+        class="relative mb-6 flex h-32 w-full items-center justify-center overflow-hidden rounded-xl border border-cyan-500/30 bg-neutral-100/90 shadow-[inset_0_0_24px_rgba(6,182,212,0.1)] dark:bg-neutral-950/70 dark:shadow-[inset_0_0_24px_rgba(6,182,212,0.15)]"
       >
         <div class="absolute top-0 right-0 left-0" :style="reelStyle">
           <div
@@ -31,7 +31,7 @@
             <img
               :src="game.header_img"
               :alt="game.name"
-              class="border-border h-15 w-32 rounded-lg border object-cover shadow-md"
+              class="border-border h-15 w-32 rounded-xl border object-cover shadow-md"
               @error="handleImageError"
             />
             <span
@@ -72,7 +72,7 @@
         </div>
 
         <div v-else-if="finalSelectedGame" class="animate-fade-in space-y-5">
-          <div class="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-4.5 text-sm">
+          <div class="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4.5 text-sm">
             <span class="mb-2 block text-2xl select-none">✨</span>
             <p class="mb-2 leading-snug font-bold text-cyan-600 dark:text-cyan-400">{{ $t("roulette.landing") }}</p>
             <h4 class="text-foreground text-lg font-black tracking-tight">

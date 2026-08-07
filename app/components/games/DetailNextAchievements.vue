@@ -17,7 +17,7 @@
           <div
             v-for="ach in nextAchievements"
             :key="'next-' + ach.apiname"
-            class="border-border bg-card/30 group flex items-center gap-3.5 rounded-2xl border p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-500/30 hover:shadow-[0_4px_15px_rgba(34,211,238,0.12)]"
+            class="border-border bg-card/30 group flex items-center gap-3.5 rounded-xl border p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-500/30 hover:shadow-[0_4px_15px_rgba(34,211,238,0.12)]"
           >
             <!-- Gray Icon, becomes colored on hover -->
             <div

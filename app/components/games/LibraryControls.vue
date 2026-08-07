@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-card/45 border-border/50 flex flex-col justify-between gap-4 rounded-2xl border p-4 backdrop-blur-xs md:flex-row md:items-center"
+    class="bg-card/45 border-border/50 flex flex-col justify-between gap-4 rounded-xl border p-4 backdrop-blur-xs md:flex-row md:items-center"
   >
     <!-- Search input -->
     <div class="relative max-w-md flex-1">

@@ -95,7 +95,7 @@
           <div class="grid grid-cols-1 gap-8 pt-6 md:grid-cols-5">
             <!-- Left Column (Donut Chart) - Takes 2 cols of 5 -->
             <div
-              class="bg-card/25 border-border/60 relative flex flex-col items-center justify-center rounded-2xl border p-5 md:col-span-2"
+              class="bg-card/25 border-border/60 relative flex flex-col items-center justify-center rounded-xl border p-5 md:col-span-2"
             >
               <h3
                 class="text-muted-foreground mb-6 self-start text-xs font-bold tracking-widest uppercase"
@@ -204,7 +204,7 @@
 
             <!-- Right Column (Top Games) - Takes 3 cols of 5 -->
             <div
-              class="bg-card/25 border-border/60 flex flex-col justify-between rounded-2xl border p-5 md:col-span-3"
+              class="bg-card/25 border-border/60 flex flex-col justify-between rounded-xl border p-5 md:col-span-3"
             >
               <!-- Section Header with Limit Controls -->
               <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -222,7 +222,7 @@
                     {{ $t("analytics.topLimitLabel") }}
                   </span>
                   <div
-                    class="bg-muted/60 border-border/50 flex items-center gap-0.5 rounded-lg border p-0.5"
+                    class="bg-muted/60 border-border/50 flex items-center gap-0.5 rounded-xl border p-0.5"
                   >
                     <button
                       v-for="option in limitOptions"

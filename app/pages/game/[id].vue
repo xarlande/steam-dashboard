@@ -126,7 +126,7 @@
     <section v-if="!isLoading && !error" class="animate-fade-in space-y-6">
       <!-- Filter Controls (Search + Tabs) -->
       <div
-        class="bg-card border-border flex flex-col justify-between gap-4 rounded-2xl border p-4 md:flex-row md:items-center"
+        class="bg-card border-border flex flex-col justify-between gap-4 rounded-xl border p-4 md:flex-row md:items-center"
       >
         <!-- Search in Achievements -->
         <div class="relative max-w-md flex-1">
@@ -201,7 +201,7 @@
       <UiCard v-else class="mx-auto max-w-md text-center">
         <UiCardContent>
           <div
-            class="bg-card border-border text-muted-foreground mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border"
+            class="bg-card border-border text-muted-foreground mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl border"
           >
             <AlertCircleIcon class="h-8 w-8" />
           </div>

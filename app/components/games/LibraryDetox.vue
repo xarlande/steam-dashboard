@@ -32,7 +32,7 @@
             >
             <UiBadge
               :class="hygieneBadgeClass"
-              class="rounded-lg border px-3 py-1 text-xs font-bold transition-all duration-300"
+              class="rounded-md border px-3 py-1 text-xs font-bold transition-all duration-300"
             >
               {{ $t("detox.states." + hygieneStatus + ".title") }}
             </UiBadge>
@@ -45,7 +45,7 @@
           <div class="flex flex-col justify-between gap-6 md:col-span-2">
             <!-- Recommendations/Hygienic advice -->
             <div
-              class="flex items-start gap-4 rounded-2xl border p-4 transition-all duration-300 sm:p-5"
+              class="flex items-start gap-4 rounded-xl border p-4 transition-all duration-300 sm:p-5"
               :class="adviceBoxClass"
             >
               <span class="shrink-0 text-3xl select-none">
@@ -118,7 +118,7 @@
 
           <!-- Right Column: Recent Playtime Summary & Toggle -->
           <div
-            class="bg-card/30 border-border/80 flex flex-col justify-between gap-6 rounded-2xl border p-5"
+            class="bg-card/30 border-border/80 flex flex-col justify-between gap-6 rounded-xl border p-5"
           >
             <div class="space-y-4">
               <h3 class="text-muted-foreground text-xs font-bold tracking-widest uppercase">
@@ -192,7 +192,7 @@
               <div
                 v-for="game in recentlyPlayedGames"
                 :key="'cat-' + game.appid"
-                class="bg-card/30 flex items-center justify-between rounded-2xl border p-3 transition-all duration-300"
+                class="bg-card/30 flex items-center justify-between rounded-xl border p-3 transition-all duration-300"
                 :class="
                   getGameCategory(game) === 'story'
                     ? 'border-border/60 hover:border-cyan-500/35 hover:shadow-[0_2px_10px_rgba(6,182,212,0.06)]'
