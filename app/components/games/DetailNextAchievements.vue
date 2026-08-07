@@ -1,6 +1,6 @@
 <template>
   <section class="animate-fade-in mb-8">
-    <UiCard class="border-cyan-500/20 bg-gradient-to-r from-cyan-500/10 to-transparent shadow-xs dark:from-cyan-950/20">
+    <UiCard>
       <UiCardContent class="p-6">
         <div class="mb-4 flex items-center gap-2.5">
           <span class="text-xl">🎯</span>
@@ -17,7 +17,7 @@
           <div
             v-for="ach in nextAchievements"
             :key="'next-' + ach.apiname"
-            class="border-border bg-card/30 group flex items-center gap-3.5 rounded-xl border p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-500/30 hover:shadow-[0_4px_15px_rgba(34,211,238,0.12)]"
+            class="bg-muted/40 border-border group flex items-center gap-3.5 rounded-xl border p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-500/30 hover:shadow-xs"
           >
             <!-- Gray Icon, becomes colored on hover -->
             <div
