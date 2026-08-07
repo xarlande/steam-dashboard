@@ -2,15 +2,11 @@
   <NuxtLinkLocale
     :to="`/game/${game.appid}`"
     class="group block h-full rounded-xl transition-all duration-300 hover:-translate-y-1.5"
-    :class="category === GameTypes.Category.Story ? 'story-card-hover' : 'session-card-hover'"
+    :class="cardTheme.shadow"
   >
     <UiCard
       class="bg-card/45 flex h-full flex-col gap-0 overflow-hidden py-0 backdrop-blur-xs transition-all duration-300"
-      :class="
-        category === GameTypes.Category.Story
-          ? 'group-hover:ring-2 group-hover:ring-cyan-400'
-          : 'group-hover:ring-2 group-hover:ring-rose-500'
-      "
+      :class="cardTheme.ring"
     >
       <!-- Game Capsule Banner -->
       <div class="bg-muted relative aspect-[460/215] shrink-0 overflow-hidden">
@@ -24,13 +20,9 @@
         <!-- Category Badge -->
         <UiBadge
           class="absolute top-2.5 right-2.5 rounded-md border px-2 py-0.5 text-[9px] font-black tracking-wider uppercase shadow-xs backdrop-blur-md transition-all duration-300"
-          :class="
-            category === GameTypes.Category.Story
-              ? 'border-cyan-500/30 bg-cyan-950/85 text-cyan-300 hover:bg-cyan-950/85'
-              : 'border-rose-500/30 bg-rose-950/85 text-rose-300 hover:bg-rose-950/85'
-          "
+          :class="cardTheme.badge"
         >
-          {{ category === GameTypes.Category.Story ? "🎭 Story" : "🎮 Session" }}
+          {{ cardTheme.badgeText }}
         </UiBadge>
       </div>
 
@@ -39,11 +31,7 @@
         <div>
           <h3
             class="text-foreground line-clamp-1 text-sm font-bold tracking-tight transition-colors sm:text-base"
-            :class="
-              category === GameTypes.Category.Story
-                ? 'group-hover:text-cyan-600 dark:group-hover:text-cyan-400'
-                : 'group-hover:text-rose-600 dark:group-hover:text-rose-400'
-            "
+            :class="cardTheme.title"
           >
             {{ game.name }}
           </h3>
@@ -93,7 +81,25 @@ const props = defineProps<{
 const { getGameCategory } = useGameCategories();
 const category = computed(() => getGameCategory(props.game));
 
-// TODO: костиль
+const cardTheme = computed(() => {
+  const isStory = category.value === GameTypes.Category.Story;
+  return {
+    badgeText: isStory ? "🎭 Story" : "🎮 Session",
+    shadow: isStory
+      ? "hover:shadow-[0_12px_25px_-4px_rgba(34,211,238,0.4)] dark:hover:shadow-[0_12px_25px_-4px_rgba(34,211,238,0.3)]"
+      : "hover:shadow-[0_12px_25px_-4px_rgba(244,63,94,0.4)] dark:hover:shadow-[0_12px_25px_-4px_rgba(244,63,94,0.3)]",
+    ring: isStory
+      ? "group-hover:ring-2 group-hover:ring-cyan-400"
+      : "group-hover:ring-2 group-hover:ring-rose-500",
+    badge: isStory
+      ? "border-cyan-500/30 bg-cyan-950/85 text-cyan-300 hover:bg-cyan-950/85"
+      : "border-rose-500/30 bg-rose-950/85 text-rose-300 hover:bg-rose-950/85",
+    title: isStory
+      ? "group-hover:text-cyan-600 dark:group-hover:text-cyan-400"
+      : "group-hover:text-rose-600 dark:group-hover:text-rose-400",
+  };
+});
+
 function handleImageError(event: Event) {
   const target = event.target as HTMLImageElement;
   if (target) {
@@ -106,25 +112,3 @@ function formatHours(hours: number): string {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 }).format(hours);
 }
 </script>
-
-<style scoped>
-.story-card-hover {
-  box-shadow: 0 0 0 transparent;
-}
-.story-card-hover:hover {
-  box-shadow: 0 12px 25px -4px rgba(34, 211, 238, 0.4);
-}
-.dark .story-card-hover:hover {
-  box-shadow: 0 12px 25px -4px rgba(34, 211, 238, 0.3);
-}
-
-.session-card-hover {
-  box-shadow: 0 0 0 transparent;
-}
-.session-card-hover:hover {
-  box-shadow: 0 12px 25px -4px rgba(244, 63, 94, 0.4);
-}
-.dark .session-card-hover:hover {
-  box-shadow: 0 12px 25px -4px rgba(244, 63, 94, 0.3);
-}
-</style>
